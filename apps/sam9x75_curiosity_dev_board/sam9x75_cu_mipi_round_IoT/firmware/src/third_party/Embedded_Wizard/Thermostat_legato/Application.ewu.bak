@@ -1,0 +1,2522 @@
+﻿$version 14.02
+
+// This is the root component of the entire GUI application.
+$rect <20,20,220,60>
+$output false
+class Application : Core::Root
+{
+  $rect <740,10,940,50>
+  inherited property Bounds = <0,0,720,720>;
+
+  // To do:
+  // 
+  // - Adjust the visible size of your application (the thick blue border). It should \
+  // correspond to the size of your target display.
+  // 
+  // - The simplest way to compose the appearance of the application is to use the \
+  // 'Views' and 'Widgets' from the Gallery.
+  // 
+  // - To react to touch or keyboard events use the templates from the Gallery folder \
+  // 'Event Handlers'.
+  // 
+  // - To perform transitions (animations) use the templates from the Gallery folder \
+  // 'Effects'.
+  // 
+  // - To store values use the 'Variable', 'Array' and 'Property' templates available \
+  // in the Gallery folder 'Chora'.
+  // 
+  // - To implement behavior use the 'Method' and 'Slot Method' templates available \
+  // in the Gallery folder 'Chora'.
+  note legend Note1
+  {
+    attr Bounds = <10,740,790,970>;
+  }
+
+  $rect <20,20,160,60>
+  object Application::Thermostat Thermostat
+  {
+    preset Bounds = <0,0,720,720>;
+  }
+}
+
+// To do:
+// 
+// - Open the 'Application' component for editing. It represents your entire GUI. \
+// Use widgets, views, event handlers and effects from the Gallery to assemble there \
+// your desired GUI look and feel.
+// 
+// - Create your own GUI components, widgets, panels, etc. The Gallery folder 'Component \
+// Templates' contains for this purpose various templates you can simply add to the \
+// unit and thus start your own component development.
+// 
+// - You can add your own bitmap and font resources to the unit. Use the templates \
+// 'Bitmap Resource' and 'Font Resource' from the Gallery folder 'Resources' for \
+// this purpose.
+// 
+// - You can add here also constants to store e.g. multilingual text fragments. Use \
+// for this purpose the template 'Constant' from the Gallery folder 'Chora'.
+// 
+// - To add an interface for communication with the target device use the template \
+// 'Device Interface' from the Gallery folder 'Device'.
+note legend Note1
+{
+  attr Bounds = <50,530,740,840>;
+}
+
+$rect <230,20,430,60>
+$output false
+resource Resources::Font Font
+{
+  attr fontname FontName = Roboto;
+  attr fontheight Height = 43;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <477,28,677,68>
+$output false
+resource Resources::Bitmap Bluetooth_21_40
+{
+  attr bitmapfile FileName = .\Res\Bluetooth_21_40.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,28,877,68>
+$output false
+resource Resources::Bitmap Calendar_50_49
+{
+  attr bitmapfile FileName = .\Res\Calendar_50_49.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <877,28,1077,68>
+$output false
+resource Resources::Bitmap Circulate_75_80
+{
+  attr bitmapfile FileName = .\Res\Circulate_75_80.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <477,68,677,108>
+$output false
+resource Resources::Bitmap arrow_40_32
+{
+  attr bitmapfile FileName = .\Res\arrow_40_32.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,68,877,108>
+$output false
+resource Resources::Bitmap bg_black
+{
+  attr bitmapfile FileName = .\Res\bg_black.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <877,68,1077,108>
+$output false
+resource Resources::Bitmap bg_brown
+{
+  attr bitmapfile FileName = .\Res\bg_brown.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <477,108,677,148>
+$output false
+resource Resources::Bitmap blue1_60_60
+{
+  attr bitmapfile FileName = .\Res\blue1_60_60.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,108,877,148>
+$output false
+resource Resources::Bitmap blue_720_720
+{
+  attr bitmapfile FileName = .\Res\blue_720_720.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <877,108,1077,148>
+$output false
+resource Resources::Bitmap brown_60_60
+{
+  attr bitmapfile FileName = .\Res\brown_60_60.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <477,148,677,188>
+$output false
+resource Resources::Bitmap circulate_invert_80_79
+{
+  attr bitmapfile FileName = .\Res\circulate_invert_80_79.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,148,877,188>
+$output false
+resource Resources::Bitmap coolset
+{
+  attr bitmapfile FileName = .\Res\coolset.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <877,148,1077,188>
+$output false
+resource Resources::Bitmap fan_50_50
+{
+  attr bitmapfile FileName = .\Res\fan_50_50.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <477,188,677,228>
+$output false
+resource Resources::Bitmap home1_24_23
+{
+  attr bitmapfile FileName = .\Res\home1_24_23.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,188,877,228>
+$output false
+resource Resources::Bitmap home_25_24
+{
+  attr bitmapfile FileName = .\Res\home_25_24.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <877,188,1077,228>
+$output false
+resource Resources::Bitmap hot_cold_49_60
+{
+  attr bitmapfile FileName = .\Res\hot_cold_49_60.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <477,228,677,268>
+$output false
+resource Resources::Bitmap hotmode_43_60
+{
+  attr bitmapfile FileName = .\Res\hotmode_43_60.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,228,877,268>
+$output false
+resource Resources::Bitmap humid_18_24
+{
+  attr bitmapfile FileName = .\Res\humid_18_24.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <877,228,1077,268>
+$output false
+resource Resources::Bitmap humidity_small_14_18
+{
+  attr bitmapfile FileName = .\Res\humidity_small_14_18.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <477,268,677,308>
+$output false
+resource Resources::Bitmap mode_50_70
+{
+  attr bitmapfile FileName = .\Res\mode_50_70.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,268,877,308>
+$output false
+resource Resources::Bitmap modebig_161_225
+{
+  attr bitmapfile FileName = .\Res\modebig_161_225.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <877,268,1077,308>
+$output false
+resource Resources::Bitmap off_54_41
+{
+  attr bitmapfile FileName = .\Res\off_54_41.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <477,308,677,348>
+$output false
+resource Resources::Bitmap settings1_50_44
+{
+  attr bitmapfile FileName = .\Res\settings1_50_44.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,308,877,348>
+$output false
+resource Resources::Bitmap settings2_200_175
+{
+  attr bitmapfile FileName = .\Res\settings2_200_175.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <877,308,1077,348>
+$output false
+resource Resources::Bitmap settings_50_49
+{
+  attr bitmapfile FileName = .\Res\settings_50_49.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <477,348,677,388>
+$output false
+resource Resources::Bitmap settings_med_56_60
+{
+  attr bitmapfile FileName = .\Res\settings_med_56_60.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,348,877,388>
+$output false
+resource Resources::Bitmap shutdown_43_50
+{
+  attr bitmapfile FileName = .\Res\shutdown_43_50.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <877,348,1077,388>
+$output false
+resource Resources::Bitmap shutdown_big_69_80
+{
+  attr bitmapfile FileName = .\Res\shutdown_big_69_80.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <477,388,677,428>
+$output false
+resource Resources::Bitmap weather_35_30
+{
+  attr bitmapfile FileName = .\Res\weather_35_30.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,388,877,428>
+$output false
+resource Resources::Bitmap wifi_48_40
+{
+  attr bitmapfile FileName = .\Res\wifi_48_40.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <30,230,230,270>
+$output false
+resource Resources::Font Font1
+{
+  attr fontname FontName = Segoe UI Black;
+  attr fontheight Height = 43;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <890,400,1090,440>
+$output false
+resource Resources::Bitmap Controller
+{
+  attr bitmapfile FileName = .\Res\Controller.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <890,440,1090,480>
+$output false
+resource Resources::Bitmap Needle
+{
+  attr bitmapfile FileName = .\Res\Needle.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+// Device Class
+note group GlobalsNote
+{
+  attr Bounds = <240,300,470,470>;
+}
+
+// Constants
+note group ConstantsNote
+{
+  attr Bounds = <-10,300,230,450>;
+}
+
+$rect <260,340,460,380>
+$output false
+class DeviceClass : Templates::DeviceClass
+{
+  // The property 'ActualTemp' represents the current temperature value in 1/10 degrees. \
+  // In a real system this value is measured and provided by the underlying system.
+  $rect <220,60,420,100>
+  property bool TurnWifiOn = false;
+
+  // Interface to read and modify a device setting or state value
+  note group Note1
+  {
+    attr Bounds = <40,0,790,440>;
+  }
+
+  // The property 'NominalTemp' represents the current temperature set value in 1/10 \
+  // degrees. This value is set by the GUI application and forwarded to the underlying \
+  // system.
+  $rect <220,100,420,140>
+  property int32 Brightness = 225;
+
+  $rect <220,140,420,180>
+  property int32 Mode = 2;
+
+  $rect <420,140,620,180>
+  onset Mode
+  {
+    // The property doesn't change -> nothing to do.
+    if ( pure Mode == value )
+      return;
+
+    // Remember the new value in the internal memory of the property.
+    pure Mode = value;
+
+    // For target code generation you will use your specific device API 
+    // to change the affected value.
+    $if !$prototyper
+      native ( value )
+      {
+        /*
+           TO DO:
+
+           You can call a function of your own device API or you simply
+           modify a variable existing in your middleware to reflect the
+           new value:
+
+           YourDevice_SetSomeValue( value );
+
+           or
+
+           YourDevice_SomeVariable = value;
+        */
+      }
+    $endif
+
+    // Notify all associated property observers.
+    notifyobservers ^Mode;
+  }
+
+  $rect <220,230,420,270>
+  property bool WifiConnected = false;
+
+  // The property 'ActualTemp' represents the current temperature value in 1/10 degrees. \
+  // In a real system this value is measured and provided by the underlying system.
+  $rect <220,180,420,220>
+  property bool TurnBtOn = false;
+
+  $rect <430,180,630,220>
+  property bool BtConnected = false;
+
+  $rect <440,230,640,270>
+  onset WifiConnected
+  {
+    // The property doesn't change -> nothing to do.
+    if ( pure WifiConnected == value )
+      return;
+
+    // Remember the new value in the internal memory of the property.
+    pure WifiConnected = value;
+
+    // Notify all associated property observers.
+    notifyobservers ^WifiConnected;
+  }
+
+  // The property 'NominalTemp' represents the current temperature set value in 1/10 \
+  // degrees. This value is set by the GUI application and forwarded to the underlying \
+  // system.
+  $rect <230,290,430,330>
+  property int32 Day = 3;
+
+  // The property 'NominalTemp' represents the current temperature set value in 1/10 \
+  // degrees. This value is set by the GUI application and forwarded to the underlying \
+  // system.
+  $rect <470,390,670,430>
+  property int32 Temperature = 25;
+
+  // The property 'NominalTemp' represents the current temperature set value in 1/10 \
+  // degrees. This value is set by the GUI application and forwarded to the underlying \
+  // system.
+  $rect <240,380,440,420>
+  property int32 Minute = 25;
+
+  // The property 'NominalTemp' represents the current temperature set value in 1/10 \
+  // degrees. This value is set by the GUI application and forwarded to the underlying \
+  // system.
+  $rect <460,340,660,380>
+  property int32 Hour = 11;
+
+  // The property 'NominalTemp' represents the current temperature set value in 1/10 \
+  // degrees. This value is set by the GUI application and forwarded to the underlying \
+  // system.
+  $rect <470,280,670,320>
+  property int32 Year = 2025;
+
+  $rect <440,90,640,130>
+  var string am_pm = "AM";
+
+  // The property 'NominalTemp' represents the current temperature set value in 1/10 \
+  // degrees. This value is set by the GUI application and forwarded to the underlying \
+  // system.
+  $rect <420,40,620,80>
+  property int32 Humidity = 50;
+
+  $rect <640,40,840,80>
+  var string month = "Mar";
+
+  // The property 'NominalTemp' represents the current temperature set value in 1/10 \
+  // degrees. This value is set by the GUI application and forwarded to the underlying \
+  // system.
+  $rect <230,340,430,380>
+  property int32 Month = 11;
+}
+
+$rect <260,380,460,420>
+autoobject Application::DeviceClass Device;
+
+$rect <10,340,210,380>
+$output false
+const color ColorCold = #1488D7FF;
+
+$rect <10,380,210,420>
+$output false
+const color ColorHot = #e89f6aFF;
+
+$rect <500,430,700,470>
+$output false
+resource Resources::Bitmap Increment
+{
+  attr bitmapfile FileName = .\Res\Increment.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <677,437,877,477>
+$output false
+resource Resources::Bitmap decrement
+{
+  attr bitmapfile FileName = .\Res\decrement.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <20,60,220,100>
+$output false
+class ModeController : Core::Group
+{
+  $rect <800,470,1000,510>
+  inherited property Bounds = <0,0,720,720>;
+
+  // This is the core of the SmartThermostat application. This class contains the \
+  // both needles for nominal and actual temperature, the rotatable wheel and all \
+  // of the calcualtion that is needed to draw the dynamic elements of the thermostat.
+  note legend Note
+  {
+    attr Bounds = <540,890,940,1020>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Background
+  {
+    preset Bounds = <0,0,720,720>;
+    preset Bitmap = Application::blue_720_720;
+  }
+
+  $rect <950,250,1150,290>
+  inherited method Init()
+  {
+    if(Application::Device.Mode==0)
+    {
+       Image.Bitmap=Application::shutdown_big_69_80;
+       Background.Bitmap=Application::bg_black;
+    }
+    else if(Application::Device.Mode==1)
+    {
+       Image.Bitmap=Application::modebig_161_225;
+       Background.Bitmap=Application::bg_brown;
+    }
+    else
+    {
+       Image.Bitmap=Application::settings2_200_175;
+       Background.Bitmap=Application::blue_720_720;
+    }
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CurrentMode
+  {
+    preset Bounds = <103,425,449,497>;
+    preset String = "Current Mode";
+    preset Font = Application::Font1;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image
+  {
+    preset Bounds = <115,179,387,418>;
+    preset Bitmap = Application::settings2_200_175;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Mode
+  {
+    preset Bounds = <460,98,510,148>;
+    preset Bitmap = Application::arrow_40_32;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Fan
+  {
+    preset Bounds = <556,169,606,219>;
+    preset Bitmap = Application::shutdown_43_50;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image ScreenBrightness
+  {
+    preset Bounds = <556,312,614,384>;
+    preset Bitmap = Application::mode_50_70;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Off
+  {
+    preset Bounds = <485,435,535,485>;
+    preset Bitmap = Application::settings1_50_44;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <421,56>;
+    preset Point3 = <521,56>;
+    preset Point2 = <521,156>;
+    preset Point1 = <421,156>;
+    preset OnPress = SlotMethod1;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler1
+  {
+    preset Point4 = <535,156>;
+    preset Point3 = <635,156>;
+    preset Point2 = <635,256>;
+    preset Point1 = <535,256>;
+    preset OnPress = SlotMethod2;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler2
+  {
+    preset Point4 = <528,292>;
+    preset Point3 = <628,292>;
+    preset Point2 = <628,392>;
+    preset Point1 = <528,392>;
+    preset OnPress = SlotMethod3;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler3
+  {
+    preset Point4 = <471,411>;
+    preset Point3 = <571,411>;
+    preset Point2 = <571,511>;
+    preset Point1 = <471,511>;
+    preset OnPress = SlotMethod4;
+  }
+
+  $rect <740,110,940,150>
+  slot SlotMethod1
+  {
+    var Core::Group newDialog = new Application::Thermostat;
+    SwitchToDialog( newDialog, null, null, null, null, null, null,
+                                 null, null, null, false );
+  }
+
+  $rect <740,170,940,210>
+  slot SlotMethod2
+  {
+    Application::Device.Mode=0;
+
+  }
+
+  $rect <740,230,940,270>
+  slot SlotMethod3
+  {
+    Application::Device.Mode=1;
+
+  }
+
+  $rect <730,290,930,330>
+  slot SlotMethod4
+  {
+    Application::Device.Mode=2;
+
+  }
+
+  $rect <750,380,950,420>
+  object Core::PropertyObserver PropertyObserver
+  {
+    preset OnEvent = onEvent;
+    preset Outlet = ^Application::Device.Mode;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <950,380,1150,420>
+  slot onEvent
+  {
+    if(Application::Device.Mode==0)
+    {
+       Image.Bitmap=Application::shutdown_big_69_80;
+       Background.Bitmap=Application::bg_black;
+    }
+    else if(Application::Device.Mode==1)
+    {
+       Image.Bitmap=Application::modebig_161_225;
+       Background.Bitmap=Application::bg_brown;
+    }
+    else
+    {
+       Image.Bitmap=Application::settings2_200_175;
+       Background.Bitmap=Application::blue_720_720;
+    }
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Background
+  $member Init
+  $member Bounds
+  $member Note
+  $member CurrentMode
+  $member Image
+  $member Mode
+  $member Fan
+  $member ScreenBrightness
+  $member Off
+  $member SimpleTouchHandler
+  $member SimpleTouchHandler1
+  $member SimpleTouchHandler2
+  $member SimpleTouchHandler3
+  $member SlotMethod1
+  $member SlotMethod2
+  $member SlotMethod3
+  $member SlotMethod4
+  $member PropertyObserver
+  $member onEvent
+
+  // Directives to adapt the order of members belonging to this class so they appear 
+  // correctly arranged relative to the members inherited from the ancestor (super) 
+  // classes. The numbers indicate the order-displacement to apply on the respective 
+  // member once all members have been loaded and combined with members from the 
+  // ancestor classes.
+  $reorder Background 117
+}
+
+$rect <240,60,440,100>
+$output false
+class TemperatureController : Core::Group
+{
+  $rect <950,190,1150,230>
+  inherited property Bounds = <0,0,720,720>;
+
+  $rect <970,280,1170,320>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /* determine center point */
+    var int32 cX = aSize.x / 2;
+    var int32 cY = aSize.y / 2;
+
+    /* arrange the minmax indicator */
+    DeltaTempView.Bounds = rect( <0,0>, aSize );
+    DeltaTempView.Offset = point( cX, cY );
+
+  }
+
+  $rect <740,260,940,300>
+  inherited method UpdateViewState()
+  {
+    /* Always invoke the inherited method */
+    super( aState );
+
+    var int32 alpha = 0;
+    var int32 actual = pure ActualValue;
+    var float actAngle = 0.0;
+    var int32 nominal = pure NominalValue;
+    var float nomAngle = 0.0;
+
+    /* ensure limits of the temperature values */
+    if ( actual < pure MinValue )
+      actual = pure MinValue;
+    if ( actual > pure MaxValue )
+      actual = pure MaxValue;
+    if ( nominal < pure MinValue )
+      nominal = pure MinValue;
+    if ( nominal > pure MaxValue )
+      nominal = pure MaxValue;
+
+    /* calculate angles for actual and nominal temperature */
+    if ( pure MaxValue > pure MinValue)
+    {
+      actAngle = 135.0 - (float)( actual - pure MinValue ) * 270.0 / (float)( pure MaxValue - pure MinValue ); 
+      nomAngle = 135.0 - (float)( nominal - pure MinValue ) * 270.0 / (float)( pure MaxValue - pure MinValue ); 
+    }
+
+    /* place the needle at nominal temperature */
+    Needle.RotateAndScale( Wheel.Bounds.center, nomAngle, 2.2,2.2);
+
+    var int32 inner = 250;
+    var int32 outer = 270;
+
+    /* calculate the delta temperature indicator */
+    if (( pure MaxValue > pure MinValue) && ( actual != nominal ))
+    {
+      /* draw line for actAngle and an arc between actAngle and nomAngle */
+      DeltaTempPath.InitSubPath( 0, 84 );
+      DeltaTempPath.Rotate( -actAngle -90.0 );
+      DeltaTempPath.Begin( 0, inner, 0 );
+      DeltaTempPath.AddLine( 0, outer, 0 );
+      DeltaTempPath.AddArc( 0, 0, 0, outer, outer, 0, -nomAngle + actAngle, 80 );
+      DeltaTempPath.Rotate( actAngle + 90.0 );
+    }
+    else
+    {
+      /* clear the path */
+      DeltaTempPath.InitSubPath( 0, 84 );
+    }
+
+    /* colorize the delta temperature indicator and the heat/cool symbol */
+    if ( actual <= nominal )
+    {
+      /* heating */
+      Symbol.FrameNumber = 0;
+      Symbol.Color = Application::ColorHot;
+
+      DeltaTempView.Color = Application::ColorHot;
+      alpha = ( nominal - actual ) * 10;
+      if ( alpha > 255 )
+      alpha = 255;
+       Symbol.Opacity = alpha;
+
+    }
+    else
+    {
+         Symbol.Opacity = 255;
+         DeltaTempView.Color = Application::ColorCold;
+    }
+
+  }
+
+  // This is a rotate gesture handler.
+  $rect <20,20,160,60>
+  object Core::RotateTouchHandler RotateTouchHandler
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToRight, AlignToTop];
+    preset Bounds = <0,0,720,720>;
+    preset OnRotate = onRotateSlot;
+    preset OnEnd = onEndSlot;
+    preset OnStart = onStartSlot;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Wheel
+  {
+    preset Bounds = <0,0,720,720>;
+    preset Bitmap = Application::coolset;
+  }
+
+  // The property 'NominalValue' represents the current temperature set value in \
+  // 1/10 degrees. 
+  $rect <750,-10,950,30>
+  property int32 NominalValue = 180;
+
+  $rect <920,-10,1120,30>
+  onset NominalValue
+  {
+    /* check if the given value differs from the current value */
+    if ( pure NominalValue == value )
+      return;
+
+    /* store the new value */
+    pure NominalValue = value;
+
+    /* ...and finally, force an update */
+    InvalidateViewState();
+  }
+
+  // The property 'ActualValue' represents the current temperature value in 1/10 \
+  // degrees.
+  $rect <740,-50,940,-10>
+  property int32 ActualValue = 180;
+
+  $rect <920,-50,1120,-10>
+  onset ActualValue
+  {
+    /* check if the given value differs from the current value */
+    if ( pure ActualValue == value )
+      return;
+
+    /* store the new value */
+    pure ActualValue = value;
+
+    /* ...and finally, force an update */
+    InvalidateViewState();
+  }
+
+  // The property 'MaxValue' defines the maximum value of the temperature control \
+  // in 1/10 degrees.
+  $rect <970,50,1170,90>
+  property int32 MaxValue = 400;
+
+  // The property 'MinValue' defines the minimum value of the temperature control \
+  // in 1/10 degrees.
+  $rect <760,70,960,110>
+  property int32 MinValue = 100;
+
+  $rect <750,460,950,500>
+  slot onStartSlot
+  {
+    /* user interaction begins */
+    startValue = NominalValue;
+
+
+
+  }
+
+  $rect <750,500,950,540>
+  slot onRotateSlot
+  {
+    var int32 temp = 0;
+    var int32 delta = 0;
+    var int32 alpha = 0;
+    Timer.Enabled=false;
+
+    /* ensure that the current set value and the given minimum and maximum values are valid */
+    if (( pure MaxValue > pure MinValue) && ( pure NominalValue >= pure MinValue) && ( pure NominalValue <= pure MaxValue))
+    {
+
+      /* convert rotation angle into value change */
+      delta = (int32)RotateTouchHandler.Relative * ( pure MaxValue - pure MinValue ) / 720;
+    }
+
+    /* caluclate new desired temperature value */
+    temp = startValue - delta;
+    if ( temp < 120 )
+      temp = 120;
+    if ( temp > 380 )
+      temp = 380;
+
+    if (temp < 180)
+       Symbol.Bitmap=Application::settings1_50_44;
+    else if(temp >  270)
+       Symbol.Bitmap=Application::hotmode_43_60;  
+    else
+       Symbol.Bitmap=Application::hot_cold_49_60;
+    /* inform others about the changed value */
+    if ( pure NominalValue != temp )
+    {
+      var int32 inx = Wheel.FrameNumber;
+
+      /* update the wheel */
+      if ( pure NominalValue - temp > 0 )
+        inx = inx - 1;
+      else
+        inx = inx + 1;
+
+      if ( inx < 0 )
+        inx = 3;
+      if ( inx > 3 )
+        inx = 0;
+
+      Wheel.FrameNumber = inx;
+      NominalValue = temp;
+
+      /* format the string for the digital temperature display */
+       ActualText.String = string( NominalValue / 10 ) + "°C";
+
+      /* the color of the actual temperature text should correspond to the temperature */
+       alpha = ( NominalValue - pure MinValue ) * 255 / ( pure MaxValue - pure MinValue );
+      var color hot = #FF0000FF * alpha;
+      var color cold = Application::ColorCold * (uint8)( 255 - alpha );
+      ActualText.Color = hot + cold;
+
+    }
+
+  }
+
+  $rect <750,540,950,580>
+  slot onEndSlot
+  {
+    /* end of interaction */
+    Timer.Enabled=false;
+    Wheel.FrameNumber=0;
+    Timer.Enabled=true;
+  }
+
+  $rect <750,410,950,450>
+  var int32 startValue;
+
+  $rect <740,120,940,160>
+  object Graphics::Path DeltaTempPath;
+
+  $rect <20,20,160,60>
+  object Views::StrokePath DeltaTempView
+  {
+    preset Layout = Core::Layout[AlignToTop];
+    preset Bounds = <0,0,720,720>;
+    preset Color = #FF7155FF;
+    preset Offset = <0,0>;
+    preset MiterLimit = 3;
+    preset JoinPoints = Graphics::PathJoin.Round;
+    preset EndCap = Graphics::PathCap.Round;
+    preset StartCap = Graphics::PathCap.Round;
+    preset Width = 20;
+    preset Path = DeltaTempPath;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Symbol
+  {
+    preset Bounds = <327,323,405,397>;
+    preset Bitmap = Application::hot_cold_49_60;
+    preset Opacity = 100;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text ActualText
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <267,263,412,333>;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertTop];
+    preset String = "20°C";
+    preset Font = Application::Font1;
+    preset Color = #000000FF;
+  }
+
+  $rect <730,190,930,230>
+  slot incrNominal
+  {
+    sender; /* the method is called from the sender object */
+    var int32 temp = NominalValue + 5;
+    var int32 alpha =  0;
+    Timer.Enabled=false;
+
+    /* check limits */
+    if ( temp > 380 )
+      temp = 380;
+    if (temp <  180)
+       Symbol.Bitmap=Application::settings1_50_44;
+    else if(temp >  270)
+       Symbol.Bitmap=Application::hotmode_43_60;  
+    else
+       Symbol.Bitmap=Application::hot_cold_49_60;
+
+    NominalValue = temp;
+    Timer.Enabled=true;
+    /* format the string for the digital temperature display */
+       ActualText.String = string( NominalValue / 10 ) + "°C";
+
+      /* the color of the actual temperature text should correspond to the temperature */
+       alpha = ( NominalValue - pure MinValue ) * 255 / ( pure MaxValue - pure MinValue );
+      var color hot = #FF0000FF * alpha;
+      var color cold = Application::ColorCold * (uint8)( 255 - alpha );
+      ActualText.Color = hot + cold;
+  }
+
+  $rect <740,340,940,380>
+  slot decrNominal
+  {
+    sender; /* the method is called from the sender object */
+    var int32 temp = NominalValue - 5;
+    var int32 alpha =  0;
+    Timer.Enabled=false;
+    /* check limits */
+    if ( temp < 120 )
+      temp = 120;
+    if (temp <  180)
+       Symbol.Bitmap=Application::settings1_50_44;
+    else if(temp >  270)
+       Symbol.Bitmap=Application::hotmode_43_60;  
+    else
+       Symbol.Bitmap=Application::hot_cold_49_60;
+    NominalValue = temp;
+    Timer.Enabled=true;
+    /* format the string for the digital temperature display */
+       ActualText.String = string( NominalValue / 10 ) + "°C";
+
+      /* the color of the actual temperature text should correspond to the temperature */
+       alpha = ( NominalValue - pure MinValue ) * 255 / ( pure MaxValue - pure MinValue );
+      var color hot = #FF0000FF * alpha;
+      var color cold = Application::ColorCold * (uint8)( 255 - alpha );
+      ActualText.Color = hot + cold;
+
+  }
+
+  // This is a generic touch handler.
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandlerPlus
+  {
+    preset Point4 = <323,263>;
+    preset Point3 = <401,263>;
+    preset Point2 = <401,193>;
+    preset Point1 = <323,193>;
+    preset OnPress = incrNominal;
+    preset MaxStrikeCount = 100;
+  }
+
+  // This is a generic touch handler.
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandlerMinus
+  {
+    preset Point4 = <323,466>;
+    preset Point3 = <401,466>;
+    preset Point2 = <401,396>;
+    preset Point1 = <323,396>;
+    preset OnPress = decrNominal;
+    preset MaxStrikeCount = 100;
+  }
+
+  // This is the core of the SmartThermostat application. This class contains the \
+  // both needles for nominal and actual temperature, the rotatable wheel and all \
+  // of the calcualtion that is needed to draw the dynamic elements of the thermostat.
+  note legend Note
+  {
+    attr Bounds = <540,890,940,1020>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image
+  {
+    preset Bounds = <335,196,385,246>;
+    preset Bitmap = Application::Increment;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image1
+  {
+    preset Bounds = <337,412,387,462>;
+    preset Bitmap = Application::decrement;
+  }
+
+  $rect <20,20,160,60>
+  object Views::WarpImage Needle
+  {
+    preset Point4 = <362,99>;
+    preset Point3 = <373,124>;
+    preset Point2 = <397,116>;
+    preset Point1 = <381,84>;
+    preset Shininess = 0;
+    preset SourceAnchor = <25,157>;
+    preset Bitmap = Application::blue1_60_60;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Background
+  {
+    preset Bounds = <0,0,720,720>;
+    preset Bitmap = Application::blue_720_720;
+  }
+
+  $rect <20,20,220,60>
+  inherited property AlphaBlended = true;
+
+  $rect <20,20,160,60>
+  object Views::Text CurrentMode
+  {
+    preset Bounds = <199,503,363,562>;
+    preset String = "Indoor";
+    preset Font = Application::Font1;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CurrentMode1
+  {
+    preset Bounds = <353,503,472,562>;
+    preset String = "20°C";
+    preset Font = Application::Font1;
+  }
+
+  $rect <970,380,1170,420>
+  object Core::Timer Timer
+  {
+    preset OnTrigger = TimerSlot;
+    preset Period = 2000;
+    preset Enabled = true;
+  }
+
+  $rect <970,450,1170,490>
+  slot TimerSlot
+  {
+    Timer.Enabled=false;
+    var Core::Group newDialog = new Application::Thermostat;
+    SwitchToDialog( newDialog, null, null, null, null, null, null,
+                                 null, null, null, false );
+  }
+
+  $rect <950,110,1150,150>
+  inherited method Init()
+  {
+    if(Application::Device.Mode==0)
+    {
+       Background.Bitmap=Application::bg_black;
+       Needle.Bitmap=Application::black_60_60;
+    }
+    else if(Application::Device.Mode==1)
+    {
+       Background.Bitmap=Application::bg_brown;
+        Needle.Bitmap=Application::brown_60_60;
+    }
+    else
+    {
+       Background.Bitmap=Application::blue_720_720;
+       Needle.Bitmap=Application::blue1_60_60;
+    }
+
+    CurrentMode1.String = string(Application::Device.Temperature) + "°C";
+  }
+
+  $rect <790,640,990,680>
+  object Core::PropertyObserver PropertyObserver
+  {
+    preset OnEvent = onEvent;
+    preset Outlet = ^Application::Device.Mode;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <990,640,1190,680>
+  slot onEvent
+  {
+    if(Application::Device.Mode==0)
+    {
+       Background.Bitmap=Application::bg_black;
+       Needle.Bitmap=Application::black_60_60;
+    }
+    else if(Application::Device.Mode==1)
+    {
+       Background.Bitmap=Application::bg_brown;
+        Needle.Bitmap=Application::brown_60_60;
+    }
+    else
+    {
+       Background.Bitmap=Application::blue_720_720;
+       Needle.Bitmap=Application::blue1_60_60;
+    }
+
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Background
+  $member Init
+  $member Bounds
+  $member UpdateLayout
+  $member UpdateViewState
+  $member AlphaBlended
+  $member RotateTouchHandler
+  $member Wheel
+  $member NominalValue
+  $member Image
+  $member Image1
+  $member OnSetNominalValue
+  $member ActualValue
+  $member OnSetActualValue
+  $member MaxValue
+  $member MinValue
+  $member onStartSlot
+  $member onRotateSlot
+  $member onEndSlot
+  $member startValue
+  $member DeltaTempPath
+  $member DeltaTempView
+  $member Symbol
+  $member ActualText
+  $member incrNominal
+  $member decrNominal
+  $member SimpleTouchHandlerPlus
+  $member SimpleTouchHandlerMinus
+  $member Note
+  $member Needle
+  $member CurrentMode
+  $member CurrentMode1
+  $member Timer
+  $member TimerSlot
+  $member PropertyObserver
+  $member onEvent
+
+  // Directives to adapt the order of members belonging to this class so they appear 
+  // correctly arranged relative to the members inherited from the ancestor (super) 
+  // classes. The numbers indicate the order-displacement to apply on the respective 
+  // member once all members have been loaded and combined with members from the 
+  // ancestor classes.
+  $reorder Background 117
+}
+
+$rect <240,100,440,140>
+$output false
+class FanController : Core::Group
+{
+  $rect <800,470,1000,510>
+  inherited property Bounds = <0,0,720,720>;
+
+  // This is the core of the SmartThermostat application. This class contains the \
+  // both needles for nominal and actual temperature, the rotatable wheel and all \
+  // of the calcualtion that is needed to draw the dynamic elements of the thermostat.
+  note legend Note
+  {
+    attr Bounds = <540,890,940,1020>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Background
+  {
+    preset Bounds = <0,0,720,720>;
+    preset Bitmap = Application::blue_720_720;
+  }
+
+  $rect <770,100,970,140>
+  inherited method Init()
+  {
+    if(Application::Device.Mode==0)
+       Background.Bitmap=Application::bg_black;
+    else if(Application::Device.Mode==1)
+       Background.Bitmap=Application::bg_brown;
+    else
+       Background.Bitmap=Application::blue_720_720;
+
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image
+  {
+    preset Bounds = <103,285,231,413>;
+    preset Bitmap = Application::Circulate_75_80;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image1
+  {
+    preset Bounds = <296,285,424,413>;
+    preset Bitmap = Application::circulate_invert_80_79;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image2
+  {
+    preset Bounds = <522,285,650,413>;
+    preset Bitmap = Application::shutdown_big_69_80;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CurrentMode
+  {
+    preset Bounds = <98,396,231,460>;
+    preset String = "Circulate";
+    preset Font = Resources::FontMedium;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CurrentMode1
+  {
+    preset Bounds = <291,396,424,460>;
+    preset String = "Auto";
+    preset Font = Resources::FontMedium;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CurrentMode2
+  {
+    preset Bounds = <522,396,655,460>;
+    preset String = "Off";
+    preset Font = Resources::FontMedium;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Mode
+  {
+    preset Bounds = <280,586,330,636>;
+    preset Bitmap = Application::arrow_40_32;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <257,565>;
+    preset Point3 = <357,565>;
+    preset Point2 = <357,665>;
+    preset Point1 = <257,665>;
+    preset OnPress = SlotMethod1;
+  }
+
+  $rect <800,550,1000,590>
+  slot SlotMethod1
+  {
+    var Core::Group newDialog = new Application::Thermostat;
+    SwitchToDialog( newDialog, null, null, null, null, null, null,
+                                 null, null, null, false );
+  }
+
+  $rect <800,630,1000,670>
+  object Core::PropertyObserver PropertyObserver
+  {
+    preset OnEvent = onEvent;
+    preset Outlet = ^Application::Device.Mode;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <1000,630,1200,670>
+  slot onEvent
+  {
+    if(Application::Device.Mode==0)
+       Background.Bitmap=Application::bg_black;
+    else if(Application::Device.Mode==1)
+       Background.Bitmap=Application::bg_brown;
+    else
+       Background.Bitmap=Application::blue_720_720;
+
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Background
+  $member Init
+  $member Bounds
+  $member Note
+  $member Image
+  $member Image1
+  $member Image2
+  $member CurrentMode
+  $member CurrentMode1
+  $member CurrentMode2
+  $member Mode
+  $member SimpleTouchHandler
+  $member SlotMethod1
+  $member PropertyObserver
+  $member onEvent
+
+  // Directives to adapt the order of members belonging to this class so they appear 
+  // correctly arranged relative to the members inherited from the ancestor (super) 
+  // classes. The numbers indicate the order-displacement to apply on the respective 
+  // member once all members have been loaded and combined with members from the 
+  // ancestor classes.
+  $reorder Background 117
+}
+
+$rect <20,100,220,140>
+$output false
+class BrightnessController : Core::Group
+{
+  $rect <800,470,1000,510>
+  inherited property Bounds = <0,0,720,720>;
+
+  // This is the core of the SmartThermostat application. This class contains the \
+  // both needles for nominal and actual temperature, the rotatable wheel and all \
+  // of the calcualtion that is needed to draw the dynamic elements of the thermostat.
+  note legend Note
+  {
+    attr Bounds = <540,890,940,1020>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Background
+  {
+    preset Bounds = <0,0,720,720>;
+    preset Bitmap = Application::blue_720_720;
+  }
+
+  $rect <850,370,1050,410>
+  inherited method Init()
+  {
+    HorizontalSlider.CurrentValue=Application::Device.Brightness;
+    if(Application::Device.Mode==0)
+       Background.Bitmap=Application::bg_black;
+    else if(Application::Device.Mode==1)
+       Background.Bitmap=Application::bg_brown;
+    else
+       Background.Bitmap=Application::blue_720_720;
+
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Mode
+  {
+    preset Bounds = <332,525,382,575>;
+    preset Bitmap = Application::arrow_40_32;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CurrentMode
+  {
+    preset Bounds = <257,403,457,458>;
+    preset String = "Screen Brightness";
+    preset Font = Resources::FontMedium;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <313,514>;
+    preset Point3 = <413,514>;
+    preset Point2 = <413,592>;
+    preset Point1 = <313,592>;
+    preset OnPress = SlotMethod1;
+  }
+
+  $rect <800,550,1000,590>
+  slot SlotMethod1
+  {
+    var Core::Group newDialog = new Application::Thermostat;
+    SwitchToDialog( newDialog, null, null, null, null, null, null,
+                                 null, null, null, false );
+  }
+
+  $rect <870,250,1110,290>
+  object WidgetSet::HorizontalSliderConfig HorizontalSliderConfig
+  {
+    preset AccentColorActive = #00000011;
+    preset AccentColorFocused = #00000011;
+    preset AccentCornerRadiusActive = 43;
+    preset AccentCornerRadiusFocused = 38;
+    preset AccentCornerRadiusDisabled = 38;
+    preset AccentCornerRadiusDefault = 38;
+    preset AccentSizeActive = <86,86>;
+    preset AccentSizeFocused = <76,76>;
+    preset AccentSizeDisabled = <76,76>;
+    preset AccentSizeDefault = <76,76>;
+    preset ThumbBorderColorActive = #010005FF;
+    preset ThumbBorderColorFocused = #010005FF;
+    preset ThumbBorderColorDisabled = #010005FF;
+    preset ThumbBorderColorDefault = #010005FF;
+    preset ThumbBorderWidthActive = 1;
+    preset ThumbBorderWidthFocused = 1;
+    preset ThumbBorderWidthDisabled = 1;
+    preset ThumbBorderWidthDefault = 1;
+    preset ThumbColorActive = #000000FF;
+    preset ThumbColorFocused = #000000FF;
+    preset ThumbColorDisabled = #000000FF;
+    preset ThumbColorDefault = #000000FF;
+    preset ThumbCornerRadiusActive = 15;
+    preset ThumbCornerRadiusFocused = 15;
+    preset ThumbCornerRadiusDisabled = 15;
+    preset ThumbCornerRadiusDefault = 15;
+    preset ThumbSizeActive = <48,48>;
+    preset ThumbSizeFocused = <48,48>;
+    preset ThumbSizeDisabled = <48,48>;
+    preset ThumbSizeDefault = <48,48>;
+    preset TrackRightBorderColorActive = #00000011;
+    preset TrackRightBorderColorFocused = #00000011;
+    preset TrackRightBorderColorDisabled = #00000022;
+    preset TrackRightBorderColorDefault = #00000011;
+    preset TrackRightBorderWidthActive = 2;
+    preset TrackRightBorderWidthFocused = 2;
+    preset TrackRightBorderWidthDisabled = 2;
+    preset TrackRightBorderWidthDefault = 2;
+    preset TrackRightColorActive = #EEEEEEFF;
+    preset TrackRightColorFocused = #EEEEEEFF;
+    preset TrackRightColorDefault = #EEEEEEFF;
+    preset TrackRightCornerRadiusActive = 20;
+    preset TrackRightCornerRadiusFocused = 20;
+    preset TrackRightCornerRadiusDisabled = 20;
+    preset TrackRightCornerRadiusDefault = 20;
+    preset TrackRightThicknessActive = 40;
+    preset TrackRightThicknessFocused = 40;
+    preset TrackRightThicknessDisabled = 40;
+    preset TrackRightThicknessDefault = 40;
+    preset TrackRightFlattened = true;
+    preset TrackLeftColorActive = #AA2E55FF;
+    preset TrackLeftColorFocused = #AA2E55FF;
+    preset TrackLeftColorDisabled = #AA2E55FF;
+    preset TrackLeftColorDefault = #AA2E55FF;
+    preset TrackLeftCornerRadiusActive = 20;
+    preset TrackLeftCornerRadiusFocused = 20;
+    preset TrackLeftCornerRadiusDisabled = 20;
+    preset TrackLeftCornerRadiusDefault = 20;
+    preset TrackLeftThicknessActive = 40;
+    preset TrackLeftThicknessFocused = 40;
+    preset TrackLeftThicknessDisabled = 40;
+    preset TrackLeftThicknessDefault = 40;
+    preset TrackLeftFlattened = true;
+    preset TrackLeftBitmapDefault = null;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider HorizontalSlider
+  {
+    preset Bounds = <175,295,563,360>;
+    preset OnUpdate = null;
+    preset OnChange = null;
+    preset OnEnd = HorizontalSliderSlot;
+    preset Outlet = ^Application::Device.Brightness;
+    preset StepSize = 5;
+    preset MaxValue = 255;
+    preset CurrentValue = Application::Device.Brightness;
+    preset Appearance = HorizontalSliderConfig;
+  }
+
+  $rect <1020,420,1220,460>
+  slot HorizontalSliderSlot
+  {
+    var uint8 brightness=0;
+    brightness = (uint8)HorizontalSlider.CurrentValue;
+    $if !$prototyper
+      native ( brightness )
+      {
+         extern void  DISP_WS_SetBrightness(XInt8 brightness);
+         DISP_WS_SetBrightness(brightness);
+      }
+    $endif
+
+  }
+
+  $rect <800,630,1000,670>
+  object Core::PropertyObserver PropertyObserver
+  {
+    preset OnEvent = onEvent;
+    preset Outlet = ^Application::Device.Mode;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <1000,630,1200,670>
+  slot onEvent
+  {
+    if(Application::Device.Mode==0)
+       Background.Bitmap=Application::bg_black;
+    else if(Application::Device.Mode==1)
+       Background.Bitmap=Application::bg_brown;
+    else
+       Background.Bitmap=Application::blue_720_720;
+
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Background
+  $member Init
+  $member Bounds
+  $member Note
+  $member Mode
+  $member CurrentMode
+  $member SimpleTouchHandler
+  $member SlotMethod1
+  $member HorizontalSliderConfig
+  $member HorizontalSlider
+  $member HorizontalSliderSlot
+  $member PropertyObserver
+  $member onEvent
+
+  // Directives to adapt the order of members belonging to this class so they appear 
+  // correctly arranged relative to the members inherited from the ancestor (super) 
+  // classes. The numbers indicate the order-displacement to apply on the respective 
+  // member once all members have been loaded and combined with members from the 
+  // ancestor classes.
+  $reorder Background 117
+}
+
+// This is the root component of the entire GUI application.
+$rect <20,-30,220,10>
+$output false
+class Thermostat : Core::Group
+{
+  $rect <740,10,940,50>
+  inherited property Bounds = <0,0,720,720>;
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Bounds = <0,0,720,720>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Background
+  {
+    preset Bounds = <0,0,720,720>;
+    preset Bitmap = Application::blue_720_720;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image TempCurrentSymbol
+  {
+    preset Bounds = <410,287,480,351>;
+    preset Bitmap = Application::settings1_50_44;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text TempCurrent
+  {
+    preset Bounds = <302,280,410,339>;
+    preset String = "62°C";
+    preset Font = Application::Font;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text HumidityCurrent
+  {
+    preset Bounds = <335,339,385,363>;
+    preset String = "32%%";
+    preset Font = Resources::FontMedium;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle1
+  {
+    preset Bounds = <328,485,375,540>;
+    preset Color = #1D74B9FF;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image wifi
+  {
+    preset Bounds = <328,485,375,540>;
+    preset Bitmap = Application::wifi_48_40;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image home
+  {
+    preset Bounds = <261,295,312,348>;
+    preset Bitmap = Application::home1_24_23;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Day
+  {
+    preset Bounds = <309,163,415,187>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft];
+    preset String = "03 Mar 2025";
+    preset Font = Resources::FontSmall;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Time
+  {
+    preset Bounds = <293,139,399,163>;
+    preset String = "6:10 PM";
+    preset Font = Resources::FontMedium;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image weatherSymbol
+  {
+    preset Bounds = <219,144,258,183>;
+    preset Bitmap = Application::weather_35_30;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text TempOutdoor
+  {
+    preset Bounds = <244,145,312,181>;
+    preset String = "32°C";
+    preset Font = Resources::FontMedium;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image humidity
+  {
+    preset Bounds = <317,336,334,359>;
+    preset Bitmap = Application::humidity_small_14_18;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image bluetooth
+  {
+    preset Bounds = <396,493,416,532>;
+    preset Bitmap = Application::Bluetooth_21_40;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle2
+  {
+    preset Bounds = <383,485,430,540>;
+    preset Color = #1D74B9FF;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Mode
+  {
+    preset Bounds = <485,198,535,248>;
+    preset Bitmap = Application::settings1_50_44;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Fan
+  {
+    preset Bounds = <547,271,597,321>;
+    preset Bitmap = Application::fan_50_50;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image ScreenBrightness
+  {
+    preset Bounds = <547,363,597,413>;
+    preset Bitmap = Application::settings_50_49;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Off
+  {
+    preset Bounds = <485,435,535,485>;
+    preset Bitmap = Application::shutdown_43_50;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <0,0>;
+    preset Point3 = <727,0>;
+    preset Point2 = <727,720>;
+    preset Point1 = <7,720>;
+    preset OnDrag = SimpleDragSlot;
+    preset OnPress = SimpleTouchSlot;
+  }
+
+  $rect <750,180,950,220>
+  slot SimpleTouchSlot
+  {
+    if(Mode.Visible== false)
+    {
+       Timer.Enabled=false;
+       Mode.Visible = true;
+       weatherSymbol.Visible = true;
+       TempOutdoor.Visible = true;
+       Fan.Visible = true;
+       ScreenBrightness.Visible = true;
+       Off.Visible = true;
+       Timer.Enabled=true;
+       SimpleTouchHandler3.Enabled=true;
+       SimpleTouchHandler4.Enabled=true;
+       SimpleTouchHandler5.Enabled=true;
+       SimpleTouchHandler6.Enabled=true;
+
+    }
+  }
+
+  $rect <760,260,960,300>
+  slot SimpleDragSlot
+  {
+    var Core::Group newDialog = new Application::TemperatureController;
+    Timer.Enabled=false;
+    SimpleTouchHandler.Enabled=false;
+       SimpleTouchHandler3.Enabled=false;
+       SimpleTouchHandler4.Enabled=false;
+       SimpleTouchHandler5.Enabled=false;
+       SimpleTouchHandler6.Enabled=false;
+    SwitchToDialog( newDialog, null, null, null, null, null, null,
+                                 null, null, null, false );
+  }
+
+  $rect <760,330,960,370>
+  object Core::Timer Timer
+  {
+    preset OnTrigger = TimerSlot;
+    preset Period = 5000;
+    preset Enabled = false;
+  }
+
+  $rect <760,400,960,440>
+  slot TimerSlot
+  {
+       Mode.Visible = false;
+       weatherSymbol.Visible = false;
+       TempOutdoor.Visible = false;
+       Fan.Visible = false;
+       ScreenBrightness.Visible = false;
+       Off.Visible = false;
+       Timer.Enabled=false;
+       SimpleTouchHandler.Enabled=true;
+       SimpleTouchHandler3.Enabled=false;
+       SimpleTouchHandler4.Enabled=false;
+       SimpleTouchHandler5.Enabled=false;
+       SimpleTouchHandler6.Enabled=false;
+  }
+
+  $rect <990,230,1190,270>
+  inherited method Init()
+  {
+    Time.String= string(Application::Device.Hour) + ": " +string(Application::Device.Minute) + Application::Device.am_pm;
+    Day.String = string(Application::Device.Day)+ " " +Application::Device.month + " 2025";
+    var int32 temperature=25;
+    var int32 local_humidity=50;
+
+    $if !$prototyper
+      native ( temperature,local_humidity )
+      {
+         extern XInt32  temp_hum_13_click_get_temp(void);
+         extern XInt32  temp_hum_13_click_get_humidity(void);
+         temperature=(5*(temp_hum_13_click_get_temp()-32))/9;
+         local_humidity=temp_hum_13_click_get_humidity();
+      }
+    $endif
+
+    if(Application::Device.Mode==0)
+    {
+       TempCurrentSymbol.Bitmap= Application::shutdown_43_50;
+       Background.Bitmap=Application::bg_black;
+       Rectangle1.Color=#061827A6;
+       Rectangle2.Color=#061827A6;
+    }
+    else if(Application::Device.Mode==1)
+    {
+       TempCurrentSymbol.Bitmap= Application::hotmode_43_60;
+       Background.Bitmap=Application::bg_brown;
+       Rectangle1.Color=#B8692DD1;
+       Rectangle2.Color=#B8692DD1;
+    }
+    else
+    {
+       TempCurrentSymbol.Bitmap= Application::settings1_50_44;
+       Background.Bitmap=Application::blue_720_720;
+       Rectangle1.Color=#1D74B9FF;
+       Rectangle2.Color=#1D74B9FF;
+    }
+    Timer3.Enabled=true;
+    SimpleTouchHandler.Enabled=true;
+    SimpleTouchHandler3.Enabled=false;
+    SimpleTouchHandler4.Enabled=false;
+    SimpleTouchHandler5.Enabled=false;
+    SimpleTouchHandler6.Enabled=false;
+    Application::Device.Temperature = temperature;
+    Application::Device.Humidity= local_humidity
+
+    TempCurrent.String=  string(Application::Device.Temperature ) + "°C";
+    HumidityCurrent.String=  string(Application::Device.Humidity ) + "%%";   
+
+    if(Application::Device.BtConnected==true)
+       Rectangle2.Visible=true;
+    if(Application::Device.WifiConnected==true)
+       Rectangle1.Visible=true;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler1
+  {
+    preset Point4 = <317,478>;
+    preset Point3 = <380,478>;
+    preset Point2 = <380,550>;
+    preset Point1 = <317,550>;
+    preset OnPress = SimpleTouchSlot1;
+    preset RetargetCondition = Core::RetargetReason[];
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler2
+  {
+    preset Point4 = <385,478>;
+    preset Point3 = <448,478>;
+    preset Point2 = <448,550>;
+    preset Point1 = <385,550>;
+    preset OnPress = SimpleTouchSlot2;
+  }
+
+  $rect <750,180,950,220>
+  slot SimpleTouchSlot1
+  {
+    if(Rectangle1.Visible==true)
+    {
+       Application::Device.TurnWifiOn=false;
+       Rectangle1.Visible=false;
+    }
+    else
+    {
+       Application::Device.TurnWifiOn=true;
+       Timer1.Enabled=true;
+    }
+  }
+
+  $rect <990,120,1190,160>
+  slot SimpleTouchSlot2
+  {
+    if(Rectangle2.Visible==true)
+    {
+       Application::Device.TurnBtOn=false;
+       Rectangle2.Visible=false;
+    }
+    else
+    {
+       Application::Device.TurnBtOn=true;
+       Timer2.Enabled=true;
+
+    }
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler3
+  {
+    preset Point4 = <484,192>;
+    preset Point3 = <547,192>;
+    preset Point2 = <547,264>;
+    preset Point1 = <484,264>;
+    preset OnPress = SimpleTouchSlot3;
+    preset Enabled = false;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler4
+  {
+    preset Point4 = <548,259>;
+    preset Point3 = <611,259>;
+    preset Point2 = <611,331>;
+    preset Point1 = <548,331>;
+    preset OnPress = SimpleTouchSlot4;
+    preset Enabled = false;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler5
+  {
+    preset Point4 = <535,359>;
+    preset Point3 = <598,359>;
+    preset Point2 = <598,431>;
+    preset Point1 = <535,431>;
+    preset OnPress = SimpleTouchSlot5;
+    preset Enabled = false;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler6
+  {
+    preset Point4 = <485,435>;
+    preset Point3 = <548,435>;
+    preset Point2 = <548,507>;
+    preset Point1 = <485,507>;
+    preset OnPress = SimpleTouchSlot6;
+    preset Enabled = false;
+  }
+
+  $rect <760,130,960,170>
+  slot SimpleTouchSlot3
+  {
+    var Core::Group newDialog = new Application::ModeController;
+    Timer.Enabled=false;
+    SimpleTouchHandler.Enabled=false;
+       SimpleTouchHandler3.Enabled=false;
+       SimpleTouchHandler4.Enabled=false;
+       SimpleTouchHandler5.Enabled=false;
+       SimpleTouchHandler6.Enabled=false;
+    SwitchToDialog( newDialog, Effects::FadeInOutCentered, null, null, null, null, null,
+                                 null, null, null, false );
+
+  }
+
+  $rect <1020,520,1220,560>
+  slot SimpleTouchSlot4
+  {
+    var Core::Group newDialog = new Application::FanController;
+    Timer.Enabled=false;
+    SimpleTouchHandler.Enabled=false;
+       SimpleTouchHandler3.Enabled=false;
+       SimpleTouchHandler4.Enabled=false;
+       SimpleTouchHandler5.Enabled=false;
+       SimpleTouchHandler6.Enabled=false;
+    SwitchToDialog( newDialog, Effects::FadeInOutCentered, null, null, null, null, null,
+                                 null, null, null, false );
+  }
+
+  $rect <1010,460,1210,500>
+  slot SimpleTouchSlot5
+  {
+    var Core::Group newDialog = new Application::BrightnessController;
+    Timer.Enabled=false;
+    SimpleTouchHandler.Enabled=false;
+       SimpleTouchHandler3.Enabled=false;
+       SimpleTouchHandler4.Enabled=false;
+       SimpleTouchHandler5.Enabled=false;
+       SimpleTouchHandler6.Enabled=false;
+    SwitchToDialog( newDialog, Effects::FadeInOutCentered, null, null, null, null, null,
+                                 null, null, null, false );
+  }
+
+  $rect <990,170,1190,210>
+  slot SimpleTouchSlot6
+  {
+  }
+
+  $rect <1000,330,1200,370>
+  object Core::Timer Timer1
+  {
+    preset OnTrigger = TimerSlot1;
+    preset Period = 250;
+    preset Enabled = false;
+  }
+
+  $rect <1000,400,1200,440>
+  slot TimerSlot1
+  {
+    wifi.Visible=!wifi.Visible;
+    if(Application::Device.WifiConnected==true)
+    {
+      Timer1.Enabled=false;
+      Rectangle1.Visible=true;
+      wifi.Visible=true;
+      RectEffect.Enabled=false;
+      Text.String= "WiFi Connected";
+      Text.Visible=true;
+      RectEffect.Enabled=true;
+      Timer3.Enabled=true;
+
+    if(Application::Device.Hour>12)
+    {
+       Application::Device.Hour=24-Application::Device.Hour;
+       Application::Device.am_pm="PM";
+    }
+
+    if(Application::Device.Month == 0)
+    Application::Device.month="Jan";
+    if(Application::Device.Month == 1)
+    Application::Device.month="Feb";
+    if(Application::Device.Month == 2)
+    Application::Device.month="Mar";
+    if(Application::Device.Month == 3)
+    Application::Device.month="Apr";
+    if(Application::Device.Month == 4)
+    Application::Device.month="May";
+    if(Application::Device.Month == 5)
+    Application::Device.month="Jun";
+    if(Application::Device.Month == 6)
+    Application::Device.month="Jul";
+    if(Application::Device.Month == 7)
+    Application::Device.month="Aug";
+    if(Application::Device.Month == 8)
+    Application::Device.month="Sep";
+    if(Application::Device.Month == 9)
+    Application::Device.month="Oct";
+    if(Application::Device.Month == 10)
+    Application::Device.month="Nov";
+    if(Application::Device.Month == 11)
+    Application::Device.month="Dec";
+
+
+
+    Time.String= string(Application::Device.Hour) + ": " +string(Application::Device.Minute) + Application::Device.am_pm;
+    Day.String = string(Application::Device.Day)+ " " +Application::Device.month + " 2025";
+
+    }    
+  }
+
+  $rect <760,520,960,560>
+  slot TimerSlot2
+  {
+    bluetooth.Visible=!bluetooth.Visible;
+    if(Application::Device.BtConnected==true)
+    {
+      Timer2.Enabled=false;
+      Rectangle2.Visible=true;
+      bluetooth.Visible=true;
+      RectEffect.Enabled=false;
+      Text.String= "Bluetooth Connected";
+      Text.Visible=true;
+      RectEffect.Enabled=true;
+    }                                                 
+  }
+
+  $rect <760,470,960,510>
+  object Core::Timer Timer2
+  {
+    preset OnTrigger = TimerSlot2;
+    preset Period = 250;
+    preset Enabled = false;
+  }
+
+  $rect <760,590,960,630>
+  object Core::Timer Timer3
+  {
+    preset OnTrigger = TimerSlot3;
+    preset Period = 60000;
+    preset Enabled = true;
+  }
+
+  $rect <1000,590,1200,630>
+  slot TimerSlot3
+  {
+    if(Application::Device.Minute >=60)
+    {
+      Application::Device.Hour =  Application::Device.Hour+1;
+      Application::Device.Minute = 0;
+    }
+    else
+    {
+      Application::Device.Minute =  Application::Device.Minute+1;
+    }
+
+    if(Application::Device.Hour>12)
+    {
+       Application::Device.Hour=24-Application::Device.Hour;
+       Application::Device.am_pm="PM";
+    }
+
+
+    Time.String= string(Application::Device.Hour) + ": " +string(Application::Device.Minute) + Application::Device.am_pm;                                     
+  }
+
+  $rect <780,730,980,770>
+  object Core::Timer Timer4
+  {
+    preset OnTrigger = TimerSlot4;
+    preset Period = 10000;
+    preset Enabled = true;
+  }
+
+  $rect <1020,730,1220,770>
+  slot TimerSlot4
+  {
+    var int32 temperature=25;
+    var int32 local_humidity=50;
+
+    $if !$prototyper
+      native ( temperature,local_humidity )
+      {
+         extern XInt32  temp_hum_13_click_get_temp(void);
+         extern XInt32  temp_hum_13_click_get_humidity(void);
+         temperature=(5*(temp_hum_13_click_get_temp()-32))/9;
+         local_humidity=temp_hum_13_click_get_humidity();
+      }
+    $endif
+
+    Application::Device.Temperature = temperature;
+    Application::Device.Humidity= local_humidity;
+
+    TempCurrent.String=  string(Application::Device.Temperature ) + "°C";
+    HumidityCurrent.String=  string(Application::Device.Humidity ) + "%%";                          
+  }
+
+  $rect <470,880,670,920>
+  object Core::PropertyObserver PropertyObserver1
+  {
+    preset OnEvent = null;
+    preset Outlet = ^Application::Device.Day;
+  }
+
+  $rect <460,770,660,810>
+  object Core::PropertyObserver PropertyObserver2
+  {
+    preset OnEvent = null;
+    preset Outlet = ^Application::Device.Year;
+  }
+
+  $rect <470,840,670,880>
+  object Core::PropertyObserver PropertyObserver3
+  {
+    preset OnEvent = null;
+    preset Outlet = ^Application::Device.Month;
+  }
+
+  $rect <720,820,920,860>
+  object Core::PropertyObserver PropertyObserver5
+  {
+    preset OnEvent = onEvent1;
+    preset Outlet = ^Application::Device.Mode;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <930,840,1130,880>
+  slot onEvent1
+  {
+    if(Application::Device.Mode==0)
+    {
+       TempCurrentSymbol.Bitmap= Application::shutdown_43_50;
+       Background.Bitmap=Application::bg_black;
+       Rectangle1.Color=#061827A6;
+       Rectangle2.Color=#061827A6;
+    }
+    else if(Application::Device.Mode==1)
+    {
+       TempCurrentSymbol.Bitmap= Application::hotmode_43_60;
+       Background.Bitmap=Application::bg_brown;
+       Rectangle1.Color=#B8692DD1;
+       Rectangle2.Color=#B8692DD1;
+    }
+    else
+    {
+       TempCurrentSymbol.Bitmap= Application::settings1_50_44;
+       Background.Bitmap=Application::blue_720_720;
+       Rectangle1.Color=#1D74B9FF;
+       Rectangle2.Color=#1D74B9FF;
+    }
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <192,573,535,613>;
+    preset String = "";
+    preset Font = Resources::FontLarge;
+    preset Color = #B5FFCEFF;
+    preset Visible = true;
+  }
+
+  $rect <1010,280,1210,320>
+  object Effects::RectEffect RectEffect
+  {
+    preset OnFinished = EffectsSlot;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 2000;
+    preset Enabled = false;
+    preset Value2 = <230,208,462,248>;
+    preset Value1 = Text.Bounds;
+    preset Outlet = ^Text.Bounds;
+  }
+
+  $rect <740,900,940,940>
+  slot EffectsSlot
+  {
+    Text.Visible=false;
+
+  }
+
+  $rect <1260,740,1460,780>
+  object Core::PropertyObserver PropertyObserverBt
+  {
+    preset OnEvent = null;
+    preset Outlet = ^Application::Device.BtConnected;
+  }
+
+  $rect <1240,670,1440,710>
+  object Core::PropertyObserver PropertyObserverWifi
+  {
+    preset OnEvent = null;
+    preset Outlet = ^Application::Device.WifiConnected;
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Init
+  $member Bounds
+  $member Rectangle
+  $member Background
+  $member Rectangle1
+  $member Rectangle2
+  $member TempCurrentSymbol
+  $member TempCurrent
+  $member HumidityCurrent
+  $member wifi
+  $member home
+  $member Day
+  $member Time
+  $member weatherSymbol
+  $member TempOutdoor
+  $member humidity
+  $member bluetooth
+  $member Mode
+  $member Fan
+  $member ScreenBrightness
+  $member Off
+  $member SimpleTouchHandler
+  $member SimpleTouchSlot
+  $member SimpleDragSlot
+  $member Timer
+  $member TimerSlot
+  $member SimpleTouchHandler1
+  $member SimpleTouchHandler2
+  $member SimpleTouchSlot1
+  $member SimpleTouchSlot2
+  $member SimpleTouchHandler3
+  $member SimpleTouchHandler4
+  $member SimpleTouchHandler5
+  $member SimpleTouchHandler6
+  $member SimpleTouchSlot3
+  $member SimpleTouchSlot4
+  $member SimpleTouchSlot5
+  $member SimpleTouchSlot6
+  $member Timer1
+  $member TimerSlot1
+  $member TimerSlot2
+  $member Timer2
+  $member Timer3
+  $member TimerSlot3
+  $member Timer4
+  $member TimerSlot4
+  $member PropertyObserver1
+  $member PropertyObserver2
+  $member PropertyObserver3
+  $member PropertyObserver5
+  $member onEvent1
+  $member Text
+  $member RectEffect
+  $member EffectsSlot
+  $member PropertyObserverBt
+  $member PropertyObserverWifi
+}
+
+$rect <520,480,720,520>
+$output false
+resource Resources::Bitmap black_60_60
+{
+  attr bitmapfile FileName = .\Res\black_60_60.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}

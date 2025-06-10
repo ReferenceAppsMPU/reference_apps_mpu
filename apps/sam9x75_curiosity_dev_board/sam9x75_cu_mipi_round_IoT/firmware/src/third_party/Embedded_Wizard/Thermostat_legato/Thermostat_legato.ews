@@ -1,0 +1,213 @@
+$version 1.0
+
+attr active = Application::Thermostat;
+attr callStackMonitor_Show = false;
+attr connectInspectors = false;
+attr currentCodeInspector = Application::Thermostat.Init;
+attr debug_TrackUpdates = false;
+attr extractDoc_ClassOverview = true;
+attr extractDoc_DeleteOldFiles = false;
+attr extractDoc_Destination = ./HtmlDoc;
+attr extractDoc_IgnoreAccessors = true;
+attr extractDoc_IgnoreMembers = true;
+attr extractDoc_Navigation = true;
+attr extractDoc_Profiles = false;
+attr extractDoc_Title = Documentation;
+attr extractDoc_Variants = false;
+attr generateClut_ReservedColors = 0;
+attr heapMonitor_Show = false;
+attr language = Default;
+attr profile = Profile;
+attr profilerMonitor_Show = false;
+attr search_CaseSensitive = false;
+attr search_History = text.visible,temperature=(5*(temp_hum_13_click_get_temp()-32))/9;,temp_hum_13_click_get_temp,Temperature,WifiConnected,BtConnected,native,ActualText,+ ",+",String=,SlotMethod1,UpdateViewState,TurnBtOn,onStartSlot,ActualValue,OutletActual,OutletNominal,startValue,OnSetOutletActual,outletCurrentSlot,SwitchToDialog,WifiConnecting,Application::Device,Application::Device.,Timer.Enabled=,SimpleTouchHandler.Enabled,updatelayout,ActualTemp,UpdateActualTemp,NominalTemp,FanSpeed;
+attr search_IgnoreComments = false;
+attr search_IgnoreDescription = false;
+attr search_IgnoreMosaic = false;
+attr search_LimitToComposer = true;
+attr search_WholeWords = false;
+attr search_WildCards = false;
+
+view Project
+{
+  attr aspectRatio = 1.0;
+  attr enableGrid = true;
+  attr grid = 10;
+  attr scrollTo = <-7,-23>;
+  attr zoom = 1.0;
+}
+
+view class Application::Application
+{
+  attr scrollTo = <-316,-30>;
+  attr zoom = 1.0;
+}
+
+view class Application::FanController
+{
+  attr scrollTo = <-7,-38>;
+  attr zoom = 1.0;
+}
+
+view class Application::BrightnessController
+{
+  attr scrollTo = <-7,281>;
+  attr zoom = 1.0;
+}
+
+view class Application::DeviceClass
+{
+  attr scrollTo = <-7,-23>;
+  attr zoom = 1.0;
+}
+
+view unit Application
+{
+  attr scrollTo = <-7,-71>;
+  attr zoom = 1.0;
+}
+
+view class Application::Thermostat
+{
+  attr enableWireMode = false;
+  attr scrollTo = <118,479>;
+  attr zoom = 1.0;
+}
+
+view class Application::ModeController
+{
+  attr scrollTo = <-7,-7>;
+  attr zoom = 1.0;
+}
+
+view class Application::TemperatureController
+{
+  attr scrollTo = <-7,371>;
+  attr zoom = 1.0;
+}
+
+view unit Core
+{
+  attr scrollTo = <-7,235>;
+  attr zoom = 1.0;
+}
+
+codeview Core::Group.Add
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <2,1>;
+  attr codeSelStart = <2,1>;
+}
+
+codeview Application::ModeController.SlotMethod3
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
+
+codeview Application::ModeController.SlotMethod4
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
+
+codeview Application::ModeController.SlotMethod2
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
+
+codeview Application::Thermostat.SimpleTouchSlot
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <22,2>;
+  attr codeSelStart = <22,2>;
+}
+
+codeview Application::Thermostat.SimpleDragSlot
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <37,6>;
+  attr codeSelStart = <37,6>;
+}
+
+codeview Application::ModeController.Init
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <1,14>;
+}
+
+codeview Application::BrightnessController.SlotMethod1
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <55,2>;
+  attr codeSelStart = <55,2>;
+}
+
+codeview Application::Thermostat.TimerSlot1
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,45>;
+  attr codeSelStart = <87,46>;
+}
+
+codeview Application::Thermostat.TimerSlot2
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <14,8>;
+  attr codeSelStart = <2,8>;
+}
+
+codeview Application::Thermostat.Init
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,41>;
+  attr codeSelEnd = <45,43>;
+  attr codeSelStart = <45,43>;
+}
+
+codeview Application::Thermostat.TimerSlot3
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <41,9>;
+  attr codeSelStart = <41,9>;
+}
+
+codeview Application::Thermostat.TimerSlot
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,11>;
+  attr codeSelEnd = <37,11>;
+  attr codeSelStart = <37,11>;
+}
+
+codeview Application::Thermostat.TimerSlot4
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,7>;
+  attr codeSelEnd = <6,11>;
+  attr codeSelStart = <6,11>;
+}
+
+codeview Application::Thermostat.EffectsSlot
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
