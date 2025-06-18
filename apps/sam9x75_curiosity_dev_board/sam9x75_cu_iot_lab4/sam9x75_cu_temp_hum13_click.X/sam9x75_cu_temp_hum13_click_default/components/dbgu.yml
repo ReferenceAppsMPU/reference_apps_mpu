@@ -1,0 +1,191 @@
+configVersion: 1.0.0
+componentName: dbgu
+coreVersion: 5.8.2
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: dbgu
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.22.4
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: DBGU_UART
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: sys_console_0
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: sys_console_UART_dependency
+            type: String
+          type: Attributes
+        type: DirectCapability
+      type: Attachments
+    type: dbgu
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: dbgu
+          x: '47'
+          y: '558'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    DBGU_INTERRUPT_MODE_ENABLE:
+      attributes:
+        id: DBGU_INTERRUPT_MODE_ENABLE
+      children:
+      - children:
+        - attributes:
+            id: dbgu
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    DBGU_RING_BUFFER_MODE_ENABLE:
+      attributes:
+        id: DBGU_RING_BUFFER_MODE_ENABLE
+      children:
+      - children:
+        - attributes:
+            id: dbgu
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    DBGU_OPERATING_MODE:
+      attributes:
+        id: DBGU_OPERATING_MODE
+      children:
+      - children:
+        - attributes:
+            id: readOnly
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: dbgu
+            value: '2'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DBGU_SOURCE:
+      attributes:
+        id: DBGU_SOURCE
+      children:
+      - children:
+        - attributes:
+            id: source
+          children:
+          - type: Value
+            value: ../peripheral/dbgu_6059/templates/plib_dbgu_ring_buffer.c.ftl
+          type: String
+        type: Attributes
+      type: File
+    DBGU_HEADER:
+      attributes:
+        id: DBGU_HEADER
+      children:
+      - children:
+        - attributes:
+            id: source
+          children:
+          - type: Value
+            value: ../peripheral/dbgu_6059/templates/plib_dbgu_ring_buffer.h.ftl
+          type: String
+        type: Attributes
+      type: File
+    DBGU_TX_RING_BUFFER_SIZE:
+      attributes:
+        id: DBGU_TX_RING_BUFFER_SIZE
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: sysWifiRNWF
+            value: '1024'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DBGU_RX_RING_BUFFER_SIZE:
+      attributes:
+        id: DBGU_RX_RING_BUFFER_SIZE
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: sysWifiRNWF
+            value: '1024'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DBGU_CLOCK_FREQ:
+      attributes:
+        id: DBGU_CLOCK_FREQ
+      children:
+      - children:
+        - attributes:
+            id: dbgu
+            value: '266666666'
+          type: Dynamic
+        type: Values
+      type: Integer
+    BRG_VALUE:
+      attributes:
+        id: BRG_VALUE
+      children:
+      - children:
+        - attributes:
+            id: dbgu
+            value: '144'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DBGU_CLK_SRC:
+      attributes:
+        id: DBGU_CLK_SRC
+      children:
+      - children:
+        - attributes:
+            id: sysWifiRNWF
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+  userData: {}

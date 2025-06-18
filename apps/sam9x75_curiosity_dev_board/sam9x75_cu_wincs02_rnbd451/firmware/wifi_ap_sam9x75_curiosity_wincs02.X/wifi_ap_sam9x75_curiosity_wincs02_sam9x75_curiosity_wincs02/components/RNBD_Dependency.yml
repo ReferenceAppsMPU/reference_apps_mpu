@@ -1,0 +1,72 @@
+configVersion: 1.0.0
+componentName: RNBD_Dependency
+coreVersion: 5.8.2
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: RNBD_Dependency
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: bsp
+  type: package
+  version: v3.21.1
+- dependencyPackage: ''
+  name: core
+  type: package
+  version: v3.14.1
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.20.0
+- dependencyPackage: ''
+  name: wireless_rnbd
+  type: package
+  version: v2.0.1
+- dependencyPackage: ''
+  name: wireless_system_rnwf
+  type: package
+  version: v3.0.0
+- dependencyPackage: ''
+  name: wireless_wifi
+  type: package
+  version: v3.12.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments: {}
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: RNBD_Dependency
+          x: '534'
+          y: '380'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    BT_RX_IND_PIN_CHECK:
+      attributes:
+        id: BT_RX_IND_PIN_CHECK
+      children:
+      - children:
+        - attributes:
+            value: 'false'
+          type: User
+        type: Values
+      type: Boolean
+    RN_HOST_SELECT_BLE_MODULE_TYPE_CHOICE:
+      attributes:
+        id: RN_HOST_SELECT_BLE_MODULE_TYPE_CHOICE
+      children:
+      - children:
+        - attributes:
+            id: RNBD_Dependency
+            value: RNBD
+          type: Dynamic
+        type: Values
+      type: Combo
+  userData: {}

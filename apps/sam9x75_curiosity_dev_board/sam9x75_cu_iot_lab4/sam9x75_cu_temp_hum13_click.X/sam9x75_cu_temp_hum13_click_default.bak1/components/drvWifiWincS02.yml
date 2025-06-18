@@ -1,0 +1,122 @@
+configVersion: 1.0.0
+componentName: drvWifiWincS02
+coreVersion: 5.8.2
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: drvWifiWincS02
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: wireless_wifi
+  type: package
+  version: v3.12.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: drv_spi_dependency
+        children:
+        - children:
+          - attributes:
+              id: enabled
+            children:
+            - type: Value
+              value: 'false'
+            type: Boolean
+          type: Attributes
+        type: DirectDependency
+      - attributes:
+          id: spi_dependency
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: flexcom4
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: FLEXCOM4_SPI
+            type: String
+          type: Attributes
+        type: DirectDependency
+      type: Attachments
+    type: drvWifiWincS02
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: drvWifiWincS02
+          x: '194'
+          y: '333'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    DRV_WIFI_WINC_PLIB:
+      attributes:
+        id: DRV_WIFI_WINC_PLIB
+      children:
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: FLEXCOM4
+          type: Dynamic
+        type: Values
+      type: String
+    DRV_WIFI_WINC_RX_DMA_CHANNEL:
+      attributes:
+        id: DRV_WIFI_WINC_RX_DMA_CHANNEL
+      children:
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: '-1'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DRV_WIFI_WINC_TX_DMA_CHANNEL:
+      attributes:
+        id: DRV_WIFI_WINC_TX_DMA_CHANNEL
+      children:
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: '-1'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DRV_WIFI_WINC_TX_RX_DMA:
+      attributes:
+        id: DRV_WIFI_WINC_TX_RX_DMA
+      children:
+      - children:
+        - attributes:
+            id: readOnly
+          children:
+          - type: Value
+            value: 'false'
+          type: Boolean
+        type: Attributes
+      type: Boolean
+    DRV_WIFI_WINC_USE_SYS_DEBUG:
+      attributes:
+        id: DRV_WIFI_WINC_USE_SYS_DEBUG
+      children:
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+  userData: {}

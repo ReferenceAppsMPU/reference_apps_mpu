@@ -1,0 +1,95 @@
+configVersion: 1.0.0
+componentName: sys_console_0
+coreVersion: 5.8.2
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: sys_console_0
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: bsp
+  type: package
+  version: v3.21.1
+- dependencyPackage: ''
+  name: core
+  type: package
+  version: v3.14.1
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.20.0
+- dependencyPackage: ''
+  name: wireless_rnbd
+  type: package
+  version: v2.0.1
+- dependencyPackage: ''
+  name: wireless_system_rnwf
+  type: package
+  version: v3.0.0
+- dependencyPackage: ''
+  name: wireless_wifi
+  type: package
+  version: v3.12.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: sys_console_UART_dependency
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: dbgu
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: DBGU_UART
+            type: String
+          type: Attributes
+        type: DirectDependency
+      type: Attachments
+    type: sys_console_0
+  elementPosition: {}
+  symbols:
+    SYS_CONSOLE_DEVICE:
+      attributes:
+        id: SYS_CONSOLE_DEVICE
+      children:
+      - children:
+        - attributes:
+            id: sys_console_0
+            value: DBGU
+          type: Dynamic
+        type: Values
+      type: String
+    SYS_CONSOLE_DEVICE_SET:
+      attributes:
+        id: SYS_CONSOLE_DEVICE_SET
+      children:
+      - children:
+        - attributes:
+            id: sys_console_0
+            value: UART
+          type: Dynamic
+        type: Values
+      type: String
+    SYS_CONSOLE_DEVICE_UART_INDEX:
+      attributes:
+        id: SYS_CONSOLE_DEVICE_UART_INDEX
+      children:
+      - children:
+        - attributes:
+            id: sys_console
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Integer
+  userData: {}

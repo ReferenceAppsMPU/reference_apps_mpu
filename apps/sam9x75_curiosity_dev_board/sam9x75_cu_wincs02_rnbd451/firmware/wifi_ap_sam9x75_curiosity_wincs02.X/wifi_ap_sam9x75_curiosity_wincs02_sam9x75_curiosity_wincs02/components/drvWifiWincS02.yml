@@ -1,0 +1,237 @@
+configVersion: 1.0.0
+componentName: drvWifiWincS02
+coreVersion: 5.8.2
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: drvWifiWincS02
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: bsp
+  type: package
+  version: v3.21.1
+- dependencyPackage: ''
+  name: core
+  type: package
+  version: v3.14.1
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.20.0
+- dependencyPackage: ''
+  name: wireless_rnbd
+  type: package
+  version: v2.0.1
+- dependencyPackage: ''
+  name: wireless_system_rnwf
+  type: package
+  version: v3.0.0
+- dependencyPackage: ''
+  name: wireless_wifi
+  type: package
+  version: v3.12.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: drv_spi_dependency
+        children:
+        - children:
+          - attributes:
+              id: enabled
+            children:
+            - type: Value
+              value: 'false'
+            type: Boolean
+          type: Attributes
+        type: DirectDependency
+      - attributes:
+          id: spi_dependency
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: flexcom4
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: FLEXCOM4_SPI
+            type: String
+          type: Attributes
+        type: DirectDependency
+      type: Attachments
+    type: drvWifiWincS02
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: drvWifiWincS02
+          x: '321'
+          y: '211'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    DRV_WIFI_WINC_PIO_SRC_SELECT:
+      attributes:
+        id: DRV_WIFI_WINC_PIO_SRC_SELECT
+      children:
+      - children:
+        - attributes:
+            id: sysWifiRNWF
+            value: '76'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DRV_WIFI_WINC_PLIB:
+      attributes:
+        id: DRV_WIFI_WINC_PLIB
+      children:
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: FLEXCOM4
+          type: Dynamic
+        type: Values
+      type: String
+    DRV_WIFI_WINC_RX_DMA_CHANNEL:
+      attributes:
+        id: DRV_WIFI_WINC_RX_DMA_CHANNEL
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: '1'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DRV_WIFI_WINC_SOCKET_RX_BUF_SZ:
+      attributes:
+        id: DRV_WIFI_WINC_SOCKET_RX_BUF_SZ
+      children:
+      - children:
+        - attributes:
+            value: '7360'
+          type: User
+        type: Values
+      type: Integer
+    DRV_WIFI_WINC_SOCKET_SLAB_NUM:
+      attributes:
+        id: DRV_WIFI_WINC_SOCKET_SLAB_NUM
+      children:
+      - children:
+        - attributes:
+            value: '50'
+          type: User
+        type: Values
+      type: Integer
+    DRV_WIFI_WINC_SOCKET_TX_BUF_SZ:
+      attributes:
+        id: DRV_WIFI_WINC_SOCKET_TX_BUF_SZ
+      children:
+      - children:
+        - attributes:
+            value: '5120'
+          type: User
+        type: Values
+      type: Integer
+    DRV_WIFI_WINC_SYS_DMA_ENABLE:
+      attributes:
+        id: DRV_WIFI_WINC_SYS_DMA_ENABLE
+      children:
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    DRV_WIFI_WINC_TX_DMA_CHANNEL:
+      attributes:
+        id: DRV_WIFI_WINC_TX_DMA_CHANNEL
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DRV_WIFI_WINC_TX_RX_DMA:
+      attributes:
+        id: DRV_WIFI_WINC_TX_RX_DMA
+      children:
+      - children:
+        - attributes:
+            id: readOnly
+          children:
+          - type: Value
+            value: 'false'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: sysWifiRNWF
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    DRV_WIFI_WINC_TX_RX_DMA_EN:
+      attributes:
+        id: DRV_WIFI_WINC_TX_RX_DMA_EN
+      children:
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS:
+      attributes:
+        id: DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS
+      children:
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    DRV_WIFI_WINC_USE_SYS_DEBUG:
+      attributes:
+        id: DRV_WIFI_WINC_USE_SYS_DEBUG
+      children:
+      - children:
+        - attributes:
+            id: drvWifiWincS02
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+  userData: {}
