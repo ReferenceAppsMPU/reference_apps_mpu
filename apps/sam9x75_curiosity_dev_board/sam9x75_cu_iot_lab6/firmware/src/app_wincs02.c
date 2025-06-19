@@ -362,17 +362,16 @@ void SYS_WINCS_WIFI_CallbackHandler
         
         /* SNTP UP event code*/
         case SYS_WINCS_WIFI_SNTP_UP:
-        {            
-            time_t raw_time = app_timeUTC;
+        {
             app_sntp_read=true;
             // Convert the time_t to a struct tm in UTC using gmtime()
-            struct tm *time_info = gmtime(&raw_time);
+            struct tm *time_info = gmtime((time_t*) wifiHandle);
             app_sntp_day = time_info->tm_mday;
             app_sntp_month = time_info->tm_mon;
             app_sntp_year= time_info->tm_year+1900;
             app_sntp_hour= time_info->tm_hour;
             app_sntp_minute= time_info->tm_min;
-            SYS_CONSOLE_PRINT(TERM_YELLOW"[APP] : SNTP UP - Time UTC : %d\r\n"TERM_RESET,app_timeUTC); 
+            SYS_CONSOLE_PRINT(TERM_YELLOW"[APP] : SNTP UP - Time UTC : %d / %d / %d \r\n"TERM_RESET,time_info->tm_mday,time_info->tm_mon,(time_info->tm_year+1900) );
             SYS_CONSOLE_PRINT("[APP] : Connecting to the Cloud\r\n");
 
             break;
@@ -383,14 +382,6 @@ void SYS_WINCS_WIFI_CallbackHandler
         {
             SYS_CONSOLE_PRINT(TERM_GREEN"[APP] : Wi-Fi Connected    \r\n"TERM_RESET);
             // Retrieve the current time from the Wi-Fi service
-        }
-        
-        /* Wi-Fi disconnected event code*/
-        case SYS_WINCS_WIFI_DISCONNECTED:
-        {
-            SYS_CONSOLE_PRINT(TERM_RED"[APP] : Wi-Fi Disconnected\nReconnecting... \r\n"TERM_RESET);
-            SYS_WINCS_WIFI_SrvCtrl(SYS_WINCS_WIFI_STA_CONNECT, NULL);
-            break;
         }
         
         /* Wi-Fi DHCP complete event code*/
@@ -629,7 +620,8 @@ void APP_WINCS02_Tasks ( void )
                 .ssid        = SYS_WINCS_WIFI_STA_SSID,        // Set the SSID (network name) for the Wi-Fi connection
                 .passphrase  = SYS_WINCS_WIFI_STA_PWD,         // Set the passphrase (password) for the Wi-Fi connection
                 .security    = SYS_WINCS_WIFI_STA_SECURITY,    // Set the security type (e.g., WPA2) for the Wi-Fi connection
-                .autoConnect = SYS_WINCS_WIFI_STA_AUTOCONNECT  // Enable or disable auto-connect to the Wi-Fi network
+                .autoConnect = SYS_WINCS_WIFI_STA_AUTOCONNECT,  // Enable or disable auto-connect to the Wi-Fi network
+                .ssidVisibility = false
             }; 
 
             // Set the Wi-Fi parameters
