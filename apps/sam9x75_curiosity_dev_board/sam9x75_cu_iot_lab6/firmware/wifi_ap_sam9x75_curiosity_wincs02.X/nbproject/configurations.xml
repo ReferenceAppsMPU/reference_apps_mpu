@@ -513,8 +513,48 @@
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="true">
+      <logicalFolder name="wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02"
+                     displayName="wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02"
+                     projectFiles="true">
+        <logicalFolder name="components" displayName="components" projectFiles="true">
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/drv_i2c_1.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/RNBD_Dependency.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/sysNetRNWF.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/sys_console.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/sysWifiRNWF.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/drv_i2c.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/flexcom7.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/drvWifiWincS02.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/flexcom1.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/RNBD_Dependency_0.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/BSP_SAM_9X75_Curiosity.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/HarmonyCore.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/tc0.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/rtc.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/sys_console_0.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/gfx_bridge_dsi_plib.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/flexcom6.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/le_gfx_driver_xlcdc.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/core.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/dfp.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/sys_time.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/sysMqttRNWF.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/gfx_display_comp_waveshare_4in_round_dsi.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/plib_gfx2d.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/sys_debug.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/sys_input.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/le_gfx_gfx2d.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/dbgu.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/drv_i2c_0.yml</itemPath>
+          <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/components/flexcom4.yml</itemPath>
+        </logicalFolder>
+        <itemPath>wifi_ap_sam9x75_curiosity_wincs02_sam9x75_curiosity_wincs02/mcc-config.mc4</itemPath>
+      </logicalFolder>
       <itemPath>Makefile</itemPath>
-      <itemPath>wifi_ap_sam9x75_curiosity_wincs02.mc3</itemPath>
+    </logicalFolder>
+    <logicalFolder name="LibraryFiles"
+                   displayName="LibraryFiles"
+                   projectFiles="true">
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -807,6 +847,7 @@
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value="-marm"/>
         <property key="cast-align" value="false"/>
         <property key="code-model" value="default"/>
         <property key="const-model" value="default"/>
@@ -886,6 +927,7 @@
         <property key="additional-options-use-response-files" value="false"/>
         <property key="additional-options-write-sla" value="false"/>
         <property key="allocate-dinit" value="false"/>
+        <property key="appendMe" value=""/>
         <property key="code-dinit" value="false"/>
         <property key="ebase-addr" value=""/>
         <property key="enable-check-sections" value="false"/>
@@ -931,6 +973,7 @@
       <C32CPP>
         <property key="additional-warnings" value="false"/>
         <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="true"/>
         <property key="enable-app-io" value="false"/>
@@ -1060,9 +1103,9 @@
                   value="Press to select which tool pack to use"/>
         <property key="bluetoothsetting" value="do.not.change"/>
         <property key="communication.activationmode" value="nohv"/>
-        <property key="communication.interface" value="jtag"/>
+        <property key="communication.interface" value="4wire"/>
         <property key="communication.interface.jtag" value="2wire"/>
-        <property key="communication.speed" value="4.000"/>
+        <property key="communication.speed" value="4"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
@@ -1083,21 +1126,21 @@
         <property key="memories.flashdata" value="true"/>
         <property key="memories.id" value="true"/>
         <property key="memories.instruction.ram.ranges"
-                  value="${memories.instruction.ram.ranges}"/>
+                  value="${memories.instruction.ram.ranges.default}"/>
         <property key="memories.programmemory" value="true"/>
-        <property key="memories.programmemory.ranges" value="300000-eff00fff"/>
+        <property key="memories.programmemory.ranges" value="0x300000-0xeff00fff"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmerToGoImageName"
                   value="wifi_ap_sam9x75_curiosity_wincs02_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
-        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.eraseb4program" value="false"/>
         <property key="programoptions.ledbrightness" value="5"/>
         <property key="programoptions.pgcconfig" value="pull down"/>
         <property key="programoptions.pgcresistor.value" value="4.7"/>
         <property key="programoptions.pgdconfig" value="pull down"/>
         <property key="programoptions.pgdresistor.value" value="4.7"/>
         <property key="programoptions.pgmentry.voltage" value="low"/>
-        <property key="programoptions.pgmspeed" value="Med"/>
+        <property key="programoptions.pgmspeed" value="Min"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveeeprom.ranges" value=""/>
@@ -1605,6 +1648,7 @@
                   value="ToolFirmwareOption.UseLatest"/>
         <property key="ToolFirmwareToolPack"
                   value="Press to select which tool pack to use"/>
+        <property key="bluetoothsetting" value="do.not.change"/>
         <property key="codecoverage.enabled" value="Disable"/>
         <property key="codecoverage.enableoutputtofile" value="false"/>
         <property key="codecoverage.outputfile" value=""/>
@@ -1661,8 +1705,11 @@
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmerToGoFilePath"
                   value="C:/H3_github/wincapps_release_v3.0.0/wireless_apps_rnwf/apps/wifi_ap/firmware/wifi_ap_sam9x75_curiosity_wincs02.X/debug/sam9x75_curiosity_wincs02/wifi_ap_sam9x75_curiosity_wincs02_ptg"/>
+        <property key="programmerToGoImageName"
+                  value="wifi_ap_sam9x75_curiosity_wincs02_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="false"/>
+        <property key="programoptions.ledbrightness" value="5"/>
         <property key="programoptions.pgcconfig" value="pull down"/>
         <property key="programoptions.pgcresistor.value" value="4.7"/>
         <property key="programoptions.pgdconfig" value="pull down"/>
@@ -1689,6 +1736,8 @@
         <property key="programoptions.resetafterprogram" value="true"/>
         <property key="programoptions.smart.program" value="When debugging only"/>
         <property key="programoptions.testmodeentrymethod" value="VDDFirst"/>
+        <property key="ptgProgramImage" value="true"/>
+        <property key="ptgSendImage" value="true"/>
         <property key="reset.scl" value="false"/>
         <property key="reset.type" value="MCLR"/>
         <property key="script.has_reset" value="true"/>

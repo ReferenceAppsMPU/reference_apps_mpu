@@ -474,8 +474,6 @@ static void SYS_WINCS_SYSTEM_TimeGetCurrentCallback
 )
 {
     struct tm *ptm;
-    extern uint32_t app_timeUTC;
-    app_timeUTC = timeUTC;
     ptm = gmtime(&timeUTC);
     static bool print = true;
 

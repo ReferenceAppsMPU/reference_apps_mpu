@@ -70,7 +70,7 @@ view unit Application
 view class Application::Thermostat
 {
   attr enableWireMode = false;
-  attr scrollTo = <118,479>;
+  attr scrollTo = <118,95>;
   attr zoom = 1.0;
 }
 

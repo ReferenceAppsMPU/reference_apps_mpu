@@ -1,0 +1,326 @@
+configVersion: 1.0.0
+componentName: gfx_bridge_dsi_plib
+coreVersion: 5.8.2
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: gfx_bridge_dsi_plib
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: bsp
+  type: package
+  version: v3.21.1
+- dependencyPackage: ''
+  name: core
+  type: package
+  version: v3.14.1
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.20.0
+- dependencyPackage: ''
+  name: gfx
+  type: package
+  version: v3.16.0
+- dependencyPackage: ''
+  name: wireless_rnbd
+  type: package
+  version: v2.0.1
+- dependencyPackage: ''
+  name: wireless_system_rnwf
+  type: package
+  version: v3.0.0
+- dependencyPackage: ''
+  name: wireless_wifi
+  type: package
+  version: v3.12.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: gfx_dpi_bridge_cap
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: le_gfx_driver_xlcdc
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: gfx_dpi_bridge_dep
+            type: String
+          type: Attributes
+        type: DirectCapability
+      - attributes:
+          id: gfx_dsi_display_dep
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: gfx_display_comp_waveshare_4in_round_dsi
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: gfx_dsi_display_cap
+            type: String
+          type: Attributes
+        type: DirectDependency
+      type: Attachments
+    type: gfx_bridge_dsi_plib
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: gfx_bridge_dsi_plib
+          x: '634'
+          y: '591'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    DPhyPllHSBRC:
+      attributes:
+        id: DPhyPllHSBRC
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '22'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DPhyPllICPCTRL:
+      attributes:
+        id: DPhyPllICPCTRL
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '8'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DPhyPllLPFCTRL:
+      attributes:
+        id: DPhyPllLPFCTRL
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '8'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DPhyPllOutClkKiloHz:
+      attributes:
+        id: DPhyPllOutClkKiloHz
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '660000'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DPhyPllVCORANGE:
+      attributes:
+        id: DPhyPllVCORANGE
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '8'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DPhyTmrClkHsToLp:
+      attributes:
+        id: DPhyTmrClkHsToLp
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '22'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DPhyTmrClkLpToHs:
+      attributes:
+        id: DPhyTmrClkLpToHs
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '22'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DPhyTmrDatHsToLp:
+      attributes:
+        id: DPhyTmrDatHsToLp
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '22'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DPhyTmrDatLpToHs:
+      attributes:
+        id: DPhyTmrDatLpToHs
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '22'
+          type: Dynamic
+        type: Values
+      type: KeyValueSet
+    DSIIfActiveLanes:
+      attributes:
+        id: DSIIfActiveLanes
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '2'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DVTDotClkKiloHz:
+      attributes:
+        id: DVTDotClkKiloHz
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '50000'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DVTHorBP:
+      attributes:
+        id: DVTHorBP
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '32'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DVTHorFP:
+      attributes:
+        id: DVTHorFP
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '330'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DVTHorPW:
+      attributes:
+        id: DVTHorPW
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '32'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DVTResPPL:
+      attributes:
+        id: DVTResPPL
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '720'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DVTResRPF:
+      attributes:
+        id: DVTResRPF
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '720'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DVTVerBP:
+      attributes:
+        id: DVTVerBP
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '16'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DVTVerFP:
+      attributes:
+        id: DVTVerFP
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '8'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DVTVerPW:
+      attributes:
+        id: DVTVerPW
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: '4'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DisplayIDString:
+      attributes:
+        id: DisplayIDString
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: gfx_display_comp_waveshare_4in_round_dsi
+          type: Dynamic
+        type: Values
+      type: String
+    XLCDCConnected:
+      attributes:
+        id: XLCDCConnected
+      children:
+      - children:
+        - attributes:
+            id: gfx_bridge_dsi_plib
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+  userData: {}

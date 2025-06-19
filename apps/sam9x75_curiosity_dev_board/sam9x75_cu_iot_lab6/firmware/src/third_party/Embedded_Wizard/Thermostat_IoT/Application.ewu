@@ -1,4 +1,4 @@
-﻿$version 14.02
+﻿$version 14.04
 
 // This is the root component of the entire GUI application.
 $rect <20,20,220,60>
@@ -2045,7 +2045,7 @@ class Thermostat : Core::Group
     SimpleTouchHandler5.Enabled=false;
     SimpleTouchHandler6.Enabled=false;
     Application::Device.Temperature = temperature;
-    Application::Device.Humidity= local_humidity
+    Application::Device.Humidity= local_humidity;
 
     TempCurrent.String=  string(Application::Device.Temperature ) + "°C";
     HumidityCurrent.String=  string(Application::Device.Humidity ) + "%%";   
@@ -2144,10 +2144,10 @@ class Thermostat : Core::Group
   $rect <20,20,160,60>
   object Core::SimpleTouchHandler SimpleTouchHandler6
   {
-    preset Point4 = <485,435>;
-    preset Point3 = <548,435>;
-    preset Point2 = <548,507>;
-    preset Point1 = <485,507>;
+    preset Point4 = <485,436>;
+    preset Point3 = <548,436>;
+    preset Point2 = <548,508>;
+    preset Point1 = <485,508>;
     preset OnPress = SimpleTouchSlot6;
     preset Enabled = false;
   }

@@ -1,0 +1,149 @@
+configVersion: 1.0.0
+componentName: sysMqttRNWF
+coreVersion: 5.8.2
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: sysMqttRNWF
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: bsp
+  type: package
+  version: v3.21.1
+- dependencyPackage: ''
+  name: core
+  type: package
+  version: v3.14.1
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.20.0
+- dependencyPackage: ''
+  name: gfx
+  type: package
+  version: v3.16.0
+- dependencyPackage: ''
+  name: wireless_rnbd
+  type: package
+  version: v2.0.1
+- dependencyPackage: ''
+  name: wireless_system_rnwf
+  type: package
+  version: v3.0.0
+- dependencyPackage: ''
+  name: wireless_wifi
+  type: package
+  version: v3.12.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments: {}
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: sysMqttRNWF
+          x: '520'
+          y: '20'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    SYS_RNWF_MQTT_KEEP_ALIVE:
+      attributes:
+        id: SYS_RNWF_MQTT_KEEP_ALIVE
+      children:
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    SYS_RNWF_MQTT_PUBLISH:
+      attributes:
+        id: SYS_RNWF_MQTT_PUBLISH
+      children:
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    SYS_RNWF_MQTT_PUB_MSG:
+      attributes:
+        id: SYS_RNWF_MQTT_PUB_MSG
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            value: Hi. It's MCHP Wireless Device
+          type: User
+        type: Values
+      type: String
+    SYS_RNWF_MQTT_PUB_TOPIC_NAME:
+      attributes:
+        id: SYS_RNWF_MQTT_PUB_TOPIC_NAME
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            value: $MCHP/Wireless/device01
+          type: User
+        type: Values
+      type: String
+    SYS_RNWF_MQTT_RETAIN_FLAG:
+      attributes:
+        id: SYS_RNWF_MQTT_RETAIN_FLAG
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            value: 'false'
+          type: User
+        type: Values
+      type: Boolean
+    SYS_RNWF_MQTT_SUBSCRIBE:
+      attributes:
+        id: SYS_RNWF_MQTT_SUBSCRIBE
+      children:
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    SYS_RNWF_MQTT_SUB_TOPIC0:
+      attributes:
+        id: SYS_RNWF_MQTT_SUB_TOPIC0
+      children:
+      - children:
+        - attributes:
+            value: $MCHP/Wireless/device02
+          type: User
+        type: Values
+      type: String
+  userData: {}

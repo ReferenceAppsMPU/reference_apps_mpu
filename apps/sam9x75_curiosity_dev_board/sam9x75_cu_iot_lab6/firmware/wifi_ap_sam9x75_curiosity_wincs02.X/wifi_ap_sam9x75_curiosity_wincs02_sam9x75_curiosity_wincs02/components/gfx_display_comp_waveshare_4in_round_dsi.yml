@@ -1,0 +1,117 @@
+configVersion: 1.0.0
+componentName: gfx_display_comp_waveshare_4in_round_dsi
+coreVersion: 5.8.2
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: gfx_display_comp_waveshare_4in_round_dsi
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: bsp
+  type: package
+  version: v3.21.1
+- dependencyPackage: ''
+  name: core
+  type: package
+  version: v3.14.1
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.20.0
+- dependencyPackage: ''
+  name: gfx
+  type: package
+  version: v3.16.0
+- dependencyPackage: ''
+  name: wireless_rnbd
+  type: package
+  version: v2.0.1
+- dependencyPackage: ''
+  name: wireless_system_rnwf
+  type: package
+  version: v3.0.0
+- dependencyPackage: ''
+  name: wireless_wifi
+  type: package
+  version: v3.12.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: gfx_dsi_display_cap
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: gfx_bridge_dsi_plib
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: gfx_dsi_display_dep
+            type: String
+          type: Attributes
+        type: DirectCapability
+      - attributes:
+          id: gfx_dsi_i2c_dep
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: drv_i2c_0
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: drv_i2c
+            type: String
+          type: Attributes
+        type: DirectDependency
+      type: Attachments
+    type: gfx_display_comp_waveshare_4in_round_dsi
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: gfx_display_comp_waveshare_4in_round_dsi
+          x: '374'
+          y: '524'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    I2CIdx:
+      attributes:
+        id: I2CIdx
+      children:
+      - children:
+        - attributes:
+            id: gfx_display_comp_waveshare_4in_round_dsi
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Integer
+    I2CMode:
+      attributes:
+        id: I2CMode
+      children:
+      - children:
+        - attributes:
+            id: gfx_display_comp_waveshare_4in_round_dsi
+            value: Asynchronous
+          type: Dynamic
+        type: Values
+      type: Combo
+  userData: {}

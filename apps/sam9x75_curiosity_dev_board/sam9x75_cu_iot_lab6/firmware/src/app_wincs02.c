@@ -74,7 +74,6 @@ bool app_mode_changed = false;
 int32_t app_mode;
 int32_t app_temperature;
 int32_t app_humidity;
-uint32_t app_timeUTC;
 
 // MQTT configuration settings for connecting to Broker
 SYS_WINCS_MQTT_CFG_t    g_mqttCfg = {
