@@ -1,0 +1,1 @@
+Training module - https://developerhelp.microchip.com/xwiki/bin/view/software-tools/mcu-dev-boards/32-bit-kits/sama5d29-curiosity/harmony-complementary-pwm-app-deadtime/#:~:text=In%20this%20training%2C%20you%20will%20explore%20the%20process,using%20MPLAB%20%C2%AE%20X%20Integrated%20Development%20Environment%20%28IDE%29.

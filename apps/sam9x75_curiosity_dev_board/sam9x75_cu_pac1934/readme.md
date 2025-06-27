@@ -1,0 +1,1 @@
+Training module - https://developerhelp.microchip.com/xwiki/bin/view/software-tools/mcu-dev-boards/32-bit-kits/sam9x75-ev-curiosity/power-monitoring-pac1934-using-harmony/
