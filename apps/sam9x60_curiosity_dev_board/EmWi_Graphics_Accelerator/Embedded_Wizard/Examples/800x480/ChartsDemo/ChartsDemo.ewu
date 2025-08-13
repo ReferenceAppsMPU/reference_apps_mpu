@@ -1,0 +1,3663 @@
+﻿$version 13.00
+
+// Charts Demo
+note group Note7
+{
+  attr Bounds = <10,10,460,120>;
+}
+
+// This is the root component of the entire GUI application.
+$rect <30,60,230,100>
+$output false
+class ChartsDemo : Core::Group
+{
+  $rect <10,500,210,540>
+  inherited method Init()
+  {
+    /* generate first set of data */
+    postsignal CreateRandomRecords;
+
+  }
+
+  $rect <610,540,810,580>
+  inherited property Bounds = <0,0,800,480>;
+
+  // This is an image view.
+  $rect <20,20,160,60>
+  object Views::Image Background
+  {
+    preset Bounds = <0,0,800,480>;
+    preset Bitmap = ChartsDemo::DemoBackground;
+  }
+
+  // This is a filled rectangle view.
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Bounds = <0,400,800,480>;
+    preset Color = #80808040;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton ActionButton
+  {
+    preset Bounds = <30,420,190,460>;
+    preset Enabled = true;
+    preset OnActivate = CreateRandomRecords;
+    preset Label = "New Values";
+    preset Appearance = ChartsDemo::PushButtonConfig;
+  }
+
+  // Button widget to activate the corresponding screen.
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton LineChartButton
+  {
+    preset Bounds = <250,420,410,460>;
+    preset OnActivate = LineChartSlot;
+    preset IconFrame = 0;
+    preset Icon = ChartsDemo::ChartsIcons;
+    preset Label = "Line Chart";
+    preset Appearance = ChartsDemo::IconButtonConfig;
+  }
+
+  // Button widget to activate the corresponding screen.
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton BarChartButton
+  {
+    preset Bounds = <430,420,590,460>;
+    preset OnActivate = BarChartSlot;
+    preset IconFrame = 1;
+    preset Icon = ChartsDemo::ChartsIcons;
+    preset Label = "Bar Chart";
+    preset Appearance = ChartsDemo::IconButtonConfig;
+  }
+
+  // Button widget to activate the corresponding screen.
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PieChartButton
+  {
+    preset Bounds = <610,420,770,460>;
+    preset OnActivate = PieChartSlot;
+    preset IconFrame = 2;
+    preset Icon = ChartsDemo::ChartsIcons;
+    preset Label = "Pie Chart";
+    preset Appearance = ChartsDemo::IconButtonConfig;
+  }
+
+  // Slot method to trigger the rebuilding of the recordlists within all chart diagrams.
+  $rect <10,540,210,580>
+  slot CreateRandomRecords
+  {
+    postsignal LineScreen.RandomRecords;
+    postsignal BarScreen.RandomRecords;
+    postsignal PieScreen.RandomRecords;
+  }
+
+  // This is an outline view to group other views together.
+  $rect <20,20,160,60>
+  object Core::Outline Outline
+  {
+    preset Bounds = <0,0,800,400>;
+    preset Formation = Core::Formation.LeftToRight;
+  }
+
+  // The 'LineScreen' class implements a complete GUI component containing a line \
+  // chart diagram and a couple of control items to configure the chart. The GUI \
+  // component is used within the @ChartsDemo class and embedded within an outline \
+  // box in order to support smooth scrolling between the screens.
+  $rect <20,20,160,60>
+  object ChartsDemo::LineScreen LineScreen
+  {
+    preset Bounds = <0,0,800,400>;
+    preset Embedded = true;
+  }
+
+  // The 'BarScreen' class implements a complete GUI component containing a bar chart \
+  // diagram and a couple of control items to configure the chart. The GUI component \
+  // is used within the @ChartsDemo class and embedded within an outline box in order \
+  // to support smooth scrolling between the screens.
+  $rect <20,20,160,60>
+  object ChartsDemo::BarScreen BarScreen
+  {
+    preset Bounds = <800,0,1600,400>;
+    preset Embedded = true;
+  }
+
+  // The 'PieScreen' class implements a complete GUI component containing a pie chart \
+  // diagram and a couple of control items to configure the chart. The GUI component \
+  // is used within the @ChartsDemo class and embedded within an outline box in order \
+  // to support smooth scrolling between the screens.
+  $rect <20,20,160,60>
+  object ChartsDemo::PieScreen PieScreen
+  {
+    preset Bounds = <800,0,1600,400>;
+    preset Embedded = true;
+  }
+
+  // Slot method to display the corresponding screen.
+  $rect <210,500,410,540>
+  slot LineChartSlot
+  {
+    Outline.EnsureVisible( LineScreen, true, PointEffect, null );
+  }
+
+  // Slot method to display the corresponding screen.
+  $rect <210,540,410,580>
+  slot BarChartSlot
+  {
+    Outline.EnsureVisible( BarScreen, true, PointEffect, null );
+  }
+
+  // Slot method to display the corresponding screen.
+  $rect <410,500,610,540>
+  slot PieChartSlot
+  {
+    Outline.EnsureVisible( PieScreen, true, PointEffect, null );
+  }
+
+  // This is a move point effect used by the outline box to get a smooth scrolling \
+  // between the screens.
+  $rect <610,500,810,540>
+  object Effects::PointEffect PointEffect
+  {
+    preset Timing = Effects::Timing.FastIn_EaseOut;
+    preset CycleDuration = 200;
+  }
+
+  // The application is responsible to present the different chart diagram screens. \
+  // For this purpose, the objects LineScreen, BarScreen, PieScreen and InfoScreen \
+  // are embedded into a Core::Outline object.
+  // To change between the different screens, two different possibilities are implemented:
+  // 
+  // 1.) The user can press one of the selection buttons (bottom row) - in this case, \
+  // the method EnsureVisible() of the outline box is called and the outline box \
+  // will scroll to the requested page.
+  // 
+  // 2.) The user can make a left/right wipe gesture - in this case, the slide touch \
+  // handler (that is connected with the outline box) will handle the scrolling to \
+  // the next page.
+  note legend Note
+  {
+    attr Bounds = <10,590,810,780>;
+  }
+
+  // This is a timer object.
+  $rect <830,410,1030,450>
+  object Core::Timer AutoDemoTimer
+  {
+    preset OnTrigger = AutoDemo;
+    preset Period = 350;
+  }
+
+  // This is a slot method to trigger the next phase of the auto demo.
+  $rect <830,450,1030,490>
+  slot AutoDemo
+  {
+    sender; /* the method is called from the sender object */
+
+    if ( AutoState == 0 ) postsignal LineChartSlot;
+    else if ( AutoState == 1 ) ;
+    else if ( AutoState == 19 ) ;
+    else if ( AutoState == 20 ) postsignal BarChartSlot;
+    else if ( AutoState == 21 ) ;
+    else if ( AutoState == 39 ) ;
+    else if ( AutoState == 40 ) postsignal PieChartSlot;
+    else if ( AutoState == 41 ) ;
+    else if ( AutoState == 59 ) ;
+    else postsignal CreateRandomRecords;
+
+    AutoState = AutoState + 1;
+    if ( AutoState > 59 )
+      AutoState = 0;
+
+
+  }
+
+  // This is a variable.
+  $rect <830,490,1030,530>
+  var int32 AutoState = 0;
+}
+
+// The 'BarScreen' class implements a complete GUI component containing a bar chart \
+// diagram and a couple of control items to configure the chart. The GUI component \
+// is used within the @ChartsDemo class and embedded within an outline box in order \
+// to support smooth scrolling between the screens.
+$rect <240,180,440,220>
+$output false
+class BarScreen : Core::Group
+{
+  $rect <0,420,200,460>
+  inherited property Bounds = <0,0,800,400>;
+
+  // The class 'BarChart' implements a GUI component for displaying a complete bar \
+  // chart diagram. The data for the single bar segments are taken from @Records.
+  $rect <20,20,160,60>
+  object ChartsDemo::BarChart BarChart
+  {
+    preset Bounds = <30,50,510,330>;
+    preset GridLineColor = #005F3FFF;
+    preset NoOfGridLines = 5;
+    preset BackColor = #202020FF;
+    preset OnLoadValue = onLoadValue;
+    preset BarFrameNumber = 0;
+    preset BarSize = 12;
+    preset NoOfValues = 3;
+  }
+
+  // This method is invoked by the PieChart object when the object updates a slice. \
+  // It provides data (value and color) for the affected slice.
+  $rect <0,590,200,630>
+  slot onLoadValue
+  {
+    /* Which slice is being loaded? */
+    var int32 index = BarChart.Index;
+
+    /* Provide the data for the point. */
+    BarChart.Value = Values[ index ] * ( 100.0 / float( SliderMaxValue.CurrentValue ));
+    BarChart.Color = Colors[ index ];
+  }
+
+  // Slider widget to control the display range of the bar chart.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderMaxValue
+  {
+    preset Bounds = <600,40,760,100>;
+    preset OnChange = RangeSlot;
+    preset MaxValue = 500;
+    preset MinValue = 50;
+    preset CurrentValue = 100;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // Slot method to scale the chart content.
+  $rect <820,60,1020,100>
+  slot RangeSlot
+  {
+    // Trigger the chart to reload all data valuaes.
+    BarChart.InvalidateValues( 0, BarChart.NoOfValues );
+  }
+
+  // Slider widget to control the number of grid lines displayed within the bar chart \
+  // diagram.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderNoOfGridLines
+  {
+    preset Bounds = <600,130,760,190>;
+    preset Outlet = ^BarChart.NoOfGridLines;
+    preset MaxValue = 10;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // Radio button to select the current shape of the bars.
+  $rect <20,20,160,60>
+  object WidgetSet::RadioButton RadioRect
+  {
+    preset Bounds = <30,340,150,390>;
+    preset OutletSelector = 0;
+    preset Outlet = ^BarChart.BarFrameNumber;
+    preset Label = "Rect";
+    preset Appearance = ChartsDemo::RadioButtonConfig;
+  }
+
+  // Radio button to select the current shape of the bars.
+  $rect <20,20,160,60>
+  object WidgetSet::RadioButton RadioFlat
+  {
+    preset Bounds = <150,340,270,390>;
+    preset OutletSelector = 2;
+    preset Outlet = ^BarChart.BarFrameNumber;
+    preset Label = "Flat";
+    preset Appearance = ChartsDemo::RadioButtonConfig;
+  }
+
+  // Radio button to select the current shape of the bars.
+  $rect <20,20,160,60>
+  object WidgetSet::RadioButton RadioRound
+  {
+    preset Bounds = <270,340,390,390>;
+    preset OutletSelector = 3;
+    preset Outlet = ^BarChart.BarFrameNumber;
+    preset Label = "Round";
+    preset Appearance = ChartsDemo::RadioButtonConfig;
+  }
+
+  // Radio button to select the current shape of the bars.
+  $rect <20,20,160,60>
+  object WidgetSet::RadioButton RadioRange
+  {
+    preset Bounds = <390,340,510,390>;
+    preset OutletSelector = 4;
+    preset Outlet = ^BarChart.BarFrameNumber;
+    preset Label = "Range";
+    preset Appearance = ChartsDemo::RadioButtonConfig;
+  }
+
+  // Slider widget to control the distance between the single bars.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderSpacing
+  {
+    preset Bounds = <600,220,760,280>;
+    preset Outlet = ^BarChart.BarSize;
+    preset MaxValue = 50;
+    preset MinValue = 1;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // Checkbox widget to switch on/off the charts backgroud.
+  $rect <20,20,160,60>
+  object WidgetSet::ToggleButton CheckBoxBackground
+  {
+    preset Bounds = <600,340,790,390>;
+    preset Checked = true;
+    preset OnSwitchOn = BackgroundSlot;
+    preset OnSwitchOff = BackgroundSlot;
+    preset Label = "Background";
+    preset Appearance = ChartsDemo::CheckBoxConfig;
+  }
+
+  // Slot method to switch on/off the charts background.
+  $rect <820,350,1020,390>
+  slot BackgroundSlot
+  {
+    sender; /* the method is called from the sender object */
+
+    /* change the alpha value of the background */
+    if ( CheckBoxBackground.Checked )
+      BarChart.BackColor.alpha = 0xFF;
+    else
+      BarChart.BackColor.alpha = 0x00;
+
+  }
+
+  // Button widget to change the currently used line color.
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton ActionButton1
+  {
+    preset Bounds = <600,300,760,330>;
+    preset OnActivate = OrientationSlot;
+    preset Label = "Rotate";
+    preset Appearance = ChartsDemo::PushButtonConfig;
+  }
+
+  // Slot method to rotate the chart content.
+  $rect <820,290,1020,330>
+  slot OrientationSlot
+  {
+    // Toggle the orientation modes of the chart component. Please note the 'BarFrameNumber'
+    // adaptation when the orientation changes. Rotating by 90° expects another (rotated) frame
+    // to display the bar. So we switch between frame #4 or #6.
+    if ( BarChart.Orientation == Views::Orientation.Normal )
+    {
+      BarChart.Orientation = Views::Orientation.Rotated_90;
+
+      if ( BarChart.BarFrameNumber == 4 )
+        BarChart.BarFrameNumber = 6;
+      RadioRange.OutletSelector = 6;
+    }
+
+    else if ( BarChart.Orientation == Views::Orientation.Rotated_90 )
+    {
+      BarChart.Orientation = Views::Orientation.Rotated_180;
+
+      if ( BarChart.BarFrameNumber == 6 )
+        BarChart.BarFrameNumber = 4;
+      RadioRange.OutletSelector = 4;
+    }
+
+    else if ( BarChart.Orientation == Views::Orientation.Rotated_180 )
+    {
+      BarChart.Orientation = Views::Orientation.Rotated_270;
+
+      if ( BarChart.BarFrameNumber == 4 )
+        BarChart.BarFrameNumber = 6;
+      RadioRange.OutletSelector = 6;
+    }
+
+    else
+    {
+      BarChart.Orientation = Views::Orientation.Normal;
+
+      if ( BarChart.BarFrameNumber == 6 )
+        BarChart.BarFrameNumber = 4;
+      RadioRange.OutletSelector = 4;
+    }
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Caption
+  {
+    preset Bounds = <50,10,510,40>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "Bar Chart Demo";
+    preset Font = Resources::FontLarge;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text1
+  {
+    preset Bounds = <600,30,740,50>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "MaxValue (Range)";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text2
+  {
+    preset Bounds = <600,120,740,140>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "NoOfGridLines";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text3
+  {
+    preset Bounds = <600,210,740,230>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "BarSize";
+    preset Font = Resources::FontSmall;
+  }
+
+  // Slot method to create a set of random records - used as data source for the \
+  // chart diagram.
+  $rect <0,460,200,500>
+  slot RandomRecords
+  {
+    /* create a random number of values... */
+    var int32 count = math_rand( 5, 15 );
+    var int32 i;
+
+    /* Fill the arrays 'Values' and 'Colors' with some random data */
+    for ( i = 0; i < count; i++ )
+    {
+      Values[i] = math_rand( 0.0, 1.0 );
+      Colors[i] = color( uint8( math_rand( 0x40, 0xC0 )), uint8( math_rand( 0x40, 0xC0 )), 
+                         uint8( math_rand( 0x40, 0xC0 )));
+    }
+
+    /* Inform the chart object about the number of available data values. And invalidate all
+       values so the chart will load them again */
+    BarChart.NoOfValues = count;
+    BarChart.InvalidateValues( 0, count );
+  }
+
+  // The array 'Values' contains the data values used to build up the chart diagram.
+  $rect <0,510,200,550>
+  array float Values[ 24 ] =
+  (
+    Default[0] = 0.75;
+    Default[1] = 1.0;
+    Default[2] = 0.25;
+  );
+
+  // The array 'Colors' contains the colors used to build up the chart diagram.
+  $rect <0,550,200,590>
+  array color Colors[ 24 ] =
+  (
+    Default[0] = #97AFFFFF;
+    Default[1] = #FF8862FF;
+    Default[2] = #578F83FF;
+  );
+
+  // The pie chart demo page contains a ChartsDemo::BarChart object to draw a bar \
+  // chart diagram. The class of this object was created by using the template 'Bar \
+  // Chart' from the Gallery folder 'Component Templates'.
+  // 
+  // The data values for the bar diagram are calculated within the slot method RandomRecords() \
+  // and stored within the arrays 'Values' and 'Colors'.
+  // 
+  // The 'BarChart' objects loads the data on request by invoking the slot method \
+  // 'onLoadValue'.
+  // 
+  // The different control widgets are used to configure the bar chart diagram. In \
+  // many cases these widgets change a certain chart parameter directly via their \
+  // Outlet property - in other cases, a separate slot method is used.
+  note legend Note
+  {
+    attr Bounds = <210,420,810,580>;
+  }
+}
+
+// The 'LineScreen' class implements a complete GUI component containing a line chart \
+// diagram and a couple of control items to configure the chart. The GUI component \
+// is used within the @ChartsDemo class and embedded within an outline box in order \
+// to support smooth scrolling between the screens.
+$rect <30,180,230,220>
+$output false
+class LineScreen : Core::Group
+{
+  $rect <0,420,200,460>
+  inherited property Bounds = <0,0,800,400>;
+
+  // The class 'LineChart' implements a GUI component for displaying a complete line \
+  // chart diagram. The data for the single dots and lines are taken from the arrays \
+  // @Values and @Colors.
+  $rect <20,20,160,60>
+  object ChartsDemo::LineChart LineChart
+  {
+    preset Bounds = <30,50,550,300>;
+    preset GridLineColor = #728210FF;
+    preset NoOfGridLines = 5;
+    preset BackColor = #202020FF;
+    preset OnLoadValue = onLoadValue;
+    preset Orientation = Views::Orientation.Normal;
+    preset LineWidth = 2;
+    preset LineColor = #7D0AFFFF;
+    preset PointBitmap = ChartsDemo::Dots12x12;
+    preset NoOfValues = 3;
+  }
+
+  // This method is invoked by the PieChart object when the object updates a slice. \
+  // It provides data (value and color) for the affected slice.
+  $rect <0,630,200,670>
+  slot onLoadValue
+  {
+    /* Which slice is being loaded? */
+    var int32 index = LineChart.Index;
+
+    /* Provide the data for the point. */
+    LineChart.Value = Values[ index ] * ( 100.0 / float( SliderMaxValue.CurrentValue ));
+    LineChart.Color = Colors[ index ];
+    LineChart.Frame = Frames[ index ];
+  }
+
+  // Slider widget to control the display range of the line chart.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderMaxValue
+  {
+    preset Bounds = <600,40,760,100>;
+    preset OnChange = RangeSlot;
+    preset MaxValue = 500;
+    preset MinValue = 50;
+    preset CurrentValue = 100;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // Slider widget to control the number of grid lines displayed within the line \
+  // chart diagram.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderNoOfGridLines
+  {
+    preset Bounds = <600,130,760,190>;
+    preset Outlet = ^LineChart.NoOfGridLines;
+    preset MaxValue = 10;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // Checkbox widget to switch on/off the charts background.
+  $rect <20,20,160,60>
+  object WidgetSet::ToggleButton CheckBoxBackground
+  {
+    preset Bounds = <600,340,790,390>;
+    preset Checked = true;
+    preset OnSwitchOn = BackgroundSlot;
+    preset OnSwitchOff = BackgroundSlot;
+    preset Label = "Background";
+    preset Appearance = ChartsDemo::CheckBoxConfig;
+  }
+
+  // Slot method to switch on/off the charts background.
+  $rect <820,350,1020,390>
+  slot BackgroundSlot
+  {
+    /* change the alpha value of the background */
+    if ( CheckBoxBackground.Checked )
+      LineChart.BackColor.alpha = 0xFF;
+    else
+      LineChart.BackColor.alpha = 0x00;
+
+  }
+
+  // Checkbox widget to switch on/off the area filling below the charts line.
+  $rect <20,20,160,60>
+  object WidgetSet::ToggleButton CheckBoxFilling
+  {
+    preset Bounds = <600,290,790,340>;
+    preset OnSwitchOn = FillingSlot;
+    preset OnSwitchOff = FillingSlot;
+    preset Label = "Filling";
+    preset Appearance = ChartsDemo::CheckBoxConfig;
+  }
+
+  // Slot method to switch on/off the area filling below the charts line.
+  $rect <820,270,1020,310>
+  slot FillingSlot
+  {
+    /* set a non-transparent color if checkbox is checked */
+    if ( CheckBoxFilling.Checked )
+      LineChart.FillColor = #80808040;
+    else
+      LineChart.FillColor = #00000000;
+
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Caption
+  {
+    preset Bounds = <50,10,510,40>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "Line Chart Demo";
+    preset Font = Resources::FontLarge;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text1
+  {
+    preset Bounds = <600,30,740,50>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "MaxValue (Range)";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text2
+  {
+    preset Bounds = <600,120,740,140>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "NoOfGridLines";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text3
+  {
+    preset Bounds = <600,200,740,220>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "LineColor";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text5
+  {
+    preset Bounds = <30,320,170,340>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "LineWidth";
+    preset Font = Resources::FontSmall;
+  }
+
+  // Slider widget to control the line width of the line chart diagram.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderMaxWidth
+  {
+    preset Bounds = <30,330,190,390>;
+    preset Outlet = ^LineChart.LineWidth;
+    preset MaxValue = 9;
+    preset MinValue = 1;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // Slot method to scale the chart content.
+  $rect <820,60,1020,100>
+  slot RangeSlot
+  {
+    // Trigger the chart to reload all data valuaes.
+    LineChart.InvalidateValues( 0, LineChart.NoOfValues );
+  }
+
+  // Slot method to create a random line color.
+  $rect <820,230,1020,270>
+  slot ColorSlot
+  {
+    var int32 r;
+    var int32 g;
+    var int32 b;
+
+    /* create a random red, green and blue value */
+    r = math_rand( 0x40, 0xFF );
+    g = math_rand( 0x40, 0xFF );
+    b = math_rand( 0x40, 0xFF );
+
+    /* build a color and assign it to the chart */
+    LineChart.LineColor = color( (uint8)r, (uint8)g, (uint8)b, 0xFF );
+
+  }
+
+  // Button widget to change the currently used line color.
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton ActionButton
+  {
+    preset Bounds = <600,230,760,260>;
+    preset OnActivate = ColorSlot;
+    preset Label = "Change";
+    preset Appearance = ChartsDemo::PushButtonConfig;
+  }
+
+  // Slot method to create a set of random data sets and stores them in the arrays \
+  // 'Values', 'Colors' and 'Frames'. These arrays are thereupon used when the chart \
+  // diagram loads data.
+  $rect <0,460,200,500>
+  slot RandomRecords
+  {
+    /* create a random number of values... */
+    var int32 count = math_rand( 6, 16 );
+    var int32 i;
+
+    /* Fill the arrays 'Values' and 'Colors' with some random data */
+    for ( i = 0; i < count; i++ )
+    {
+      Values[i] = math_rand( 0.0, 1.0 );
+      Colors[i] = color( uint8( math_rand( 0x40, 0xC0 )), uint8( math_rand( 0x40, 0xC0 )), 
+                         uint8( math_rand( 0x40, 0xC0 )));
+      Frames[i] = math_rand( 0, 9 );
+    }
+
+    /* Inform the chart object about the number of available data values. And invalidate all
+       values so the chart will load them again */
+    LineChart.NoOfValues = count;
+    LineChart.InvalidateValues( 0, count );
+  }
+
+  // The array 'Values' contains the data values used to build up the chart diagram.
+  $rect <0,510,200,550>
+  array float Values[ 24 ] =
+  (
+    Default[0] = 0.75;
+    Default[1] = 1.0;
+    Default[2] = 0.25;
+  );
+
+  // The array 'Colors' contains the colors used to build up the chart diagram.
+  $rect <0,550,200,590>
+  array color Colors[ 24 ] =
+  (
+    Default[0] = #97AFFFFF;
+    Default[1] = #FF8862FF;
+    Default[2] = #578F83FF;
+  );
+
+  // The array 'Colors' contains the colors used to build up the chart diagram.
+  $rect <0,590,200,630>
+  array int32 Frames[ 24 ] =
+  (
+    Default[0] = 0;
+    Default[1] = 1;
+    Default[2] = 2;
+  );
+
+  // The pie chart demo page contains a ChartsDemo::LineChart object to draw a line \
+  // chart diagram. The class of this object was created by using the template 'Line \
+  // Chart' from the Gallery folder 'Component Templates'.
+  // 
+  // The data values for the line diagram are calculated within the slot method RandomRecords() \
+  // and stored within the arrays 'Values', 'Colors' and 'Frames'.
+  // 
+  // The 'LineChart' objects loads the data on request by invoking the slot method \
+  // 'onLoadValue'.
+  // 
+  // The different control widgets are used to configure the line chart diagram. \
+  // In many cases these widgets change a certain chart parameter directly via their \
+  // Outlet property - in other cases, a separate slot method is used.
+  note legend Note
+  {
+    attr Bounds = <210,420,810,650>;
+  }
+
+  // Slot method to rotate the chart content.
+  $rect <820,390,1020,430>
+  slot OrientationSlot
+  {
+    // Toggle the orientation modes of the chart component.
+    if ( LineChart.Orientation == Views::Orientation.Normal )
+      LineChart.Orientation = Views::Orientation.Rotated_90;
+
+    else if ( LineChart.Orientation == Views::Orientation.Rotated_90 )
+      LineChart.Orientation = Views::Orientation.Rotated_180;
+
+    else if ( LineChart.Orientation == Views::Orientation.Rotated_180 )
+      LineChart.Orientation = Views::Orientation.Rotated_270;
+
+    else
+      LineChart.Orientation = Views::Orientation.Normal;
+  }
+
+  // Button widget to change the currently used line color.
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton ActionButton1
+  {
+    preset Bounds = <210,345,370,375>;
+    preset OnActivate = OrientationSlot;
+    preset Label = "Rotate";
+    preset Appearance = ChartsDemo::PushButtonConfig;
+  }
+}
+
+// The 'PieScreen' class implements a complete GUI component containing a pie chart \
+// diagram and a couple of control items to configure the chart. The GUI component \
+// is used within the @ChartsDemo class and embedded within an outline box in order \
+// to support smooth scrolling between the screens.
+$rect <31,230,231,270>
+$output false
+class PieScreen : Core::Group
+{
+  $rect <0,420,200,460>
+  inherited property Bounds = <0,0,800,400>;
+
+  // The class 'PieChart' implements a GUI component for displaying a complete pie \
+  // chart diagram. The data for the single pie segments are taken from the arrays \
+  // @Values and @Colors.
+  $rect <20,20,160,60>
+  object ChartsDemo::PieChart PieChart
+  {
+    preset Bounds = <30,50,400,390>;
+    preset OnLoadValue = onLoadValue;
+    preset StartAngle = 270;
+    preset NoOfValues = 2;
+  }
+
+  // This method is invoked by the PieChart object when the object updates a slice. \
+  // It provides data (value and color) for the affected slice.
+  $rect <0,630,200,670>
+  slot onLoadValue
+  {
+    /* Which slice is being loaded? */
+    var int32 index = PieChart.Index;
+
+    /* Provide the data for the slice. */
+    PieChart.Value = Values[ index ] * ScaleFactor;
+    PieChart.Color = Colors[ index ];
+  }
+
+  // Slider widget to control the start angle of the pie chart.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderStartAngle
+  {
+    preset Bounds = <410,40,570,100>;
+    preset Outlet = ^PieChart.StartAngle;
+    preset MaxValue = 360;
+    preset MinValue = 0;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // Slider widget to control the total angle of the pie chart.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderPieAngle
+  {
+    preset Bounds = <600,40,760,100>;
+    preset Outlet = ^PieChart.PieAngle;
+    preset MaxValue = 360;
+    preset MinValue = 0;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // Slider widget to control the scaling factor of the pie chart.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderScaling
+  {
+    preset Bounds = <410,130,570,190>;
+    preset OnChange = UpdatePieSlot;
+    preset MaxValue = 100;
+    preset CurrentValue = 100;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // Slider widget to control the displacment of the single pie segments.
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider SliderDisplacement
+  {
+    preset Bounds = <600,130,760,190>;
+    preset Outlet = ^PieChart.Displacement;
+    preset MaxValue = 20;
+    preset Appearance = ChartsDemo::HorizontalSliderConfig;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Caption
+  {
+    preset Bounds = <50,10,510,40>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "Pie Chart Demo";
+    preset Font = Resources::FontLarge;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text1
+  {
+    preset Bounds = <410,30,550,50>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "StartAngle";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text2
+  {
+    preset Bounds = <600,30,740,50>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "PieAngle";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text3
+  {
+    preset Bounds = <410,120,550,140>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "Scaling";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text Text4
+  {
+    preset Bounds = <600,120,740,140>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "Displacement";
+    preset Font = Resources::FontSmall;
+  }
+
+  // Slot method to provide the current user settings to the pie chart diagram.
+  $rect <820,140,1020,180>
+  slot UpdatePieSlot
+  {
+    /* since the slider provides int32 values and the pie chart 'Scaling' property accepts float values,
+       this slot method is called each time the user has changed the 'Scaling' slider position,
+       in order to set the corresponding pie chart property */
+
+    PieChart.Scaling = SliderScaling.CurrentValue / 100.0;
+
+  }
+
+  // Slot method to create a set of random data sets and stores them in the arrays \
+  // 'Values' and 'Colors'. These arrays are thereupon used when the chart diagram \
+  // loads data.
+  $rect <0,460,200,500>
+  slot RandomRecords
+  {
+    /* create a random number of values... */
+    var int32 count = math_rand( 3, 7 );
+    var int32 i;
+    var float sum;
+
+    /* Fill the arrays 'Values' and 'Colors' with some random data */
+    for ( i = 0; i < count; i++ )
+    {
+      Values[i] = math_rand( 0.1, 0.5 );
+      Colors[i] = color( uint8( math_rand( 0x40, 0xC0 )), uint8( math_rand( 0x40, 0xC0 )), 
+                         uint8( math_rand( 0x40, 0xC0 )));
+
+      /* Calculate the sum of all random values */
+      sum += Values[i];
+    }
+
+    /* The pie chart expects the sum of the values lies in range 0.0..1.0. Since we have generated
+       random values, we need a scale factor so the sum of the values results in 1.0 */
+    ScaleFactor = 1.0 / sum;
+
+    /* Inform the chart object about the number of available data values. And invalidate all
+       values so the chart will load them again */
+    PieChart.NoOfValues = count;
+    PieChart.InvalidateValues( 0, count );
+  }
+
+  // The variable 'ScaleFactor' stores a factor to scale the random values from the \
+  // array 'Values' so they do produce the sum = 1.0.
+  $rect <0,590,200,630>
+  var float ScaleFactor = 1.0;
+
+  // The array 'Colors' contains the colors used to build up the chart diagram.
+  $rect <0,550,200,590>
+  array color Colors[ 24 ] =
+  (
+    Default[0] = #97AFFFFF;
+    Default[1] = #FF965FFF;
+  );
+
+  // The array 'Values' contains the data values used to build up the chart diagram.
+  $rect <0,510,200,550>
+  array float Values[ 24 ] =
+  (
+    Default[0] = 0.75;
+    Default[1] = 0.2;
+  );
+
+  // The pie chart demo page contains a ChartsDemo::PieChart object to draw a pie \
+  // chart diagram. The class of this object was created by using the template 'Pie \
+  // Chart' from the Gallery folder 'Component Templates'.
+  // 
+  // The data values for the pie diagram are calculated within the slot method RandomRecords() \
+  // and stored within the arrays 'Values' and 'Colors'.
+  // 
+  // The 'PieChart' objects loads the data on request by invoking the slot method \
+  // 'onLoadValue'.
+  // 
+  // The different control widgets are used to configure the pie chart diagram. In \
+  // many cases these widgets change a certain chart parameter directly via their \
+  // Outlet property - in other cases, a separate slot method is used.
+  note legend Note
+  {
+    attr Bounds = <210,420,810,650>;
+  }
+}
+
+// Chart pages
+note group Note8
+{
+  attr Bounds = <10,130,460,290>;
+}
+
+// Flat Widgets as customized default widgets
+note group NoteGroup
+{
+  attr Bounds = <10,300,900,570>;
+}
+
+$rect <30,350,440,390>
+$output false
+autoobject WidgetSet::PushButtonConfig PushButtonConfig
+{
+  preset LabelColorActive = ChartsDemo::ColorOfBackground;
+  preset LabelColorFocused = ChartsDemo::ColorOfBackground;
+  preset LabelColorDisabled = ChartsDemo::ColorOfBackground;
+  preset LabelColorDefault = ChartsDemo::ColorOfBackground;
+  preset LabelFont = Resources::FontMedium;
+  preset FaceTintActive = ChartsDemo::ColorOfTheme;
+  preset FaceTintFocused = ChartsDemo::ColorOfTouch;
+  preset FaceTintDisabled = ChartsDemo::ColorOfDisabled;
+  preset FaceTintDefault = ChartsDemo::ColorOfTouch;
+  preset FaceBitmapActive = ChartsDemo::Frame;
+  preset FaceBitmapFocused = ChartsDemo::Frame;
+  preset FaceBitmapDisabled = ChartsDemo::Frame;
+  preset FaceBitmapDefault = ChartsDemo::Frame;
+}
+
+$rect <440,350,640,390>
+$output false
+resource Resources::Bitmap Frame
+{
+  attr bitmapfile FileName = .\Res\FlatFrame.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// Bitmap resource - used in demo applications as background.
+$rect <230,710,430,750>
+$output false
+resource Resources::Bitmap DemoBackground
+{
+  attr bitmapfile FileName = .\Res\FlatDemoBackground.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// Color constant representing the main theme color of the widget kit.
+$rect <30,630,230,670>
+$output false
+const color ColorOfTheme = #7FBF00FF;
+
+// Color constant for all touchable items.
+$rect <30,670,230,710>
+$output false
+const color ColorOfTouch = #FFFFFFFF;
+
+// Color constant for all widget bodies.
+$rect <30,710,230,750>
+$output false
+const color ColorOfBody = #50535FFF;
+
+// Color constant for all disabled items.
+$rect <230,630,430,670>
+$output false
+const color ColorOfDisabled = #6B6F80FF;
+
+// Color constant for all items that should appear like the background.
+$rect <230,670,430,710>
+$output false
+const color ColorOfBackground = #000000FF;
+
+// Color Constants for Flat Widgets
+note group NoteGroup1
+{
+  attr Bounds = <10,580,450,780>;
+}
+
+$rect <30,430,440,470>
+$output false
+autoobject WidgetSet::ToggleButtonConfig CheckBoxConfig
+{
+  preset LabelOnColorActive = ChartsDemo::ColorOfTouch;
+  preset LabelOnColorFocused = ChartsDemo::ColorOfTouch;
+  preset LabelOnColorDisabled = ChartsDemo::ColorOfDisabled;
+  preset LabelOnColorDefault = ChartsDemo::ColorOfTouch;
+  preset LabelOffColorActive = ChartsDemo::ColorOfTouch;
+  preset LabelOffColorFocused = ChartsDemo::ColorOfTouch;
+  preset LabelOffColorDisabled = ChartsDemo::ColorOfDisabled;
+  preset LabelOffColorDefault = ChartsDemo::ColorOfTouch;
+  preset LabelMarginLeft = 30;
+  preset IconMarginLeft = 40;
+  preset LabelAlignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+  preset LabelOnFont = Resources::FontMedium;
+  preset LabelOffFont = Resources::FontMedium;
+  preset IconAlignment = Views::ImageAlignment[AlignHorzLeft, AlignVertCenter];
+  preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToTop];
+  preset FaceOnFrameActive = 5;
+  preset FaceOnFrameFocused = 1;
+  preset FaceOnFrameDisabled = 3;
+  preset FaceOnFrameDefault = 1;
+  preset FaceOnBitmapActive = ChartsDemo::CheckBox;
+  preset FaceOnBitmapFocused = ChartsDemo::CheckBox;
+  preset FaceOnBitmapDisabled = ChartsDemo::CheckBox;
+  preset FaceOnBitmapDefault = ChartsDemo::CheckBox;
+  preset FaceOffFrameActive = 4;
+  preset FaceOffFrameFocused = 0;
+  preset FaceOffFrameDisabled = 2;
+  preset FaceOffFrameDefault = 0;
+  preset FaceOffBitmapActive = ChartsDemo::CheckBox;
+  preset FaceOffBitmapFocused = ChartsDemo::CheckBox;
+  preset FaceOffBitmapDisabled = ChartsDemo::CheckBox;
+  preset FaceOffBitmapDefault = ChartsDemo::CheckBox;
+  preset WidgetMinSize = <20,20>;
+}
+
+$rect <440,430,640,470>
+$output false
+resource Resources::Bitmap CheckBox
+{
+  attr bitmapfile FileName = .\Res\FlatCheckBox.png;
+  attr framesize FrameSize = <20,20>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <440,470,640,510>
+$output false
+resource Resources::Bitmap RadioButton
+{
+  attr bitmapfile FileName = .\Res\FlatRadioButton.png;
+  attr framesize FrameSize = <20,20>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <30,470,440,510>
+$output false
+autoobject WidgetSet::RadioButtonConfig RadioButtonConfig
+{
+  preset LabelOnColorActive = ChartsDemo::ColorOfTouch;
+  preset LabelOnColorFocused = ChartsDemo::ColorOfTouch;
+  preset LabelOnColorDisabled = ChartsDemo::ColorOfDisabled;
+  preset LabelOnColorDefault = ChartsDemo::ColorOfTouch;
+  preset LabelOffColorActive = ChartsDemo::ColorOfTouch;
+  preset LabelOffColorFocused = ChartsDemo::ColorOfTouch;
+  preset LabelOffColorDisabled = ChartsDemo::ColorOfDisabled;
+  preset LabelOffColorDefault = ChartsDemo::ColorOfTouch;
+  preset LabelMarginLeft = 30;
+  preset IconMarginLeft = 40;
+  preset LabelAlignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+  preset LabelOnFont = Resources::FontMedium;
+  preset LabelOffFont = Resources::FontMedium;
+  preset IconAlignment = Views::ImageAlignment[AlignHorzLeft, AlignVertCenter];
+  preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToTop];
+  preset FaceOnFrameActive = 5;
+  preset FaceOnFrameFocused = 1;
+  preset FaceOnFrameDisabled = 3;
+  preset FaceOnFrameDefault = 1;
+  preset FaceOnBitmapActive = ChartsDemo::RadioButton;
+  preset FaceOnBitmapFocused = ChartsDemo::RadioButton;
+  preset FaceOnBitmapDisabled = ChartsDemo::RadioButton;
+  preset FaceOnBitmapDefault = ChartsDemo::RadioButton;
+  preset FaceOffFrameActive = 4;
+  preset FaceOffFrameFocused = 0;
+  preset FaceOffFrameDisabled = 2;
+  preset FaceOffFrameDefault = 0;
+  preset FaceOffBitmapActive = ChartsDemo::RadioButton;
+  preset FaceOffBitmapFocused = ChartsDemo::RadioButton;
+  preset FaceOffBitmapDisabled = ChartsDemo::RadioButton;
+  preset FaceOffBitmapDefault = ChartsDemo::RadioButton;
+  preset WidgetMinSize = <20,20>;
+}
+
+$rect <30,510,440,550>
+$output false
+autoobject WidgetSet::HorizontalSliderConfig HorizontalSliderConfig
+{
+  preset ThumbFrameActive = 2;
+  preset ThumbFrameFocused = 0;
+  preset ThumbFrameDisabled = 1;
+  preset ThumbFrameDefault = 0;
+  preset ThumbBitmapActive = ChartsDemo::SliderThumb;
+  preset ThumbBitmapFocused = ChartsDemo::SliderThumb;
+  preset ThumbBitmapDisabled = ChartsDemo::SliderThumb;
+  preset ThumbBitmapDefault = ChartsDemo::SliderThumb;
+  preset FaceBitmapActive = ChartsDemo::HorzSliderFace;
+  preset FaceBitmapFocused = ChartsDemo::HorzSliderFace;
+  preset FaceBitmapDisabled = ChartsDemo::HorzSliderFace;
+  preset FaceBitmapDefault = ChartsDemo::HorzSliderFace;
+  preset WidgetMinSize = <60,20>;
+}
+
+$rect <440,510,640,550>
+$output false
+resource Resources::Bitmap HorzSliderFace
+{
+  attr bitmapfile FileName = .\Res\FlatHorzSliderFace.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <640,510,840,550>
+$output false
+resource Resources::Bitmap SliderThumb
+{
+  attr bitmapfile FileName = .\Res\FlatSliderThumb.png;
+  attr framesize FrameSize = <20,20>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <30,390,440,430>
+$output false
+autoobject WidgetSet::PushButtonConfig IconButtonConfig
+{
+  preset LabelColorActive = ChartsDemo::ColorOfTheme;
+  preset LabelColorFocused = ChartsDemo::ColorOfTouch;
+  preset LabelColorDisabled = ChartsDemo::ColorOfDisabled;
+  preset LabelColorDefault = ChartsDemo::ColorOfTouch;
+  preset LabelMarginLeft = 40;
+  preset IconTintActive = ChartsDemo::ColorOfBackground;
+  preset IconTintFocused = ChartsDemo::ColorOfBackground;
+  preset IconTintDisabled = ChartsDemo::ColorOfBackground;
+  preset IconTintDefault = ChartsDemo::ColorOfBackground;
+  preset IconMarginLeft = 3;
+  preset LabelAlignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+  preset LabelFont = Resources::FontMedium;
+  preset IconAlignment = Views::ImageAlignment[AlignHorzLeft, AlignVertCenter];
+  preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToTop];
+  preset FaceTintActive = ChartsDemo::ColorOfTheme;
+  preset FaceTintFocused = ChartsDemo::ColorOfTouch;
+  preset FaceTintDisabled = ChartsDemo::ColorOfDisabled;
+  preset FaceTintDefault = ChartsDemo::ColorOfTouch;
+  preset FaceBitmapActive = ChartsDemo::Frame;
+  preset FaceBitmapFocused = ChartsDemo::Frame;
+  preset FaceBitmapDisabled = ChartsDemo::Frame;
+  preset FaceBitmapDefault = ChartsDemo::Frame;
+  preset WidgetMinSize = <30,30>;
+}
+
+// Demo widgets in a flat design.
+// 
+// This unit contains the configuration and resources to create a couple of widgets \
+// used to control the demo application.
+// 
+// This is not a universal widget set - only the widgets needed within the demo are \
+// defined here.
+note legend Note
+{
+  attr Bounds = <10,930,540,1080>;
+}
+
+// How to use component templates?
+// 
+// https://doc.embedded-wizard.de/creating-components-from-templates
+// 
+// How to use and customize widgets?
+// 
+// https://doc.embedded-wizard.de/using-widgets
+note legend Note9
+{
+  attr Bounds = <10,790,540,920>;
+}
+
+// Chart Components
+note group Note10
+{
+  attr Bounds = <470,130,900,290>;
+}
+
+// This class implements the ChartsDemo::LineChart component. This component is intended \
+// to display a line chart diagram composed of points connected by straight line \
+// segments.
+// The total number of points is determined by the property @NoOfValues. The corresponding \
+// data is loaded dynamically at the runtime. For this purpose a slot method has \
+// to be implemented and assigned to the @OnLoadValue property. The component will \
+// invoke the slot method automatically each time it needs a data value to be loaded. \
+// Within the slot method the implementation can access and initialize the affected \
+// value by using the variables @Value, @Color and @Frame.
+// To configure the color and the width of the line segments use the properties @LineColor \
+// and @LineWidth. The appearance of the points is determined by the property @PointBitmap. \
+// The property @FillColor configures the color to fill the background of the chart. \
+// The property @Orientation, in turn, allows the chart contents to appear rotated. \
+// Accordingly, the diagram can be aligned at the top, left or right edge of the \
+// component.
+// In order to trigger the chart component to reload one or more points, invoke the \
+// method @InvalidateValues(). The component will thereupon schedule the necessary \
+// loading steps automatically.
+$rect <480,180,680,220>
+$output false
+class LineChart : Templates::LineChart
+{
+  $rect <420,540,620,580>
+  inherited property Bounds = <0,0,150,150>;
+
+  $rect <420,420,620,460>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+
+    // In case of the chart component, when its size changes, force an update of
+    // all displayed points, so they fill the chart correctly.
+    if ( size != aSize )
+    {
+      InvalidateValues( 0, NoOfValues );
+      size = aSize;
+
+      // Also if the size changes, update the grid
+      postsignal updateGrid;
+    }
+  }
+
+  $rect <650,420,850,460>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
+
+  // Grid lines
+  note group Note5
+  {
+    attr Bounds = <640,480,860,610>;
+  }
+
+  // This component has been created by using the template 'Line Chart' from the \
+  // Gallery folder 'Component Templates'.
+  // 
+  // Then we have modified the property 'JoinPoints' of the 'StrokePath' view to \
+  // round the corners of the curve.
+  // 
+  // Also new properties 'BackColor', 'NoOfGridLines' and 'GridLineColor' have been \
+  // added. These demonstrate how to enhance the chart by configuration properties.
+  // 
+  // To display the background, we added a new 'Background' view.
+  // 
+  // To display the grid, we added 10 new 'GridLine' views. These views are updated \
+  // in the new slot method 'updateGrid'.
+  note legend Note4
+  {
+    attr Bounds = <10,640,990,830>;
+  }
+
+  // State management
+  note group Note3
+  {
+    attr Bounds = <640,380,860,470>;
+  }
+
+  // Layout management
+  note group Note2
+  {
+    attr Bounds = <410,380,630,510>;
+  }
+
+  // Chart update logic
+  note group Note1
+  {
+    attr Bounds = <180,380,400,630>;
+  }
+
+  // THis array stores references to the 10 grid line views. Ite helps to access \
+  // them by using an index.
+  $rect <650,560,850,600>
+  array Views::Line gridLines[ 10 ] =
+  (
+    Default[0] = GridLine1;
+    Default[1] = GridLine2;
+    Default[2] = GridLine3;
+    Default[3] = GridLine4;
+    Default[4] = GridLine5;
+    Default[5] = GridLine6;
+    Default[6] = GridLine7;
+    Default[7] = GridLine8;
+    Default[8] = GridLine9;
+    Default[9] = GridLine10;
+  );
+
+  // The variable stores the previous size of the chart component. It is used in \
+  // the @UpdateLayout() method to detect when the component is resized and needs \
+  // the complete update of all points.
+  $rect <420,460,620,500>
+  var point size;
+
+  // The variable stores the index of the last point which needs an update.
+  $rect <190,580,390,620>
+  var int32 invalidLastValue;
+
+  // The variable stores the index of the first point which needs an update.
+  $rect <190,540,390,580>
+  var int32 invalidFirstValue = 0x7FFFFFFF;
+
+  // The object stores the coordinates for line segments connecting the points.
+  $rect <190,500,390,540>
+  object Graphics::Path fillPathData;
+
+  // The object stores the coordinates for line segments connecting the points.
+  $rect <190,460,390,500>
+  object Graphics::Path strokePathData;
+
+  // This slot method takes care of preparing a new bitmap in GridBitmap object. \
+  // This bitmap is then used to draw the grid.
+  $rect <650,520,850,560>
+  slot updateGrid
+  {
+    // Some common parameters for the calculation.
+    var point pointSize     = PointBitmap? PointBitmap.FrameSize : <0,0>;
+    var int32 pointSizeX2   = pointSize.x / 2;
+    var int32 pointSizeY2   = pointSize.y / 2;
+    var rect  bounds        = Outline.Bounds;
+    var color gridColor     = GridLineColor;
+    var int32 noOfGridLines = NoOfGridLines;
+    var int32 i;
+
+    // Calculate the available space for the grid. Reduce the space by the size
+    // of a single point.
+    var int32 rangeX = bounds.w - pointSize.x;
+    var int32 rangeY = bounds.h - pointSize.y;
+
+    // Update the visible state, color and position of the views used to display the grid
+    for ( ; i < 10; i++ )
+    {
+      // Is the grid line visible?
+      if (( gridLines[i].Visible = ( i < noOfGridLines )) == true )
+      {
+        var int32 ofsX = ( noOfGridLines > 1 )? ( i * rangeX ) / ( noOfGridLines - 1 ) : 0;
+        var int32 ofsY = ( noOfGridLines > 1 )? ( i * rangeY ) / ( noOfGridLines - 1 ) : 0;
+        var int32 p1X;
+        var int32 p1Y;
+        var int32 p2X;
+        var int32 p2Y;
+
+        // Calculate the position of the line. This depends on the orientation of the
+        // chart.
+        switch ( Orientation )
+        {
+          case Views::Orientation.Normal :
+          {
+            p1X = bounds.x1 + pointSizeX2;
+            p1Y = bounds.y2 - pointSizeY2 - ofsY;
+            p2X = bounds.x2 - pointSizeX2;
+            p2Y = p1Y;
+          }
+          case Views::Orientation.Rotated_90 :
+          {
+            p1X = bounds.x2 - pointSizeX2 - ofsX;
+            p1Y = bounds.y2 - pointSizeY2;
+            p2Y = bounds.y1 + pointSizeY2;
+            p2X = p1X;
+          }
+          case Views::Orientation.Rotated_180 :
+          {
+            p1X = bounds.x2 - pointSizeX2;
+            p1Y = bounds.y1 + pointSizeY2 + ofsY;
+            p2X = bounds.x1 + pointSizeX2;
+            p2Y = p1Y;
+          }
+          case Views::Orientation.Rotated_270 :
+          {
+            p1X = bounds.x1 + pointSizeX2 + ofsX;
+            p1Y = bounds.y1 + pointSizeY2;
+            p2Y = bounds.y2 - pointSizeY2;
+            p2X = p1X;
+          }
+          default :;
+        }
+
+        // Update the position and the color of the line
+        gridLines[i].Color  = gridColor;
+        gridLines[i].Point1 = point( p1X, p1Y );
+        gridLines[i].Point2 = point( p2X, p2Y );
+      }
+    }
+  }
+
+  // The method 'updateChart' takes care of creating and displaying the lines and \
+  // points. In this template, the points are represented by Views::Image instances. \
+  // Consequently, if the chart is configured with @NoOfValues = 12, the method 'updateChart' \
+  // will manage 12 images.
+  $rect <191,420,391,460>
+  slot updateChart
+  {
+    // Some common parameters for the calculation.
+    var point pointSize   = PointBitmap? PointBitmap.FrameSize : <0,0>;
+    var float pointSizeX2 = float( pointSize.x ) / 2;
+    var float pointSizeY2 = float( pointSize.y ) / 2;
+    var rect  bounds      = Outline.Bounds;
+    var int32 noOfValues  = NoOfValues;
+
+    // Calculate the available space and the distance between two adjacent points.
+    // Thereby ensure that the points are always fully visible. Accordingly reduce
+    // the space by the size of a single point.
+    var float rangeX     = bounds.w - pointSize.x;
+    var float rangeY     = bounds.h - pointSize.y;
+    var float ofsX       = ( noOfValues > 1 )? rangeX / ( noOfValues - 1 ) : 0;
+    var float ofsY       = ( noOfValues > 1 )? rangeY / ( noOfValues - 1 ) : 0;
+    var int32 i;
+
+    /*
+
+      HINT 1:
+
+      In this template, the points are represented by 'Views::Image' objects. For example, 
+      if the chart displays 12 points, it contains in fact 12 'Views::Image' views. 
+
+      If you want the points to be displayed by other by views (e.g. Rectangle, etc.), replace
+      in the following code all occurrences of the class 'Views::Image' by e.g. 'Views::Rectangle'.
+
+    */
+
+    // These views are managed by the Outline. Search in the Outline for already existing views.
+    var Views::Image view = (Views::Image)Outline.FindNextView( null, Core::ViewState[]);
+
+    // Now process all points. Adapt the size/position/color of each point.
+    for ( i = 0; i < noOfValues; i++ )
+    {
+      // Is it necessary to load the data for the affected point?
+      var bool reload = ( i >= invalidFirstValue ) && ( i <= invalidLastValue );
+
+      // No corresponding 'Image' view found. Then create a new one.
+      if ( !view )
+      {
+        view   = new Views::Image;
+        reload = true;
+
+        // Add the view to the chart component and ensure the view is managed as belonging
+        // (as embedded) to the Outline.
+        view.Embedded = true;
+        Add( view, 0 );
+      }
+
+      // Load the data?
+      if ( reload )
+      {
+        // Invoke the external slot method to query the value and color for the point with
+        // the number 'i'.
+        Index = i;
+        Value = 0.0;
+        Color = #00000000;
+        Frame = 0;
+        signal OnLoadValue;
+
+        /*
+
+          HINT 2:
+
+          The following code modifies the 'Color' and 'FrameNumber' properties of the used Image
+          view. If you have modified the template to use other views, you can also modify other
+          properties, depending on the used view and the visual effect you want to achieve.
+
+        */
+
+        // Adapt the size, color, used bitmap of the image representing the point.
+        view.Bounds.size = pointSize;
+        view.Color       = Color;
+        view.Bitmap      = PointBitmap;
+        view.FrameNumber = Frame;
+
+        /*
+
+          HINT 3:
+
+          Following code calculates the position of the view within the Chart component.
+          If you expect other algorithms to layout the points, feel free to modify this code.
+
+        */
+
+        var float x;
+        var float y;
+
+        // Calculate the position for the point. This depends on the selected orientation.
+        switch ( Orientation )
+        {
+          case Views::Orientation.Normal :
+          {
+            x = bounds.x1 + pointSizeX2 + ( ofsX   * i );
+            y = bounds.y2 - pointSizeY2 - ( rangeY * Value );
+          }
+          case Views::Orientation.Rotated_90 :
+          {
+            y = bounds.y2 - pointSizeY2 - ( ofsY   * i );
+            x = bounds.x2 - pointSizeX2 - ( rangeX * Value );
+          }
+          case Views::Orientation.Rotated_180 :
+          {
+            x = bounds.x2 - pointSizeX2 - ( ofsX   * i );
+            y = bounds.y1 + pointSizeY2 + ( rangeY * Value );
+          }
+          case Views::Orientation.Rotated_270 :
+          {
+            y = bounds.y1 + pointSizeY2 + ( ofsY   * i );
+            x = bounds.x1 + pointSizeX2 + ( rangeX * Value );
+          }
+          default :;
+        }
+
+        // Arrange the position of the image representing the point. The center of the image
+        // should lie at the calculated x, y position.
+        view.Bounds.origin = point( int32(( x - pointSizeX2 ).round ), 
+                                    int32(( y - pointSizeY2 ).round ));
+
+        // ... and update the position in the path data describing the line segments.
+        strokePathData.SetNode( 0, i, x - bounds.x, y - bounds.y );
+      }
+
+      // Search for the next already (eventually) existing view.
+      view = (Views::Image)Outline.FindNextView( view, Core::ViewState[]);
+    }
+
+    // From the coordinates of the line segments create a path to fill the area behind
+    // the lines. This depends on the selected orientation.
+    switch ( Orientation )
+    {
+      case Views::Orientation.Normal :
+      {
+        fillPathData.Begin  ( 0, pointSizeX2, bounds.h );
+        fillPathData.AddCopy( 0, strokePathData, 0, 0, strokePathData.GetNoOfEdges( 0 ));
+        fillPathData.AddLine( 0, bounds.w - pointSizeX2, bounds.h );
+        fillPathData.Close  ( 0 );
+      }
+      case Views::Orientation.Rotated_90 :
+      {
+        fillPathData.Begin  ( 0, bounds.w, bounds.h - pointSizeY2 );
+        fillPathData.AddCopy( 0, strokePathData, 0, 0, strokePathData.GetNoOfEdges( 0 ));
+        fillPathData.AddLine( 0, bounds.w, pointSizeY2 );
+        fillPathData.Close  ( 0 );
+      }
+      case Views::Orientation.Rotated_180 :
+      {
+        fillPathData.Begin  ( 0, bounds.w - pointSizeX2, 0 );
+        fillPathData.AddCopy( 0, strokePathData, 0, 0, strokePathData.GetNoOfEdges( 0 ));
+        fillPathData.AddLine( 0, pointSizeX2, 0 );
+        fillPathData.Close  ( 0 );
+      }
+      case Views::Orientation.Rotated_270 :
+      {
+        fillPathData.Begin  ( 0, 0, pointSizeY2 );
+        fillPathData.AddCopy( 0, strokePathData, 0, 0, strokePathData.GetNoOfEdges( 0 ));
+        fillPathData.AddLine( 0, 0, bounds.h - pointSizeY2 );
+        fillPathData.Close  ( 0 );
+      }
+      default :;
+    }
+
+    // If the number of points was reduced in the chart. Remove all superflous views now.
+    while ( view )
+    {
+      var Core::View tmpView = view;
+
+      // Search for the view following the actual view and then release the actual view.
+      view = (Views::Image)Outline.FindNextView( view, Core::ViewState[]);
+      Remove( tmpView );
+    }
+
+    // The update is finished. Clear the pending invalid flags.
+    invalidFirstValue = 0x7FFFFFFF;
+    invalidLastValue  = 0;
+  }
+
+  $rect <380,320,580,360>
+  onset GridLineColor
+  {
+    // No changes - nothing to do
+    if ( value == pure GridLineColor )
+      return;
+
+    // Remember the new number of items
+    pure GridLineColor = value;
+
+    // ... and trigger an update of the grid
+    postsignal updateGrid;
+  }
+
+  $rect <180,320,380,360>
+  onset NoOfGridLines
+  {
+    // check for valid values
+    if ( value < 0  ) value = 0;
+    if ( value > 10 ) value = 10;
+
+    // check for any news...
+    if ( value == pure NoOfGridLines )
+      return;
+
+    // store the new value...
+    pure NoOfGridLines = value;
+
+    // ... and trigger an update of the grid
+    postsignal updateGrid;
+  }
+
+  $rect <180,230,380,270>
+  onset BackColor
+  {
+    // No changes - nothing to do
+    if ( value == pure BackColor )
+      return;
+
+    // Remember the new number of items
+    pure BackColor = value;
+
+    // Adapt the view displaying the background
+    Background.Color   = value;
+    Background.Visible = value.alpha > 0;
+  }
+
+  $rect <380,140,580,180>
+  onset Orientation
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Orientation == value )
+      return;
+
+    // Remember the property's new value.
+    pure Orientation = value;
+
+    // Changing the orientation forces the component to reload all its data values.
+    InvalidateValues( 0, NoOfValues );
+
+    // Changing the orientation affects the range where points are arranged. 
+    // Consequently, the range to arrange the points as well as the grid is changed.
+    // The grid needs an update.
+    postsignal updateGrid;
+  }
+
+  $rect <180,140,380,180>
+  onset FillColor
+  {
+    // No changes - nothing to do
+    if ( value == pure FillColor )
+      return;
+
+    // Remember the new number of items
+    pure FillColor = value;
+
+    // Adapt the view displaying the filled background segments
+    FillPath.Color   = value;
+    FillPath.Visible = value.alpha > 0;
+  }
+
+  $rect <780,50,980,90>
+  onset LineWidth
+  {
+    // Ensure the given number of items is valid
+    if ( value < 1 )
+      value = 1;
+
+    // No changes - nothing to do
+    if ( value == pure LineWidth )
+      return;
+
+    // Remember the new number of items
+    pure LineWidth = value;
+
+    // Adapt the view displaying the line segments
+    StrokePath.Width = value;
+  }
+
+  $rect <580,50,780,90>
+  onset LineColor
+  {
+    // No changes - nothing to do
+    if ( value == pure LineColor )
+      return;
+
+    // Remember the new number of items
+    pure LineColor = value;
+
+    // Adapt the view displaying the line segments
+    StrokePath.Color = value;
+  }
+
+  $rect <380,50,580,90>
+  onset PointBitmap
+  {
+    // No changes - nothing to do
+    if ( value == pure PointBitmap )
+      return;
+
+    // Remember the new bitmap to display the points
+    pure PointBitmap = value;
+
+    // Request the component to perform its update.
+    InvalidateValues( 0, NoOfValues );
+
+    // Changing the point bitmap affects the size of a point. Consequently,
+    // the range to arrange the points as well as the grid is changed. The
+    // grid needs an update.
+    postsignal updateGrid;
+  }
+
+  $rect <180,50,380,90>
+  onset NoOfValues
+  {
+    // Ensure the given number of values is valid
+    if ( value < 0 )
+      value = 0;
+
+    // No changes - nothing to do
+    if ( value == pure NoOfValues )
+      return;
+
+    // When the number of values changes, all values need an update.
+    invalidFirstValue = 0;
+    invalidLastValue  = value;
+
+    // Remember the new number of values
+    pure NoOfValues = value;
+
+    // The line segments are stored in a 'path data' object. Adjust its
+    // capacity and 'add' new edges to the path.
+    strokePathData.InitSubPath ( 0, math_max( value - 1, 0 ));
+    strokePathData.SetNoOfEdges( 0, math_max( value - 1, 0 ));
+
+    // Fill path will contain a copy of the 'strokePathdata' + 3 additional edges to
+    // close the shape.
+    fillPathData.InitSubPath( 0, math_max( value - 1, 0 ) + 3 );
+
+    // Request the component to perform its update.
+    postsignal updateChart;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Background
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,150,150>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine1
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine2
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine3
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine4
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine5
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine6
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine7
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine8
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine9
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine10
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::FillPath FillPath
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,150,150>;
+    preset Color = #00000000;
+    preset Path = fillPathData;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::StrokePath StrokePath
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,150,150>;
+    preset Color = #000000FF;
+    preset JoinPoints = Graphics::PathJoin.Round;
+    preset Width = 3.0;
+    preset Path = strokePathData;
+  }
+
+  $rect <20,20,160,60>
+  object Core::Outline Outline
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,150,150>;
+  }
+
+  // The method InvalidateValues() forces the chart component to reload the values \
+  // for one or more point. The index of the point to start the reload operation \
+  // is specified in the parameter aFirstValue. The parameter aLastValue specifies \
+  // the index of the last affected point. The first value (first point) has the \
+  // index 0, the second 1, and so far. The operation can cause the chart component \
+  // to invoke the external @OnLoadValue slot method for each affected point.
+  $rect <780,100,980,140>
+  method void InvalidateValues( arg int32 aFirstValue, arg int32 aLastValue )
+  {
+    // Nothing to invalidate
+    if ( aFirstValue > aLastValue )
+      return;
+
+    // Remember the range of invalid items. Eventually build a union with previously
+    // invalidated values.
+    invalidFirstValue = math_min( invalidFirstValue, aFirstValue );
+    invalidLastValue  = math_max( invalidLastValue,  aLastValue  );
+
+    // Request the component to perform its update.
+    postsignal updateChart;
+  }
+
+  // The variable 'Frame' is intended to receive the frame number to be selected \
+  // in the @PointBitmap for the actually loaded point. In order to load the data \
+  // for a point, the chart component invokes the external slot method @OnLoadValue. \
+  // The implementation of the slot method should thereupon determine the value, \
+  // color and the frame number to select from the @PointBitmap for the requested \
+  // point and assign it to the variables @Value, @Color and 'Frame'. The affected \
+  // point is identifies by the variable @Index.
+  $rect <780,180,980,220>
+  var int32 Frame;
+
+  // The variable 'Color' is intended to receive the color for the actually loaded \
+  // point. In order to load the data for a point, the chart component invokes the \
+  // external slot method @OnLoadValue. The implementation of the slot method should \
+  // thereupon determine the value, color and the frame number to select from the \
+  // @PointBitmap for the requested point and assign it to the variables @Value, \
+  // 'Color' and @Frame. The affected point is identifies by the variable @Index.
+  $rect <580,220,780,260>
+  var color Color;
+
+  // The variable 'Value' is intended to receive the value for the actually loaded \
+  // point. In order to load the data for a point, the chart component invokes the \
+  // external slot method @OnLoadValue. The implementation of the slot method should \
+  // thereupon determine the value, color and the frame number to select from the \
+  // @PointBitmap for the requested point and assign it to the variables 'Value', \
+  // @Color and @Frame. The affected point is identifies by the variable @Index.
+  // The value lies in range 0.0 .. 1.0 according to the expected position of the \
+  // point.
+  $rect <580,180,780,220>
+  var float Value;
+
+  // The variable 'Index' identifies the point which is about to be loaded by the \
+  // external slot method @OnLoadValue. In this manner the slot method can determine \
+  // the corresponding content in the associated data source. The first point has \
+  // the index 0, the second 1, and so far. The slot method should store thereupon \
+  // the concrete point value, its color and the associated @PointBitmap frame number \
+  // in the variables @Value, @Color and @Frame.
+  $rect <580,140,780,180>
+  var int32 Index;
+
+  // The property 'GridLineColor' stores the color to stroke the grid.
+  $rect <380,280,580,320>
+  property color GridLineColor = #00000000;
+
+  // The property 'NoOfGridLines' determines the number of horizontal grid lines.
+  $rect <180,280,380,320>
+  property int32 NoOfGridLines = 0;
+
+  // The property 'BackColor' stores the color to fill the background of the chart \
+  // component.
+  $rect <180,190,380,230>
+  property color BackColor = #00000000;
+
+  // The property 'OnLoadValue' should refer to a slot method, which will be invoked \
+  // by the chart component in order to load the data for a given point. Within the \
+  // slot method the index of the affected point can be accessed and its new value, \
+  // color and bitmap can be specified. For this purpose the variables @Index, @Value, \
+  // @Color and @Frame should be used.
+  $rect <580,100,780,140>
+  property slot OnLoadValue = null;
+
+  // The property 'Orientation' determines whether the chart should be displayed \
+  // with normal or rotated orientation.
+  $rect <380,100,580,140>
+  property Views::Orientation Orientation = Views::Orientation.Normal;
+
+  // The property 'FillColor' stores the color to fill the shape determined by the \
+  // line segments.
+  $rect <180,100,380,140>
+  property color FillColor = #00000000;
+
+  // The property 'LineWidth' stores the width of the drawn line segments expressed \
+  // in pixel.
+  $rect <780,10,980,50>
+  property int32 LineWidth = 3;
+
+  // The property 'LineColor' stores the color to draw the line segments between \
+  // the points.
+  $rect <580,10,780,50>
+  property color LineColor = #000000FF;
+
+  // The property 'PointBitmap' stores the bitmap to display all chart points. If \
+  // the bitmap contains multiple frames, the slot method associated to @OnLoadValue \
+  // property can select for each point an individual frame from the bitmap. Similarly, \
+  // if the bitmap is an alpha-only bitmap, the bitmap can be colorized for each \
+  // point individually. For this purpose the slot method should initialize the variables \
+  // @Frame and @Color with values corresponding to the point.
+  $rect <380,10,580,50>
+  property Resources::Bitmap PointBitmap = Resources::SymbolIconsSmall;
+
+  // The property 'NoOfValues' stores how many points are currently managed within \
+  // the chart component. This value should correspond to the number of data entries \
+  // the chart presents to the user.
+  $rect <180,10,380,50>
+  property int32 NoOfValues = 0;
+}
+
+// This class implements the ChartsDemo::PieChart component. This component is intended \
+// to display a pie chart diagram composed of slices.
+// The total number of slices is determined by the property @NoOfValues. The corresponding \
+// data is loaded dynamically at the runtime. For this purpose a slot method has \
+// to be implemented and assigned to the @OnLoadValue property. The component will \
+// invoke the slot method automatically each time it needs a slice to be loaded. \
+// Within the slot method the implementation can access and initialize the affected \
+// slice by using the variables @Value and @Color.
+// The property @Displacement specifies an optional displacement to move the slices \
+// away from the center of the chart. The property @StartAngle specifies the angle \
+// to start the first slice.
+// In order to trigger the chart component to reload one or more slices, invoke the \
+// method @InvalidateValues(). The component will thereupon schedule the necessary \
+// loading steps automatically.
+$rect <480,230,680,270>
+$output false
+class PieChart : Templates::PieChart
+{
+  $rect <650,400,850,440>
+  inherited property Bounds = <0,0,150,150>;
+
+  $rect <420,330,620,370>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+
+    // In case of the chart component, when its size changes, force an update of
+    // all displayed slices, so they fill the chart correctly.
+    if ( size != aSize )
+    {
+      InvalidateValues( 0, NoOfValues );
+      size = aSize;
+    }
+  }
+
+  $rect <650,330,850,370>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
+
+  // This component has been created by using the template 'Pie Chart' from the Gallery \
+  // folder 'Component Templates'.
+  // 
+  // Then we have enhanced the so created component by two new properties 'PieAngle' \
+  // and 'Scaling'.
+  // 
+  // Also the implementation of the method 'updateChart' has been adapted to use \
+  // the new properties.
+  note legend Note4
+  {
+    attr Bounds = <10,480,990,580>;
+  }
+
+  // State management
+  note group Note3
+  {
+    attr Bounds = <640,290,860,380>;
+  }
+
+  // Layout management
+  note group Note2
+  {
+    attr Bounds = <410,290,630,420>;
+  }
+
+  // Chart update logic
+  note group Note1
+  {
+    attr Bounds = <180,290,400,460>;
+  }
+
+  $rect <420,370,620,410>
+  var point size;
+
+  // The variable stores the index of the last slice which needs an update.
+  $rect <190,410,390,450>
+  var int32 invalidLastValue;
+
+  // The variable stores the index of the first slice which needs an update.
+  $rect <190,370,390,410>
+  var int32 invalidFirstValue = 0x7FFFFFFF;
+
+  // The method 'updateChart' takes care of creating and displaying the slices. In \
+  // this template, the slices are represented by Views::FilledPath instances. Consequently, \
+  // if the chart is configured with @NoOfValues = 12, the method 'updateChart' will \
+  // manage 12 filled path views.
+  $rect <190,330,390,370>
+  slot updateChart
+  {
+    // Some common parameters for the calculation.
+    var rect  bounds     = Outline.Bounds;
+    var int32 noOfValues = NoOfValues;
+    var float maxRadius  = math_min( bounds.w, bounds.h ) / 2;
+    var int32 i;
+    var float sum;
+
+    // Evtl. reduce the size of the displayed slices
+    maxRadius *= Scaling;
+
+    /*
+
+      HINT 1:
+
+      In this template, the slices are represented by 'Views::FillPath' objects. For example,
+      if the chart displays 12 slices, it contains in fact 12 'Views::FillPath' views. 
+
+      If you want the slices to be displayed by other by views (e.g. Stroked Path, etc.), replace
+      in the following code all occurrences of the class 'Views::Rectangle' by e.g. 'Views::StrokePath'.
+
+    */
+
+    // These views are managed by the Outline. Search in the Outline for already existing views.
+    var Views::FillPath view = (Views::FillPath)Outline.FindNextView( null, Core::ViewState[]);
+
+    // Now process all slices. Adapt the size/position/color/etc. of each slice.
+    for ( i = 0; i < noOfValues; i++ )
+    {
+      // Is it necessary to load the data for the affected slice? Please note, the slices are
+      // arranged side by side. Thus the size of one slice affects the next following one.
+      // As consequence, if there is a single 'invalid' slice, we need to load all slices again.
+      // To avoid it, it would be necessary to cache the loaded values internally. This template
+      // omits such cache and loads the complete data set.
+      var bool reload = invalidLastValue >= invalidFirstValue;
+
+      // No corresponding 'Filled Path' view found. Then create a new one.
+      if ( !view )
+      {
+        view   = new Views::FillPath;
+        reload = true;
+
+        // Associate to each view a path data object to store the slice shape.
+        view.Path = new Graphics::Path;
+
+        // Add the view to the chart component and ensure the view is managed as belonging
+        // (as embedded) to the Outline.
+        view.Embedded = true;
+        Add( view, 0 );
+      }
+
+      // Load the data?
+      if ( reload )
+      {
+        // Invoke the external slot method to query the value and color for the slice with
+        // the number 'i'.
+        Index = i;
+        Value = 0.0;
+        Color = #00000000;
+        signal OnLoadValue;
+
+        // Limit the resulting value to the range 0.0..1.0.
+        if ( Value < 0.0 ) Value = 0.0;
+        if ( Value > 1.0 ) Value = 1.0;
+
+        /*
+
+          HINT 2:
+
+          The following code modifies the 'Color' property of the used filled path view. If you have
+          modified the template to use other views (e.g. Views::StrokePath), you can also modify
+          other properties, depending on the used view and the visual effect you want to achieve.
+
+        */
+
+        // Adapt the color of the filled path view.
+        view.Color = Color;
+
+        /*
+
+          HINT 3:
+
+          Following code calculates the position and size of the filled path view. If you expect
+          other algorithms to layout the slices, feel free to modify this code.
+
+        */
+
+        // Arrange the view to fill the complete 'outline' area. The center of the view's coordinate
+        // system should lie in the center of this area.
+        view.Bounds = bounds;
+        view.Offset = bounds.orect.center;
+
+        // Access the path data object associated to the view. It contains the slice shape.
+        var Graphics::Path path = (Graphics::Path)view.Path;
+
+        /*
+
+          HINT 4:
+
+          Following code calculates the shape of the slice. If you expect other algorithms feel
+          free to modify this code.
+
+        */
+
+        // Calculate the angle where the slice starts and how large it is. Also calculate the
+        // angle correponding to the direction the slice moves away from the center of the chart.
+        var float startAngle = sum   * PieAngle + StartAngle;
+        var float sliceSize  = Value * PieAngle;
+        var float dirAngle   = startAngle + ( sliceSize / 2 );
+
+        // The displacement causes the slices to 'move away' from the center of the chart. In
+        // order to have equal gaps between the slices, we scale the displacement by the size
+        // of the slice. In other words, the larger the slice the smaller the displacement.
+        var float displacement = Displacement * ( 1.0 - Value );
+        var float radius       = maxRadius - displacement;
+
+        // Depending on the size of the slice (the length of its arc) estimate the optimal number
+        // of edges to compose it. Assume the length of a single edge is ~6 pixel.
+        var int32 noOfEdges  = (int32)(( sliceSize * radius ) / 360.0 ) + 1;
+
+        // Configure the path to be able to store the arc with the estimated number of edges plus
+        // an edge to connect the arc with the center position.
+        path.InitSubPath( 0, noOfEdges + 1 );
+
+        // Rotate and translate the coordinate system of the path according to the displacement
+        // and the calculated direction angle of the slice. Note the additional '-0.5' value in
+        // the displacement. It arranges the slices tighter so their edges overlap slightly. It
+        // produces better looking results.
+        path.InitMatrix();
+        path.Rotate( dirAngle );
+        path.Translate( displacement - 0.5, 0 );
+
+        // Add the slice to the path. It is an arc connected with the center position X=0, Y=0.
+        path.Begin( 0, 0.0, 0.0 );
+        path.AddArc( 0, 0.0, 0.0, radius, radius, -sliceSize / 2, sliceSize / 2, noOfEdges );
+        path.Close( 0 );
+
+        // Accumulate the values of all processed slices. In this way the slices appear arranged
+        // side by side.
+        sum += Value;
+      }
+
+      // Search for the next already (eventually) existing view.
+      view = (Views::FillPath)Outline.FindNextView( view, Core::ViewState[]);
+    }
+
+    // If the number of slices was reduced in the chart. Remove all superflous views now.
+    while ( view )
+    {
+      var Core::View tmpView = view;
+
+      // Search for the view following the actual view and then release the actual view.
+      view = (Views::FillPath)Outline.FindNextView( view, Core::ViewState[]);
+      Remove( tmpView );
+    }
+
+    // The update is finished. Clear the pending invalid flags.
+    invalidFirstValue = 0x7FFFFFFF;
+    invalidLastValue  = 0;
+  }
+
+  $rect <780,150,980,190>
+  onset Scaling
+  {
+    // Limit the value to the range 0.0..1.0
+    if ( value < 0.0 ) value = 0.0;
+    if ( value > 1.0 ) value = 1.0;
+
+    // No changes - nothing to do
+    if ( value == pure Scaling )
+      return;
+
+    // Remember the new value
+    pure Scaling = value;
+
+    // Request the component to perform its update.
+    InvalidateValues( 0, NoOfValues );
+  }
+
+  $rect <780,50,980,90>
+  onset PieAngle
+  {
+    // Limit the value to the range 0..360
+    if ( value < 0   ) value = 0;
+    if ( value > 360 ) value = 360;
+
+    // No changes - nothing to do
+    if ( value == pure PieAngle )
+      return;
+
+    // Remember the new value
+    pure PieAngle = value;
+
+    // Request the component to perform its update.
+    InvalidateValues( 0, NoOfValues );
+  }
+
+  $rect <580,50,780,90>
+  onset StartAngle
+  {
+    // No changes - nothing to do
+    if ( value == pure StartAngle )
+      return;
+
+    // Remember the new value
+    pure StartAngle = value;
+
+    // Request the component to perform its update.
+    InvalidateValues( 0, NoOfValues );
+  }
+
+  $rect <380,50,580,90>
+  onset Displacement
+  {
+    // Ensure the given displacement is valid
+    if ( value < 0 )
+      value = 0;
+
+    // No changes - nothing to do
+    if ( value == pure Displacement )
+      return;
+
+    // Remember the new value
+    pure Displacement = value;
+
+    // Request the component to perform its update.
+    InvalidateValues( 0, NoOfValues );
+  }
+
+  $rect <180,50,380,90>
+  onset NoOfValues
+  {
+    // Ensure the given number of values is valid
+    if ( value < 0 )
+      value = 0;
+
+    // No changes - nothing to do
+    if ( value == pure NoOfValues )
+      return;
+
+    // When the number of values changes, all values need an update.
+    invalidFirstValue = 0;
+    invalidLastValue  = value;
+
+    // Remember the new number of values
+    pure NoOfValues = value;
+
+    // Request the component to perform its update.
+    postsignal updateChart;
+  }
+
+  $rect <20,20,160,60>
+  object Core::Outline Outline
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,150,150>;
+  }
+
+  // The method InvalidateValues() forces the chart component to reload the values \
+  // for one or more slices. The index of the slice to start the reload operation \
+  // is specified in the parameter aFirstValue. The parameter aLastValue specifies \
+  // the index of the last affected slice. The first value (first slice) has the \
+  // index 0, the second 1, and so far. The operation can cause the chart component \
+  // to invoke the external @OnLoadValue slot method for each affected slice.
+  $rect <380,110,580,150>
+  method void InvalidateValues( arg int32 aFirstValue, arg int32 aLastValue )
+  {
+    // Nothing to invalidate
+    if ( aFirstValue > aLastValue )
+      return;
+
+    // Remember the range of invalid items. Eventually build a union with previously
+    // invalidated values.
+    invalidFirstValue = math_min( invalidFirstValue, aFirstValue );
+    invalidLastValue  = math_max( invalidLastValue,  aLastValue  );
+
+    // Request the component to perform its update.
+    postsignal updateChart;
+  }
+
+  // The variable 'Color' is intended to receive the color for the actually loaded \
+  // slice. In order to load the data for a slice, the chart component invokes the \
+  // external slot method @OnLoadValue. The implementation of the slot method should \
+  // thereupon determine the value and color for the requested slice and assign it \
+  // to the variables @Value and 'Color'. The affected slice is identifies by the \
+  // variable @Index.
+  $rect <180,230,380,270>
+  var color Color;
+
+  // The variable 'Value' is intended to receive the value for the actually loaded \
+  // slice. In order to load the data for a slice, the chart component invokes the \
+  // external slot method @OnLoadValue. The implementation of the slot method should \
+  // thereupon determine the value and color for the requested slice and assign it \
+  // to the variables 'Value' and @Color. The affected slice is identifies by the \
+  // variable @Index.
+  // The value lies in range 0.0 .. 1.0 according to the expected size of the slice. \
+  // The value 1.0 means the slice fills the entire circle.
+  $rect <180,190,380,230>
+  var float Value;
+
+  // The variable 'Index' identifies the slice which is about to be loaded by the \
+  // external slot method @OnLoadValue. In this manner the slot method can determine \
+  // the corresponding content in the associated data source. The first slice has \
+  // the index 0, the second 1, and so far. The slot method should store thereupon \
+  // the concrete slice value and its color in the variables @Value and @Color.
+  $rect <180,150,380,190>
+  var int32 Index;
+
+  // The property 'OnLoadValue' should refer to a slot method, which will be invoked \
+  // by the chart component in order to load the data for a given slice. Within the \
+  // slot method the index of the affected slice can be accessed and its new value \
+  // and color can be specified. For this purpose the variables @Index, @Value and \
+  // @Color should be used.
+  $rect <180,110,380,150>
+  property slot OnLoadValue = null;
+
+  // The property 'Scaling' specifies a scaling factor for the radius of the displayed \
+  // slices.
+  $rect <780,110,980,150>
+  property float Scaling = 1.0;
+
+  // The property 'PieAngle' contains the total angle of the pie chart between 0° \
+  // and 360°.
+  $rect <780,10,980,50>
+  property int32 PieAngle = 360;
+
+  // The property 'StartAngle' specifies the angle for the first slice. Changing \
+  // this property has the effect of the entire chart being rotated. For example, \
+  // in order to arrange the first slice at the clock position 12:00, initialize \
+  // this property with the value -90.
+  $rect <580,10,780,50>
+  property int32 StartAngle = -90;
+
+  // The property 'Displacement' stores the offset in pixel to move the slices away \
+  // from the center of the chart. This results in the slices being separated.
+  $rect <380,10,580,50>
+  property int32 Displacement = 0;
+
+  // The property 'NoOfValues' stores how many slices are currently managed within \
+  // the chart component. This value should correspond to the number of data entries \
+  // the chart presents to the user.
+  $rect <180,10,380,50>
+  property int32 NoOfValues = 0;
+}
+
+// This class implements the ChartsDemo::BarChart component. This component is intended \
+// to display a bar chart diagram.
+// The total number of bars is determined by the property @NoOfValues. The corresponding \
+// data is loaded dynamically at the runtime. For this purpose a slot method has \
+// to be implemented and assigned to the @OnLoadValue property. The component will \
+// invoke the slot method automatically each time it needs a bar to be loaded. Within \
+// the slot method the implementation can access and initialize the affected bar \
+// by using the variables @Value and @Color.
+// The width of a single bar is configured by using the property @BarSize. The property \
+// @Orientation, in turn, allows the chart contents to appear rotated. Accordingly, \
+// the bars can be aligned at the top, left or right edge of the component.
+// In order to trigger the chart component to reload one or more bars, invoke the \
+// method @InvalidateValues(). The component will thereupon schedule the necessary \
+// loading steps automatically.
+$rect <690,180,890,220>
+$output false
+class BarChart : Templates::BarChart
+{
+  $rect <650,410,850,450>
+  inherited property Bounds = <0,0,150,150>;
+
+  $rect <420,330,620,370>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+
+    // In case of the chart component, when its size changes, force an update of
+    // all displayed bars, so they fill the chart correctly.
+    if ( size != aSize )
+    {
+      InvalidateValues( 0, NoOfValues );
+      size = aSize;
+
+      // Also if the size changes, update the grid
+      postsignal updateGrid;
+    }
+  }
+
+  $rect <650,330,850,370>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
+
+  // Grid lines
+  note group Note5
+  {
+    attr Bounds = <870,290,1090,420>;
+  }
+
+  // This component has been created by using the template 'Bar Chart' from the Gallery \
+  // folder 'Component Templates'.
+  // 
+  // Then we have enhanced the so created component by new properties 'BarBitmap', \
+  // 'BarFrameNumber', 'BackColor', 'NoOfGridLines' and 'GridLineColor'. These demonstrate \
+  // how to enhance the chart by configuration properties.
+  // 
+  // To display the background, we added a new 'Background' view. We rearranged the \
+  // Outline view to have a small border around it.
+  // 
+  // To display the grid, we added 10 new 'GridLine' views. These views are updated \
+  // in the new slot method 'updateGrid'.
+  // 
+  // The original version of the template uses rectangles (Views::Rectangle) to display \
+  // the bars. We adapted the method 'updateChart' to use bitamp frame view (Views::Frame) \
+  // instead. In this way, depending on the used bitmap (specified in the new properties \
+  // 'BarBitmap' and 'BarFrameNumber'), the appearance of the bars can be configured \
+  // flexibly.
+  note legend Note4
+  {
+    attr Bounds = <10,480,990,700>;
+  }
+
+  // State management
+  note group Note3
+  {
+    attr Bounds = <640,290,860,380>;
+  }
+
+  // Layout management
+  note group Note2
+  {
+    attr Bounds = <410,290,630,420>;
+  }
+
+  // Chart update logic
+  note group Note1
+  {
+    attr Bounds = <180,290,400,460>;
+  }
+
+  // THis array stores references to the 10 grid line views. Ite helps to access \
+  // them by using an index.
+  $rect <880,370,1080,410>
+  array Views::Line gridLines[ 10 ] =
+  (
+    Default[0] = GridLine1;
+    Default[1] = GridLine2;
+    Default[2] = GridLine3;
+    Default[3] = GridLine4;
+    Default[4] = GridLine5;
+    Default[5] = GridLine6;
+    Default[6] = GridLine7;
+    Default[7] = GridLine8;
+    Default[8] = GridLine9;
+    Default[9] = GridLine10;
+  );
+
+  // The variable stores the previous size of the chart component. It is used in \
+  // the @UpdateLayout() method to detect when the component is resized and needs \
+  // the complete update of all bars.
+  $rect <420,370,620,410>
+  var point size;
+
+  // The variable stores the index of the last bar which needs an update.
+  $rect <190,410,390,450>
+  var int32 invalidLastValue;
+
+  // The variable stores the index of the first bar which needs an update.
+  $rect <190,370,390,410>
+  var int32 invalidFirstValue = 0x7FFFFFFF;
+
+  // This slot method takes care of preparing a new bitmap in GridBitmap object. \
+  // This bitmap is then used to draw the grid.
+  $rect <880,330,1080,370>
+  slot updateGrid
+  {
+    // Some common parameters for the calculation.
+    var rect  bounds        = Outline.Bounds;
+    var color gridColor     = GridLineColor;
+    var int32 noOfGridLines = NoOfGridLines;
+    var int32 i;
+
+    // Update the visible state, color and position of the views used to display the grid
+    for ( ; i < 10; i++ )
+    {
+      // Is the grid line visible?
+      if (( gridLines[i].Visible = ( i < noOfGridLines )) == true )
+      {
+        var int32 ofsX = ( noOfGridLines > 1 )? ( i * bounds.w ) / ( noOfGridLines - 1 ) : 0;
+        var int32 ofsY = ( noOfGridLines > 1 )? ( i * bounds.h ) / ( noOfGridLines - 1 ) : 0;
+        var int32 p1X;
+        var int32 p1Y;
+        var int32 p2X;
+        var int32 p2Y;
+
+        // Calculate the position of the line. This depends on the orientation of the
+        // chart.
+        switch ( Orientation )
+        {
+          case Views::Orientation.Normal :
+          {
+            p1X = bounds.x1;
+            p1Y = bounds.y2 - ofsY;
+            p2X = bounds.x2;
+            p2Y = p1Y;
+          }
+          case Views::Orientation.Rotated_90 :
+          {
+            p1X = bounds.x2 - ofsX;
+            p1Y = bounds.y2;
+            p2Y = bounds.y1;
+            p2X = p1X;
+          }
+          case Views::Orientation.Rotated_180 :
+          {
+            p1X = bounds.x2;
+            p1Y = bounds.y1 + ofsY;
+            p2X = bounds.x1;
+            p2Y = p1Y;
+          }
+          case Views::Orientation.Rotated_270 :
+          {
+            p1X = bounds.x1 + ofsX;
+            p1Y = bounds.y1;
+            p2Y = bounds.y2;
+            p2X = p1X;
+          }
+          default :;
+        }
+
+        // Update the position and the color of the line
+        gridLines[i].Color  = gridColor;
+        gridLines[i].Point1 = point( p1X, p1Y );
+        gridLines[i].Point2 = point( p2X, p2Y );
+      }
+    }
+  }
+
+  // The method 'updateChart' takes care of creating and displaying the bars. In \
+  // this template, the bars are represented by Views::Frame instances. Consequently, \
+  // if the chart is configured with @NoOfValues = 12, the method 'updateChart' will \
+  // manage 12 frame views.
+  $rect <190,330,390,370>
+  slot updateChart
+  {
+    // Some common parameters for the calculation.
+    var int32 barSize    = BarSize;
+    var rect  bounds     = Outline.Bounds;
+    var int32 noOfValues = NoOfValues;
+
+    // Calculate the available space and the distance between two adjacent bars.
+    // Thereby ensure that the bars are always fully visible. Accordingly reduce
+    // the space by the size of a single bar.
+    var float rangeX     = bounds.w - barSize;
+    var float rangeY     = bounds.h - barSize;
+    var float ofsX       = ( noOfValues > 1 )? rangeX / ( noOfValues - 1 ) : 0;
+    var float ofsY       = ( noOfValues > 1 )? rangeY / ( noOfValues - 1 ) : 0;
+    var int32 i;
+
+    /*
+
+      HINT 1:
+
+      In this template, the bars are represented by 'Views::Frame' objects. For example,
+      if the chart displays 12 bars, it contains in fact 12 'Views::Frame' views. 
+
+      If you want the bars to be displayed by other by views (e.g. Wallpaper or Rectangle, 
+      etc.), replace in the following code all occurrences of the class 'Views::Frame'
+      by e.g. 'Views::Rectangle'.
+
+    */
+
+    // These views are managed by the Outline. Search in the Outline for already existing views.
+    var Views::Frame view = (Views::Frame)Outline.FindNextView( null, Core::ViewState[]);
+
+    // Now process all bars. Adapt the size/position/color of each bar.
+    for ( i = 0; i < noOfValues; i++ )
+    {
+      // Is it necessary to load the data for the affected bar?
+      var bool reload = ( i >= invalidFirstValue ) && ( i <= invalidLastValue );
+
+      // No corresponding 'Frame' view found. Then create a new one.
+      if ( !view )
+      {
+        view   = new Views::Frame;
+        reload = true;
+
+        // Add the view to the chart component and ensure the view is managed as belonging
+        // (as embedded) to the Outline.
+        view.Embedded = true;
+        Add( view, 0 );
+      }
+
+      // Load the data?
+      if ( reload )
+      {
+        // Invoke the external slot method to query the value and color for the bar with
+        // the number 'i'.
+        Index = i;
+        Value = 0.0;
+        Color = #00000000;
+        signal OnLoadValue;
+
+        /*
+
+          HINT 2:
+
+          The following code modifies the 'Color' property of the used Frame view. If you have
+          modified the template to use other views (e.g. Views::Frame), you can also modify
+          other properties, depending on the used view and the visual effect you want to achieve.
+
+        */
+
+        // Adapt the color, bitmap, and frame number of the view.
+        view.Color       = Color;
+        view.Bitmap      = BarBitmap;
+        view.FrameNumber = BarFrameNumber;
+
+        /*
+
+          HINT 3:
+
+          Following code calculates the position of the view within the Chart component.
+          If you expect other algorithms to layout the bars, feel free to modify this code.
+
+        */
+
+        var float x1;
+        var float y1;
+        var float x2;
+        var float y2;
+
+        // Calculate the position for the bar. This depends on the selected orientation.
+        switch ( Orientation )
+        {
+          case Views::Orientation.Normal :
+          {
+            x1 = bounds.x1 + ( ofsX * i );
+            x2 = x1 + barSize;
+            y2 = bounds.y2;
+            y1 = y2 - ( bounds.h * Value );
+          }
+          case Views::Orientation.Rotated_90 :
+          {
+            x2 = bounds.x2;
+            x1 = x2 - ( bounds.w * Value );
+            y2 = bounds.y2 - ( ofsY * i );
+            y1 = y2 - barSize;
+          }
+          case Views::Orientation.Rotated_180 :
+          {
+            x2 = bounds.x2 - ( ofsX * i );
+            x1 = x2 - barSize;
+            y1 = bounds.y1;
+            y2 = y1 + ( bounds.h * Value );
+          }
+          case Views::Orientation.Rotated_270 :
+          {
+            x1 = bounds.x1;
+            x2 = x1 + ( bounds.w * Value );
+            y1 = bounds.y1 + ( ofsY * i );
+            y2 = y1 + barSize;
+          }
+          default :;
+        }
+
+        // Arrange the position of the view representing the bar.
+        view.Bounds = rect( int32( x1.round ), int32( y1.round ), int32( x2.round ), int32( y2.round ));
+      }
+
+      // Search for the next already (eventually) existing view.
+      view = (Views::Frame)Outline.FindNextView( view, Core::ViewState[]);
+    }
+
+    // If the number of bars was reduced in the chart. Remove all superflous views now.
+    while ( view )
+    {
+      var Core::View tmpView = view;
+
+      // Search for the view following the actual view and then release the actual view.
+      view = (Views::Frame)Outline.FindNextView( view, Core::ViewState[]);
+      Remove( tmpView );
+    }
+
+    // The update is finished. Clear the pending invalid flags.
+    invalidFirstValue = 0x7FFFFFFF;
+    invalidLastValue  = 0;
+  }
+
+  $rect <780,50,980,90>
+  onset BarFrameNumber
+  {
+    // No changes - nothing to do
+    if ( value == pure BarFrameNumber )
+      return;
+
+    // Remember the new number of items
+    pure BarFrameNumber = value;
+
+    // Request the component to perform its update.
+    InvalidateValues( 0, NoOfValues );
+  }
+
+  $rect <580,50,780,90>
+  onset BarBitmap
+  {
+    // No changes - nothing to do
+    if ( value == pure BarBitmap )
+      return;
+
+    // Remember the new number of items
+    pure BarBitmap = value;
+
+    // Request the component to perform its update.
+    InvalidateValues( 0, NoOfValues );
+  }
+
+  $rect <380,230,580,270>
+  onset GridLineColor
+  {
+    // No changes - nothing to do
+    if ( value == pure GridLineColor )
+      return;
+
+    // Remember the new number of items
+    pure GridLineColor = value;
+
+    // ... and trigger an update of the grid
+    postsignal updateGrid;
+  }
+
+  $rect <180,230,380,270>
+  onset NoOfGridLines
+  {
+    // check for valid values
+    if ( value < 0  ) value = 0;
+    if ( value > 10 ) value = 10;
+
+    // check for any news...
+    if ( value == pure NoOfGridLines )
+      return;
+
+    // store the new value...
+    pure NoOfGridLines = value;
+
+    // ... and trigger an update of the grid
+    postsignal updateGrid;
+  }
+
+  $rect <380,140,580,180>
+  onset BackColor
+  {
+    // No changes - nothing to do
+    if ( value == pure BackColor )
+      return;
+
+    // Remember the new number of items
+    pure BackColor = value;
+
+    // Adapt the view displaying the background
+    Background.Color   = value;
+    Background.Visible = value.alpha > 0;
+  }
+
+  $rect <180,140,380,180>
+  onset Orientation
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Orientation == value )
+      return;
+
+    // Remember the property's new value.
+    pure Orientation = value;
+
+    // Changing the orientation forces the component to reload all its data values.
+    InvalidateValues( 0, NoOfValues );
+
+    // Changing the orientation affects the grid. Trigger its update.
+    postsignal updateGrid;
+  }
+
+  $rect <380,50,580,90>
+  onset BarSize
+  {
+    // Ensure the given number of items is valid
+    if ( value < 1 )
+      value = 1;
+
+    // No changes - nothing to do
+    if ( value == pure BarSize )
+      return;
+
+    // Remember the new number of items
+    pure BarSize = value;
+
+    // Request the component to perform its update.
+    InvalidateValues( 0, NoOfValues );
+  }
+
+  $rect <180,50,380,90>
+  onset NoOfValues
+  {
+    // Ensure the given number of values is valid
+    if ( value < 0 )
+      value = 0;
+
+    // No changes - nothing to do
+    if ( value == pure NoOfValues )
+      return;
+
+    // When the number of values changes, all values need an update.
+    invalidFirstValue = 0;
+    invalidLastValue  = value;
+
+    // Remember the new number of values
+    pure NoOfValues = value;
+
+    // Request the component to perform its update.
+    postsignal updateChart;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Background
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,150,150>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine1
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine2
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine3
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine4
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine5
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine6
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine7
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine8
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine9
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line GridLine10
+  {
+    preset Point2 = <138,16>;
+    preset Point1 = <5,16>;
+    preset Color = #00000000;
+    preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Core::Outline Outline
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <5,5,145,145>;
+  }
+
+  // The method InvalidateValues() forces the chart component to reload the values \
+  // for one or more bars. The index of the bar to start the reload operation is \
+  // specified in the parameter aFirstValue. The parameter aLastValue specifies the \
+  // index of the last affected bar. The first value (first bar) has the index 0, \
+  // the second 1, and so far. The operation can cause the chart component to invoke \
+  // the external @OnLoadValue slot method for each affected bar.
+  $rect <780,100,980,140>
+  method void InvalidateValues( arg int32 aFirstValue, arg int32 aLastValue )
+  {
+    // Nothing to invalidate
+    if ( aFirstValue > aLastValue )
+      return;
+
+    // Remember the range of invalid items. Eventually build a union with previously
+    // invalidated values.
+    invalidFirstValue = math_min( invalidFirstValue, aFirstValue );
+    invalidLastValue  = math_max( invalidLastValue,  aLastValue  );
+
+    // Request the component to perform its update.
+    postsignal updateChart;
+  }
+
+  // The variable 'Color' is intended to receive the color for the actually loaded \
+  // bar. In order to load the data for a bar, the chart component invokes the external \
+  // slot method @OnLoadValue. The implementation of the slot method should thereupon \
+  // determine the value and color for the requested bar and assign it to the variables \
+  // @Value and 'Color'. The affected bar is identifies by the variable @Index.
+  $rect <580,220,780,260>
+  var color Color;
+
+  // The variable 'Value' is intended to receive the value for the actually loaded \
+  // bar. In order to load the data for a bar, the chart component invokes the external \
+  // slot method @OnLoadValue. The implementation of the slot method should thereupon \
+  // determine the value and color for the requested bar and assign it to the variables \
+  // 'Value' and @Color. The affected bar is identifies by the variable @Index.
+  // The value lies in range 0.0 .. 1.0 according to the expected size of the bar. \
+  // The value 1.0 means the bar fills the entire height (or entire width in case \
+  // of chart being 90° or 270° rotated) of the chart.
+  $rect <580,180,780,220>
+  var float Value;
+
+  // The variable 'Index' identifies the bar which is about to be loaded by the external \
+  // slot method @OnLoadValue. In this manner the slot method can determine the corresponding \
+  // content in the associated data source. The first bar has the index 0, the second \
+  // 1, and so far. The slot method should store thereupon the concrete bar value \
+  // and its color in the variables @Value and @Color.
+  $rect <580,140,780,180>
+  var int32 Index;
+
+  // The property 'GridLineColor' stores the color to stroke the grid.
+  $rect <380,190,580,230>
+  property color GridLineColor = #00000000;
+
+  // The property 'NoOfGridLines' determines the number of horizontal grid lines.
+  $rect <180,190,380,230>
+  property int32 NoOfGridLines = 0;
+
+  // The property 'BackColor' stores the color to fill the background of the chart \
+  // component.
+  $rect <380,100,580,140>
+  property color BackColor = #00000000;
+
+  // The property 'OnLoadValue' should refer to a slot method, which will be invoked \
+  // by the chart component in order to load the data for a given bar. Within the \
+  // slot method the index of the affected bar can be accessed and its new value \
+  // and color can be specified. For this purpose the variables @Index, @Value and \
+  // @Color should be used.
+  $rect <580,100,780,140>
+  property slot OnLoadValue = null;
+
+  // The property 'Orientation' determines whether the chart should be displayed \
+  // with normal or rotated orientation.
+  $rect <180,100,380,140>
+  property Views::Orientation Orientation = Views::Orientation.Normal;
+
+  // The property 'BarFrameNumber' specifies the frame number in the bitmap @BarBitmap. \
+  // This property is used to select a single image out of a multi frame bitmap, \
+  // like an image stripe.
+  $rect <780,10,980,50>
+  property int32 BarFrameNumber = 0;
+
+  // The property 'BarBitmap' stores the bitmap used to display the bars.
+  $rect <580,10,780,50>
+  property Resources::Bitmap BarBitmap = ChartsDemo::BarFrame12x12;
+
+  // The property 'BarSize' stores the width (or the height in case of the chart \
+  // being rotated by 90° or 270°) of a single bar expressed in pixel.
+  $rect <380,10,580,50>
+  property int32 BarSize = 10;
+
+  // The property 'NoOfValues' stores how many bars are currently managed within \
+  // the chart component. This value should correspond to the number of data entries \
+  // the chart presents to the user.
+  $rect <180,10,380,50>
+  property int32 NoOfValues = 0;
+}
+
+// Resources needed by the Chart components
+note group Note11
+{
+  attr Bounds = <460,580,900,780>;
+}
+
+$rect <480,630,680,670>
+$output false
+resource Resources::Bitmap Dots12x12
+{
+  attr bitmapfile FileName = .\Res\Dots12x12.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize = <12,12>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <480,670,680,710>
+$output false
+resource Resources::Bitmap Dots16x16
+{
+  attr bitmapfile FileName = .\Res\Dots16x16.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize = <16,16>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <480,710,680,750>
+$output false
+resource Resources::Bitmap Dots8x8
+{
+  attr bitmapfile FileName = .\Res\Dots8x8.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize = <8,8>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <680,630,880,670>
+$output false
+resource Resources::Bitmap BarFrame12x12
+{
+  attr bitmapfile FileName = .\Res\BarFrame12x12.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize = <12,12>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <680,670,880,710>
+$output false
+resource Resources::Bitmap BarFrame21x21
+{
+  attr bitmapfile FileName = .\Res\BarFrame21x21.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize = <21,21>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <680,710,880,750>
+$output false
+resource Resources::Bitmap ChartsIcons
+{
+  attr bitmapfile FileName = .\Res\ChartsIcons.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize = <24,24>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}

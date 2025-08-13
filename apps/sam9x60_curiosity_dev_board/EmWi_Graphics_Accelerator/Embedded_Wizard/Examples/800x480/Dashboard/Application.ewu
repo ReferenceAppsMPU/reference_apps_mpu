@@ -1,0 +1,129 @@
+﻿$version 13.00
+
+// This is the root component of the entire GUI application.
+$rect <10,40,210,80>
+$output false
+class Application : Core::Root
+{
+  $rect <670,590,870,630>
+  inherited method HandleEvent()
+  {
+    // By the auto demo mode emulated touch events are send with finger 5
+    var Core::CursorGrabEvent event = (Core::CursorGrabEvent)aEvent;
+    if ( (event != null) && (event.Down) )
+    {
+      // Restart the timer on user input
+      inactiveTimer.Enabled = false;
+      inactiveTimer.Enabled = true;
+
+      // Disable the auto demo mode
+      device.AutoDemoMode = false;
+    }
+
+    return super( aEvent );
+  }
+
+  $rect <-10,510,190,550>
+  inherited property Bounds;
+
+  $rect <-10,550,190,590>
+  inherited method Init()
+  {
+    Bounds.size = $ScreenSize;
+
+    // Just at the initialization time of the application present the first (main) dialog
+    PresentDialog( new Dashboard::StartScreen, Dashboard::FadeInOutCentered, null, null, null, null, null, null, null, false );
+  }
+
+  $rect <210,550,410,590>
+  var Dashboard::DeviceClass device = Dashboard::Device;
+
+  // autoobject handle
+  note group Note
+  {
+    attr Bounds = <200,510,420,610>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Background
+  {
+    preset Bounds = rect(<0,0>,$ScreenSize);
+    preset Color = Dashboard::Colors.Background;
+  }
+
+  $rect <440,590,640,630>
+  slot onFpsSlot
+  {
+    Text.String = "FPS: " + string( GetFPS() );
+  }
+
+  $rect <440,550,640,590>
+  object Core::Timer fpsTimer
+  {
+    preset OnTrigger = onFpsSlot;
+    preset Enabled = true;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset StackingPriority = 100;
+    preset Bounds = <693,450,793,480>;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "FPS: 0";
+    preset Font = Resources::DefaultFont;
+  }
+
+  // FPS
+  note group Note1
+  {
+    attr Bounds = <430,510,650,640>;
+  }
+
+  $rect <670,550,870,590>
+  object Dashboard::DemoMode DemoMode;
+
+  $rect <670,630,870,670>
+  object Effects::EffectTimerClass inactiveTimer
+  {
+    preset OnTrigger = onInactive;
+    preset Period = 0;
+    preset Begin = 10000;
+    preset Enabled = true;
+  }
+
+  $rect <670,670,870,710>
+  slot onInactive
+  {
+    // Start the auto demo mode
+    device.AutoDemoMode = true;
+  }
+
+  // Demo Mode
+  note group Note2
+  {
+    attr Bounds = <660,510,880,720>;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler AutoDemoTouchHandler
+  {
+    preset Point4 = <0,0>;
+    preset Point3 = <800,0>;
+    preset Point2 = <800,480>;
+    preset Point1 = <0,480>;
+  }
+}
+
+// Application class of the example
+note group Note4
+{
+  attr Bounds = <0,0,410,90>;
+}
+
+// The Application class launches the dashboard demo. All ingredients for the dashboard \
+// are implemented within the unit 'Dashboard'.
+note legend Note
+{
+  attr Bounds = <420,0,900,90>;
+}

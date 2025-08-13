@@ -1,0 +1,68 @@
+﻿$version 13.04
+
+// This is the root component of the entire GUI application.
+$rect <40,100,240,140>
+$output false
+class Application : Core::Root
+{
+  // The property 'Bounds' defines the position and the size of the view in the coordinates \
+  // of the corresponding @Owner.
+  $rect <518,30,718,70>
+  inherited property Bounds = <0,0,480,800>;
+
+  $rect <20,20,160,60>
+  object ChargingStation::ChargingStation ChargingStation
+  {
+    preset Bounds = <0,0,480,800>;
+    preset ScreenState = ChargingStation::ScreenType.Init;
+  }
+
+  // Inherited features
+  note group Note1
+  {
+    attr Bounds = <500,-10,740,91>;
+  }
+}
+
+// Application class of the example
+// (Portrait)
+note group Note1
+{
+  attr Bounds = <20,0,260,160>;
+}
+
+$rect <290,100,490,140>
+$variant $Landscape
+vclass Application_L : Application::Application
+{
+  $rect <840,40,1040,80>
+  inherited property Bounds = <0,0,800,480>;
+
+  $rect <20,20,160,60>
+  inherited object ChargingStation
+  {
+    preset Bounds = <0,0,800,480>;
+  }
+
+  // Inherited features
+  note group Note1
+  {
+    attr Bounds = <820,0,1060,101>;
+  }
+}
+
+// Application class of the example
+// (Landscape)
+note group Note2
+{
+  attr Bounds = <270,0,510,160>;
+}
+
+// Directives to adapt the order of the above members according to how these members 
+// where arranged when the project content was stored. In this manner the storage 
+// and the expected order of the members don't depend. Merging of changes in the 
+// project files is simplified.
+$member Application
+$member Application_L
+$member Note1
+$member Note2

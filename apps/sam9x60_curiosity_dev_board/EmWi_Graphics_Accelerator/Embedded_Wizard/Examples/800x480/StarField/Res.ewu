@@ -1,0 +1,225 @@
+﻿$version 13.00
+
+// This is a bitmap resource.
+$rect <30,60,230,100>
+$output false
+resource Resources::Bitmap Logo
+{
+  attr bitmapfile FileName = .\Res\EmWiLogo.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// ScreenSaver Images
+note group Note2
+{
+  attr Bounds = <10,130,850,590>;
+}
+
+// Bitmap resources
+note group Note3
+{
+  attr Bounds = <10,10,250,120>;
+}
+
+// Bitmap resource for small photo images.
+$rect <930,220,1130,260>
+$output false
+resource Resources::Bitmap ImgBlend6
+{
+  attr bitmapfile FileName = .\Res\Flower.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// Bitmap resource for small photo images.
+$rect <930,260,1130,300>
+$output false
+resource Resources::Bitmap ImgBlend7
+{
+  attr bitmapfile FileName = .\Res\Citron.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// Bitmap resource for small photo images.
+$rect <930,20,1130,60>
+$output false
+resource Resources::Bitmap ImgBlend1
+{
+  attr bitmapfile FileName = .\Res\Tomato.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// Bitmap resource for small photo images.
+$rect <930,60,1130,100>
+$output false
+resource Resources::Bitmap ImgBlend2
+{
+  attr bitmapfile FileName = .\Res\Pretzel.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// Bitmap resource for small photo images.
+$rect <930,100,1130,140>
+$output false
+resource Resources::Bitmap ImgBlend3
+{
+  attr bitmapfile FileName = .\Res\Trefoil.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// Bitmap resource for small photo images.
+$rect <930,140,1130,180>
+$output false
+resource Resources::Bitmap ImgBlend4
+{
+  attr bitmapfile FileName = .\Res\Orange.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// Bitmap resource for small photo images.
+$rect <930,180,1130,220>
+$output false
+resource Resources::Bitmap ImgBlend5
+{
+  attr bitmapfile FileName = .\Res\Kiwi.png;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <93,207,293,247>
+$output false
+resource Resources::Bitmap Asteroid_1
+{
+  attr bitmapfile FileName = .\Res\Asteroid-1.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <293,207,493,247>
+$output false
+resource Resources::Bitmap Asteroid_2
+{
+  attr bitmapfile FileName = .\Res\Asteroid-2.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <93,247,293,287>
+$output false
+resource Resources::Bitmap Asteroid_3
+{
+  attr bitmapfile FileName = .\Res\Asteroid-3.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <293,247,493,287>
+$output false
+resource Resources::Bitmap Astronaut
+{
+  attr bitmapfile FileName = .\Res\Astronaut.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <93,287,293,327>
+$output false
+resource Resources::Bitmap Background
+{
+  attr bitmapfile FileName = .\Res\Background.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <293,287,493,327>
+$output false
+resource Resources::Bitmap Earth
+{
+  attr bitmapfile FileName = .\Res\Earth.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <93,327,293,367>
+$output false
+resource Resources::Bitmap Ganymed
+{
+  attr bitmapfile FileName = .\Res\Ganymed.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <293,327,493,367>
+$output false
+resource Resources::Bitmap Moon
+{
+  attr bitmapfile FileName = .\Res\Moon.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <93,367,293,407>
+$output false
+resource Resources::Bitmap Venus
+{
+  attr bitmapfile FileName = .\Res\Venus.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}

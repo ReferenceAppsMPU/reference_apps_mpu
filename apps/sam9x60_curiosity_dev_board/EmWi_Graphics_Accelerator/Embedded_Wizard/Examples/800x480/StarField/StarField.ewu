@@ -1,0 +1,879 @@
+﻿$version 13.00
+
+// The class 'ImageProvider' is responsible to load images in the requested size \
+// and aspect ratio. In this implementation, the class 'ImageProvider' loads the \
+// images from bitmap resources.
+$rect <500,70,700,110>
+$output false
+class ImageProvider
+{
+  // The method 'GetImage()' returns an image object loaded from the resource array.
+  $rect <10,20,210,60>
+  method Resources::Bitmap GetImage()
+  {
+    /* load the next bitmap out of the pool */
+    var Resources::Bitmap bmp = resourceArray[ resourceIndex ];
+
+    /* just take the next image the next time */
+    resourceIndex = resourceIndex + 1;
+    if ( resourceIndex >= resourceArray.size )
+      resourceIndex = 0;
+
+    /* and return the image */
+    return bmp;
+
+  }
+
+  // This is an array of bitmap resources.
+  $rect <210,20,410,60>
+  array Resources::Bitmap resourceArray[ 11 ] =
+  (
+    Default[0] = StarField::Asteroid_1;
+    Default[1] = StarField::Asteroid_2;
+    Default[2] = StarField::Asteroid_3;
+    Default[3] = StarField::Asteroid_4;
+    Default[4] = StarField::Astronaut;
+    Default[5] = StarField::Earth;
+    Default[6] = StarField::Ganymed;
+    Default[7] = StarField::Venus;
+    Default[8] = StarField::Jupiter;
+    Default[9] = StarField::Saturn;
+    Default[10] = StarField::Moon;
+  );
+
+  // This is a variable to store the index of the next bitmap resource.
+  $rect <210,60,410,100>
+  var int32 resourceIndex = 0;
+}
+
+// The class 'StarfieldImage' represents a single image of the @'StarField::StarfieldScreenSaver'. \
+// The class contains all necessary properties and methods to calculate the appearance \
+// of each animation step.
+$rect <250,180,450,220>
+$output false
+class StarFieldImage : Views::WarpImage
+{
+  // The method 'Animate' calculates the next animation step of the image object.
+  $rect <10,130,210,170>
+  method void Animate()
+  {
+    /* we only have to modify the current translation in Z direction of the image */
+    TranslateZ = TranslateZ + DeltaZ;
+
+    RotateZ += DeltaRotateZ;
+
+    /* and we have to calculate the scaling factor depending on the translation */
+    var float scale = TranslateZ / 1000.0;
+
+    /* depending on the position in Z direction, the image has to fade in or fade out */
+    if ( (int32)TranslateZ < 200 )
+      Opacity = (int32)TranslateZ * 255 / 200;
+    else if ( (int32)TranslateZ > 800 )
+      Opacity = ( 1000 - (int32)TranslateZ ) * 255 / 200;
+    else
+      Opacity = 0xFF;
+
+    /* make the 3D transformation */
+    SourceAnchor = point( Bitmap.FrameSize.x / 2, Bitmap.FrameSize.y / 2 );
+
+    var Graphics::WarpMatrix m = new Graphics::WarpMatrix;
+    m.LoadIdentity();
+    m.EyeDistance = EyeDistance;
+    m.Rotate( RotateX, RotateY, 0.0 );
+    m.Scale( scale, scale, 1.0 );
+    m.Translate( 0.0, 0.0, TranslateZ );
+    m.Scale( ScaleX, ScaleY, 1.0 );
+    m.Rotate( 0.0, 0.0, RotateZ );
+
+    Warp3D( point( Owner.Bounds.w / 2, Owner.Bounds.h / 2 ), m );
+
+
+
+
+  }
+
+  // The property 'RotateX' is used to store the current rotation angle in X direction.
+  $rect <10,0,210,40>
+  property float RotateX = 0.0;
+
+  // The property 'RotateY' is used to store the current rotation angle in Y direction.
+  $rect <210,0,410,40>
+  property float RotateY = 0.0;
+
+  // The property 'TranslateZ' is used to store the current translation distance \
+  // in Z direction.
+  $rect <410,0,610,40>
+  property float TranslateZ = 0.0;
+
+  // The property 'EyeDistance' defines the distance for the 3D transformation within \
+  // the method @Animate().
+  $rect <10,80,210,120>
+  property int32 EyeDistance = 0;
+
+  // The property 'DeltaZ' defines the value added to the propery @TranslateZ in \
+  // each step of the animation done by the method @Animate().
+  $rect <410,40,610,80>
+  property float DeltaZ = 0.0;
+
+  // The property 'ScaleX' defines the scale factor of the image.
+  $rect <10,40,210,80>
+  property float ScaleX = 1.0;
+
+  // The property 'ScaleY' defines the scale factor of the image.
+  $rect <210,40,410,80>
+  property float ScaleY = 1.0;
+
+  // This class is derived from Views::WarpImage and stores the current attributes \
+  // of an image shown within the StarField::StarfieldAnimation.
+  // 
+  // The method Animate() is called to calculate the next animation phase of the \
+  // image.
+  note legend Note
+  {
+    attr Bounds = <10,190,610,290>;
+  }
+
+  // The property 'RotateX' is used to store the current rotation angle in X direction.
+  $rect <610,0,810,40>
+  property float RotateZ = 0.0;
+
+  // The property 'RotateX' is used to store the current rotation angle in X direction.
+  $rect <610,40,810,80>
+  property float DeltaRotateZ = 0.0;
+}
+
+// The class 'StarfieldScreenSaver' implements a screen saver which displays a set \
+// of images in a star field manner. The single images are objects from the class \
+// @'ScreenSaver::PerspectiveImage'. In order to configure the screen saver object \
+// dynamically, the @'ScreenSaver::PerspectiveControlPanel' can be used and connected \
+// with the corresponding properties. The size of the screen saver is flexible and \
+// can be adapted easily by setting the Bounds property.
+$rect <40,180,240,220>
+$output false
+class StarFieldAnimation : Core::Group
+{
+  $rect <430,10,630,50>
+  inherited property Bounds = <0,0,400,300>;
+
+  // The slot method 'AnimationSlot' is responsible to call all involved animation \
+  // methods in order to calculate and display the next animation phase.
+  $rect <10,360,210,400>
+  slot AnimationSlot
+  {
+    /* make the next animation step */
+    Animate();
+
+    /* and redraw the scene */
+    //InvalidateView();
+
+
+
+  }
+
+  // The array 'images' contains all currently created and used image objects of \
+  // the screen saver. Each image is an instance of the class @'ScreenSaver::StarfieldImage'.
+  $rect <430,360,630,400>
+  array StarField::StarFieldImage images[ 50 ];
+
+  // The object 'ImageProvider' provides the screen saver with new image objects \
+  // with the desired size.
+  $rect <430,320,630,360>
+  object StarField::ImageProvider ImageProvider;
+
+  // The timer 'AnimationTimer' is used to trigger each animation phase by calling \
+  // the slot method @AnimationSlot.
+  $rect <10,320,210,360>
+  object Core::Timer AnimationTimer
+  {
+    preset OnTrigger = AnimationSlot;
+    preset Period = 10;
+    preset Enabled = true;
+  }
+
+  // The method 'Animate()' is responsible to calculate the next animation phase \
+  // of the screen saver object. If necessary, invisible images are removed or new \
+  // images are created and added to the group of views.
+  $rect <220,320,420,360>
+  method void Animate()
+  {
+    var int32 i;
+    var StarField::StarFieldImage img;
+
+    /* first remove images which are moved out of visible part */
+    for ( i = 0; i < images.size; i = i + 1 )
+    {
+      img = images[ i ];
+      if ( img != null )
+      {
+        var int32 x1 = img.Point1.x;
+        if ( img.Point2.x < x1 ) x1 = img.Point2.x;
+        if ( img.Point3.x < x1 ) x1 = img.Point3.x;
+        if ( img.Point4.x < x1 ) x1 = img.Point4.x;
+        var int32 x2 = img.Point1.x;
+        if ( img.Point2.x > x2 ) x2 = img.Point2.x;
+        if ( img.Point3.x > x2 ) x2 = img.Point3.x;
+        if ( img.Point4.x > x2 ) x2 = img.Point4.x;
+        var int32 y1 = img.Point1.y;
+        if ( img.Point2.y < y1 ) y1 = img.Point2.y;
+        if ( img.Point3.y < y1 ) y1 = img.Point3.y;
+        if ( img.Point4.y < y1 ) y1 = img.Point4.y;
+        var int32 y2 = img.Point1.y;
+        if ( img.Point2.y > y2 ) y2 = img.Point2.y;
+        if ( img.Point3.y > y2 ) y2 = img.Point3.y;
+        if ( img.Point4.y > y2 ) y2 = img.Point4.y;
+
+        if ((( x2 < 0 ) || ( y2 < 0 ) || ( x1 > Bounds.w ) || ( y1 > Bounds.h )) || ( img.Opacity == 0x00 ))
+        {
+          Remove( img );
+          images[ i ] = null;
+        }
+      }
+    }
+
+    /* search if there is place in the starfield to add a new image */
+    var bool needNewImage = true;
+    var int32 emptyIndex = -1;
+
+    for ( i = 0; i < Count; i = i + 1 )
+    {
+      img = images[ i ];
+      if ( img != null )
+      {
+        if ( (int32)img.TranslateZ < 40 )
+          needNewImage = false;
+      }
+    }
+
+    /* search if there is place in the image array or if the limit is reached */
+    if ( needNewImage == true )
+    {
+      for ( i = 0; i < Count; i = i + 1 )
+      {
+        img = images[ i ];
+        if ( img == null )
+          emptyIndex = i;
+      }
+    }
+    if (( emptyIndex < 0 ) || ( emptyIndex > Count ))
+      needNewImage = false;
+
+    /* create new image if needed */
+    if ( needNewImage == true )
+    {
+      var int32 w = Bounds.w / 8;
+      var int32 h = w;
+
+      var Resources::Bitmap bmp = ImageProvider.GetImage();
+      var float speed = (float)Speed / 100.0;
+
+      /* create new image object */
+      img = new StarField::StarFieldImage;
+
+      /* initialize the image object */
+      img.Bitmap      = bmp;
+      img.ScaleX      = (float)w / 120.0;// (float)bmp.FrameSize.x;
+      img.ScaleY      = (float)h / 120.0;//(float)bmp.FrameSize.y;
+      img.TranslateZ  = 20.0;
+      img.RotateX     = math_rand(-15.0, 15.0);
+      img.RotateY     = math_rand(160.0, 200.0);
+      img.DeltaZ      = speed;
+    //  img.DeltaRotateZ= math_rand( -5.0, 5.0 );
+      img.EyeDistance = EyeDistance;
+      img.Opacity     = 0x00;
+
+      /* store the image at a free position within the array */
+      images[ emptyIndex ] = img;
+
+      /* insert the new image backmost to the group */
+      Add( img, -Count );
+    }
+
+
+    /* update all images */
+    for ( i = 0; i < images.size; i = i + 1 )
+    {
+      img = images[ i ];
+      if ( img != null )
+      {
+        img.Animate();
+      }
+    }
+
+  }
+
+  // The property 'Speed' controls the animation speed of all image animations within \
+  // the screen saver.
+  $rect <430,220,630,260>
+  property int32 Speed = 500;
+
+  $rect <430,260,630,300>
+  onset Speed
+  {
+    /* limit range of value */
+    if ( value < 100 )
+      value = 100;
+
+    if ( value > 2000 )
+      value = 2000;
+
+    var int32 i;
+    var StarField::StarFieldImage img;
+    var float speed;
+
+    /* update all images */
+    speed = (float)value / 100.0;
+    for ( i = 0; i < images.size; i = i + 1 )
+    {
+      img = images[ i ];
+      if ( img != null )
+        img.DeltaZ = speed;
+    }
+
+    pure Speed = value;
+  }
+
+  // The property 'EyeDistance' defines the distance used for calculating the 3D \
+  // effect.
+  $rect <430,140,630,180>
+  property int32 EyeDistance = 1500;
+
+  $rect <430,180,630,220>
+  onset EyeDistance
+  {
+    /* limit range of value */
+    if ( value < 100 )
+      value = 100;
+
+    if ( value > 5000 )
+      value = 5000;
+
+    var int32 i;
+    var StarField::StarFieldImage img;
+
+    /* update all images */
+    for ( i = 0; i < images.size; i = i + 1 )
+    {
+      img = images[ i ];
+      if ( img != null )
+        img.EyeDistance = value;
+    }
+
+    pure EyeDistance = value;
+  }
+
+  // The property 'Count' defines the number of visible images in the screen saver \
+  // object.
+  $rect <430,60,630,100>
+  property int32 Count = 3;
+
+  $rect <430,100,630,140>
+  onset Count
+  {
+    /* check limits */
+    if ( value < 0 )
+      value = 0;
+
+    if ( value > images.size )
+      value = images.size;
+
+    /* if there are old images (index higher than Count) let's make them to garbage... */
+    var int32 i;
+
+    for ( i = value; i < images.size; i = i + 1 )
+    {
+      if ( images[ i ] != null )
+        Remove( images[ i ] );
+      images[ i ] = null;
+    }
+
+    /* assigne new value */
+    pure Count = value;
+  }
+
+  // The 'StarfieldAnimation' displays a set of images in a star field manner. It \
+  // can be configured by the following properties:
+  // - 'Count' defines the number of visible images in the star field animation object.
+  // - 'EyeDistance' defines the distance used for calculating the 3D effect.
+  // - 'Speed' controls the animation speed of all image animations.
+  // 
+  // The method 'Animate()' is responsible to calculate the next animation phase \
+  // of the star field animation object. If necessary, invisible images are removed \
+  // or new images are created and added to the group of views.
+  note legend Note4
+  {
+    attr Bounds = <10,410,840,580>;
+  }
+
+  // How to add fancy 2D/3D scale and rotate effects?
+  // 
+  // https://doc.embedded-wizard.de/warp-image-view
+  note legend Note5
+  {
+    attr Bounds = <10,590,390,670>;
+  }
+}
+
+// Star Field Animation
+note group Note2
+{
+  attr Bounds = <20,140,470,240>;
+}
+
+// Scroll Bar Widget Configuration
+note group Note3
+{
+  attr Bounds = <20,250,470,430>;
+}
+
+// Star Field Demo
+note group Note1
+{
+  attr Bounds = <20,30,270,130>;
+}
+
+$rect <250,330,450,370>
+$output false
+resource Resources::Bitmap ThumbR
+{
+  attr bitmapfile FileName = .\Res\ThumbR.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <500,120,700,160>
+$output false
+resource Resources::Bitmap Asteroid_1
+{
+  attr bitmapfile FileName = .\Res\Asteroid-1.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <700,120,900,160>
+$output false
+resource Resources::Bitmap Asteroid_2
+{
+  attr bitmapfile FileName = .\Res\Asteroid-2.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <500,160,700,200>
+$output false
+resource Resources::Bitmap Asteroid_3
+{
+  attr bitmapfile FileName = .\Res\Asteroid-3.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <700,160,900,200>
+$output false
+resource Resources::Bitmap Asteroid_4
+{
+  attr bitmapfile FileName = .\Res\Asteroid-4.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <500,200,700,240>
+$output false
+resource Resources::Bitmap Astronaut
+{
+  attr bitmapfile FileName = .\Res\Astronaut.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <500,370,700,410>
+$output false
+resource Resources::Bitmap Background
+{
+  attr bitmapfile FileName = .\Res\Background.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = RGB565;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <500,240,700,280>
+$output false
+resource Resources::Bitmap Earth
+{
+  attr bitmapfile FileName = .\Res\Earth.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <700,240,900,280>
+$output false
+resource Resources::Bitmap Ganymed
+{
+  attr bitmapfile FileName = .\Res\Ganymed.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <500,280,700,320>
+$output false
+resource Resources::Bitmap Jupiter
+{
+  attr bitmapfile FileName = .\Res\Jupiter.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <700,280,900,320>
+$output false
+resource Resources::Bitmap Moon
+{
+  attr bitmapfile FileName = .\Res\Moon.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <500,320,700,360>
+$output false
+resource Resources::Bitmap Saturn
+{
+  attr bitmapfile FileName = .\Res\Saturn.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <700,200,900,240>
+$output false
+resource Resources::Bitmap Venus
+{
+  attr bitmapfile FileName = .\Res\Venus.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <700,370,900,410>
+$output false
+resource Resources::Bitmap EmWiLogo
+{
+  attr bitmapfile FileName = .\Res\EmWiLogo.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <40,70,240,110>
+$output false
+class StarField : Core::Group
+{
+  $rect <10,620,210,660>
+  inherited property Bounds = <0,0,800,480>;
+
+  $rect <20,20,160,60>
+  object Views::Image Background
+  {
+    preset Bounds = <160,0,640,480>;
+    preset Bitmap = StarField::Background;
+  }
+
+  $rect <20,20,160,60>
+  object StarField::StarFieldAnimation StarfieldScreenSaver
+  {
+    preset Bounds = <160,0,640,480>;
+    preset Speed = 500;
+    preset EyeDistance = 1200;
+    preset Count = 40;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle BottomRectangle
+  {
+    preset Bounds = <160,380,640,480>;
+    preset Color = #80808080;
+  }
+
+  // This is a timer object.
+  $rect <10,500,210,540>
+  object Core::Timer PerformanceTimer
+  {
+    preset OnTrigger = PerformanceSlot;
+    preset Enabled = true;
+  }
+
+  $rect <210,500,410,540>
+  slot PerformanceSlot
+  {
+    var int32 cpu = GraphicsSystem.GetCpuLoad();
+
+    if ( GetRoot() != null )
+      FpsText.String = string(GetRoot().GetFPS()) + " fps";
+
+    if (( cpu >= 0 ) && ( cpu <= 100 ))
+    {
+      CpuText.String = string( cpu ) + " %%";
+
+      var color c = color( (uint8)( cpu * 255 / 100 ), (uint8)( (100 - cpu ) * 255 / 100 ), 0x00, 0xFF );
+      CpuText.Color = c;
+
+    }
+    else
+    {
+      CpuText.String = "-";
+      CpuText.Color = #FFFFFFFF;
+    }
+
+
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text FpsText
+  {
+    preset Bounds = <671,25,761,55>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "0 fps";
+    preset Font = Resources::FontMedium;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text CpuDescr
+  {
+    preset Bounds = <35,53,115,73>;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "CPU Load";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text CpuText
+  {
+    preset Bounds = <25,21,115,51>;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "0 %%";
+    preset Font = Resources::FontMedium;
+    preset Color = #FFFFFFFF;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text FpsDescr
+  {
+    preset Bounds = <671,57,751,77>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "Framerate";
+    preset Font = Resources::FontSmall;
+  }
+
+  $rect <10,550,210,590>
+  var GraphicsSystem::DeviceClass GraphicsSystem = GraphicsSystem::Device;
+
+  $rect <20,20,160,60>
+  object Views::Image Logo
+  {
+    preset Bounds = <273,386,528,454>;
+    preset Bitmap = StarField::EmWiLogo;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::VerticalSlider VerticalSlider
+  {
+    preset Bounds = <50,126,90,364>;
+    preset Outlet = ^StarfieldScreenSaver.EyeDistance;
+    preset MaxValue = 4800;
+    preset MinValue = 1200;
+    preset Appearance = StarField::VerticalSliderConfigL;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image ScaleL
+  {
+    preset Bounds = <40,145,60,345>;
+    preset Bitmap = StarField::Track;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image ScaleL1
+  {
+    preset Bounds = <724,145,744,345>;
+    preset Bitmap = StarField::Track;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::VerticalSlider VerticalSlider1
+  {
+    preset Bounds = <694,126,734,364>;
+    preset Outlet = ^StarfieldScreenSaver.Speed;
+    preset MaxValue = 2000;
+    preset MinValue = 100;
+    preset Appearance = StarField::VerticalSliderConfigR;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text CpuDescr1
+  {
+    preset Bounds = <40,111,137,131>;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "Eye Distance";
+    preset Font = Resources::FontSmall;
+  }
+
+  // This is an ordinary text view.
+  $rect <20,20,160,60>
+  object Views::Text CpuDescr2
+  {
+    preset Bounds = <688,111,744,131>;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "Speed";
+    preset Font = Resources::FontSmall;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Bounds = <0,0,800,480>;
+    preset Color = #3D3D3DFF;
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Bounds
+  $member Rectangle
+  $member Background
+  $member StarfieldScreenSaver
+  $member BottomRectangle
+  $member PerformanceTimer
+  $member PerformanceSlot
+  $member FpsText
+  $member CpuDescr
+  $member CpuText
+  $member FpsDescr
+  $member GraphicsSystem
+  $member Logo
+  $member VerticalSlider
+  $member ScaleL
+  $member ScaleL1
+  $member VerticalSlider1
+  $member CpuDescr1
+  $member CpuDescr2
+}
+
+$rect <40,290,240,330>
+$output false
+autoobject WidgetSet::VerticalSliderConfig VerticalSliderConfigL
+{
+  preset ThumbBitmapActive = StarField::ThumbL;
+  preset ThumbBitmapFocused = StarField::ThumbL;
+  preset ThumbBitmapDefault = StarField::ThumbL;
+}
+
+$rect <250,290,450,330>
+$output false
+resource Resources::Bitmap ThumbL
+{
+  attr bitmapfile FileName = .\Res\ThumbL.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <250,370,450,410>
+$output false
+resource Resources::Bitmap Track
+{
+  attr bitmapfile FileName = .\Res\Track.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <40,330,240,370>
+$output false
+autoobject WidgetSet::VerticalSliderConfig VerticalSliderConfigR
+{
+  preset ThumbBitmapActive = StarField::ThumbR;
+  preset ThumbBitmapFocused = StarField::ThumbR;
+  preset ThumbBitmapDefault = StarField::ThumbR;
+}
+
+// Resources
+note group Note4
+{
+  attr Bounds = <480,30,930,430>;
+}
+
+// Directives to adapt the order of the above members according to how these members 
+// where arranged when the project content was stored. In this manner the storage 
+// and the expected order of the members don't depend. Merging of changes in the 
+// project files is simplified.
+$member Note1
+$member Note2
+$member Note3
+$member Note4
+$member ImageProvider
+$member ThumbR
+$member StarFieldImage
+$member StarFieldAnimation
+$member Asteroid_1
+$member Asteroid_2
+$member Asteroid_3
+$member Asteroid_4
+$member Astronaut
+$member Background
+$member Earth
+$member Ganymed
+$member Jupiter
+$member Moon
+$member Saturn
+$member Venus
+$member EmWiLogo
+$member StarField
+$member VerticalSliderConfigL
+$member ThumbL
+$member Track
+$member VerticalSliderConfigR

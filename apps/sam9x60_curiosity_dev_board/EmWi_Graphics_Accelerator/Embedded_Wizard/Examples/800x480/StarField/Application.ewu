@@ -1,0 +1,73 @@
+﻿$version 13.00
+
+// The application class to launch the different screen savers.
+$rect <40,60,240,100>
+class Application : Core::Root
+{
+  $rect <820,50,1020,90>
+  inherited property Bounds = <0,0,800,480>;
+
+  $rect <20,20,160,60>
+  object StarField::StarField StarField
+  {
+    preset Bounds = <0,0,800,480>;
+  }
+
+  // Directives to adapt the order of members belonging to this class so they appear 
+  // correctly arranged relative to the members inherited from the ancestor (super) 
+  // classes. The numbers indicate the order-displacement to apply on the respective 
+  // member once all members have been loaded and combined with members from the 
+  // ancestor classes.
+  $reorder RestackBehind 1
+  $reorder RestackBack 1
+  $reorder RestackTop 1
+  $reorder Restack 1
+  $reorder Remove 1
+  $reorder modalGroups 1
+  $reorder cursorHoldTimerProc 1
+  $reorder cursorHoldTimer 1
+  $reorder cursorSequelCounter 1
+  $reorder cursorSequelArea 1
+  $reorder cursorHoldPeriod 1
+  $reorder cursorHittingPos 1
+  $reorder cursorCaptureView 1
+  $reorder cursorCurrentPos 1
+  $reorder cursorTargetView 1
+  $reorder cursorHitOffset 1
+  $reorder cursorLastPos 1
+  $reorder cursorFinger 1
+  $reorder lastRegions 1
+  $reorder noOfLastRegions 1
+  $reorder canvas 1
+  $reorder regions 1
+  $reorder noOfRegions 1
+  $reorder Update 1
+  $reorder UpdateGE20 1
+  $reorder Initialize 1
+  $reorder DriveCursorMovement 1
+  $reorder DriveCursorHitting 1
+  $reorder OnSetVirtualKeyboard 1
+  $reorder OnSetCursorDragLimit 1
+  $reorder OnSetCursorSequelDelay 1
+  $reorder OnGetStyles 1
+  $reorder OnSetStyles 1
+  $reorder OnGetLanguage 1
+  $reorder OnSetLanguage 1
+  $reorder CaptureCursor 1
+  $reorder RetargetCursor 1
+  $reorder DeflectCursor 1
+  $reorder GetModalGroup 1
+  $reorder EndModal 1
+  $reorder BeginModal 1
+  $reorder VirtualKeyboard 1
+  $reorder CursorDragLimit 1
+  $reorder CursorSequelDelay 1
+  $reorder Styles 1
+  $reorder Language 1
+}
+
+// Application class
+note group Note
+{
+  attr Bounds = <20,10,260,120>;
+}

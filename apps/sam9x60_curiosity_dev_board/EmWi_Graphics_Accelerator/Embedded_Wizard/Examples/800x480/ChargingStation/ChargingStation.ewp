@@ -1,0 +1,166 @@
+﻿$version 13.00
+
+// This unit is a part of the Embedded Wizard framework 'Mosaic'
+$rect <40,70,240,110>
+unit Core
+{
+  attr Directory = $Mosaic;
+}
+
+// This unit is a part of the Embedded Wizard framework 'Mosaic'
+$rect <40,110,240,150>
+unit Resources
+{
+  attr Directory = $Mosaic;
+}
+
+// This unit is a part of the Embedded Wizard framework 'Mosaic'
+$rect <40,150,240,190>
+unit Graphics
+{
+  attr Directory = $Mosaic;
+}
+
+// This unit is a part of the Embedded Wizard framework 'Mosaic'
+$rect <40,190,240,230>
+unit Effects
+{
+  attr Directory = $Mosaic;
+}
+
+// This unit is a part of the Embedded Wizard framework 'Mosaic'
+$rect <40,230,240,270>
+unit Views
+{
+  attr Directory = $Mosaic;
+}
+
+$rect <40,270,240,310>
+unit Charts
+{
+  attr Directory = $Mosaic\Charts;
+}
+
+// The 'Default' Language. Each project has to contain at least one language brick \
+// called 'Default'.
+$rect <290,390,490,430>
+language Default;
+
+// The unit of the application class
+$rect <40,390,240,430>
+unit Application
+{
+  attr Directory = .\;
+}
+
+$rect <40,430,240,470>
+unit ChargingStation
+{
+  attr Directory = .\;
+}
+
+// Mosaic Framework
+note group Note1
+{
+  attr Bounds = <20,20,260,330>;
+}
+
+// Profiles (Portrait)
+note group Note2
+{
+  attr Bounds = <520,340,760,450>;
+}
+
+// Languages
+note group Note3
+{
+  attr Bounds = <270,340,510,490>;
+}
+
+// Project Units
+note group Note4
+{
+  attr Bounds = <20,340,260,490>;
+}
+
+// The sample application 'ChargingStation' implements an user interface for an EV \
+// charging station. The user can switch between multiple GUI states such as an info \
+// screen, chart animation, and payment request. A dedicated focus of this demo application \
+// lies on the usage of path objects and SVG strings. Many components and visual \
+// elements are realized by computing SVG strings rather than using bitmaps. This \
+// is an efficient way of element drawing on storage restricted targets.
+// 
+// This demo application comes in the native resolution of 480x800 and can be used \
+// in portrait (default) and lancscape mode.
+// 
+// For additional details on utilizing the path data object, please refer to the \
+// relevant documentation.
+// 
+// https://doc.embedded-wizard.de/path-data
+// 
+// You can double-click on the 'ChargingStation' brick to open the unit within the \
+// Composer and to analyze the implementation.
+// 
+// To start the application within the Prototyper, press 'Ctrl'+'F5'.
+note legend Note5
+{
+  attr Bounds = <270,20,1010,330>;
+}
+
+// Language supported by this application.
+$rect <290,430,490,470>
+language German;
+
+// Profile (Landscape)
+note group Note6
+{
+  attr Bounds = <770,340,1010,450>;
+}
+
+// This is a profile member for the project. This profile controls the code generation \
+// for the target system.
+$rect <540,390,740,430>
+profile STM32_Portrait : STM.STM32_NeoChrom.RGB565
+{
+  attr ScreenSize = <480,800>;
+  attr Optimization = High;
+  attr ApplicationClass = Application::Application;
+  attr ScreenOrientation = Rotated_90;
+  attr ModeOfBitmapResources = DirectAccess;
+  attr ModeOfStringConstants = Compressed;
+  attr OutputDirectory = ..\..\..\Application\GeneratedCode;
+  attr CleanOutputDirectories = true;
+  attr FontConversion = Windows;
+  attr OutputFileNameExtension = c;
+  attr Verbose = false;
+
+  $rect <10,10,154,50>
+  macro Author = "Dipl. Ing. Paul Banach and Dipl. Ing. Manfred Schweyer, Copyright (C) TARA Systems GmbH";
+
+  $rect <10,70,210,110>
+  macro Landscape = false;
+}
+
+// This is a profile member for the project. This profile controls the code generation \
+// for the target system.
+$rect <790,390,990,430>
+profile STM32_Landscape : STM.STM32_NeoChrom.RGB565
+{
+  attr ScreenSize = <800,480>;
+  attr Optimization = High;
+  attr ApplicationClass = Application::Application;
+  attr ScreenOrientation = Normal;
+  attr ModeOfBitmapResources = DirectAccess;
+  attr ModeOfStringConstants = Compressed;
+  attr OutputDirectory = ..\..\..\Application\GeneratedCode;
+  attr CleanOutputDirectories = true;
+  attr FontConversion = Windows;
+  attr OutputFileNameExtension = c;
+  attr Verbose = false;
+  $rect <10,10,154,50>
+  macro Author = "Dipl. Ing. Paul Banach and Dipl. Ing. Manfred Schweyer, Copyright (C) TARA Systems GmbH";
+
+  $rect <10,70,210,110>
+  macro Landscape = true;
+}
+

@@ -1,0 +1,5688 @@
+﻿$version 13.00
+
+// Constant to define the backgroud color.
+$rect <230,499,430,539>
+$output false
+const color BackColor = #0D0C0BFF;
+
+// This is a font resource.
+$rect <879,500,1079,540>
+$output false
+resource Resources::Font FontS
+{
+  attr fontname FontName = OCR A Std;
+  attr fontheight Height = 18;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontheightmode HeightMode = Compatible;
+  attr fontrowdistance RowDistance;
+}
+
+// This is a font resource.
+$rect <879,620,1079,660>
+$output false
+resource Resources::Font FontXl
+{
+  attr fontname FontName = OCR A Std;
+  attr fontheight Height = 46;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontheightmode HeightMode = Compatible;
+  attr fontrowdistance RowDistance;
+}
+
+// This is a font resource.
+$rect <879,460,1079,500>
+$output false
+resource Resources::Font FontXs
+{
+  attr fontname FontName = OCR A Std;
+  attr fontheight Height = 15;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontheightmode HeightMode = Compatible;
+  attr fontrowdistance RowDistance;
+}
+
+// Layout and color constants
+note group Note1
+{
+  attr Bounds = <10,410,850,718>;
+}
+
+// Resources
+note group Note2
+{
+  attr Bounds = <860,410,1300,680>;
+}
+
+// The sample application 'ChargingStation' implements an user interface for an EV \
+// charging station. The user can switch between multiple GUI states such as an info \
+// screen, chart animation, and payment request. A dedicated focus of this demo application \
+// lies on the usage of path objects and SVG strings. Many components and visual \
+// elements are realized by computing SVG strings rather than using bitmaps. This \
+// is an efficient way of element drawing on storage restricted targets.
+//
+// This demo application comes in the native resolution of 480x800 and can be used \
+// in portrait (default) and lancscape mode.
+//
+// For additional details on utilizing the path data object, please refer to the \
+// relevant documentation.
+//
+// https://doc.embedded-wizard.de/path-data
+note legend Note4
+{
+  attr Bounds = <10,730,1700,880>;
+}
+
+// Controller class, containing all data set values and all current values of the \
+// charging station.
+$rect <1330,460,1530,500>
+$output false
+class DeviceClass
+{
+  // Charging progress in percent.
+  $rect <10,30,210,70>
+  property float Progress;
+
+  $rect <10,70,210,110>
+  onset Progress
+  {
+    // Check limits of given value
+    if ( value < 0.0 )
+      value = 0.0;
+    if ( value > 100.0 )
+      value = 100.0;
+
+    // If the value doesn't change - nothing to do.
+    if ( value == pure Progress )
+      return;
+
+    // Remember the property's new value.
+    pure Progress = value;
+
+    // Notify observers for UI update
+    notifyobservers ^Progress;
+  }
+
+  // Available range in kilometers.
+  $rect <210,30,410,70>
+  property float Range;
+
+  $rect <210,70,410,110>
+  onset Range
+  {
+    // Check limits of given value
+    if ( value < 0.0 )
+      value = 0.0;
+
+    // If the value doesn't change - nothing to do.
+    if ( value == pure Range )
+      return;
+
+    // Remember the property's new value.
+    pure Range = value;
+
+    // Notify observers for UI update
+    notifyobservers ^Range;
+  }
+
+  // Battery capacity in kwh.
+  $rect <410,30,610,70>
+  property float Capacity;
+
+  $rect <410,70,610,110>
+  onset Capacity
+  {
+    // Check limits of given value
+    if ( value < 0.0 )
+      value = 0.0;
+
+    // If the value doesn't change - nothing to do.
+    if ( value == pure Capacity )
+      return;
+
+    // Remember the property's new value.
+    pure Capacity = value;
+
+    // Notify observers for UI update
+    notifyobservers ^Capacity;
+  }
+
+  // Remaining charging time in minutes.
+  $rect <610,30,810,70>
+  property float Time;
+
+  $rect <610,70,810,110>
+  onset Time
+  {
+    // Check limits of given value
+    if ( value < 0.0 )
+      value = 0.0;
+
+    // If the value doesn't change - nothing to do.
+    if ( value == pure Time )
+      return;
+
+    // Remember the property's new value.
+    pure Time = value;
+
+    // Notify observers for UI update
+    notifyobservers ^Time;
+
+
+  }
+
+  // This class represents the device of the charging station, serving as the interface \
+  // to the actual hardware.
+  //
+  // The timer within this class initiates a basic simulation of a battery. Upon \
+  // value changes, it notifies all observers who subsequently display the simulated \
+  // values.
+  note legend Note1
+  {
+    attr Bounds = <-10,180,830,270>;
+  }
+
+  // How to integrate your UI application with a real device?
+  //
+  // https://doc.embedded-wizard.de/integrating-with-the-device
+  // https://doc.embedded-wizard.de/device-class-and-device-driver
+  note legend Note2
+  {
+    attr Bounds = <-10,280,830,370>;
+  }
+
+  $rect <410,110,610,150>
+  array float CapacityHistory[ 241 ];
+
+  $rect <10,-70,210,-30>
+  object Core::Timer NewDataPoint
+  {
+    preset OnTrigger = OnNewDataPoint;
+    preset Period = 150;
+    preset Enabled = true;
+  }
+
+  $rect <10,-30,210,10>
+  slot OnNewDataPoint
+  {
+    sender; /* the method is called from the sender object */
+
+    // Inform simulation that a new datapoint was measured
+    DataPointCounter++;
+
+  }
+
+  $rect <210,-70,410,-30>
+  property int32 DataPointCounter = 1;
+
+  $rect <210,-30,410,10>
+  onset DataPointCounter
+  {
+    // Check limits of given value
+    if ( value > 241 )
+      value = 1;
+
+    // If the value doesn't change - nothing to do.
+    if ( pure DataPointCounter == value )
+      return;
+
+    // Remember the property's new value.
+    pure DataPointCounter = value;
+
+    // Use e function to simulate a battery
+    Progress = (1 - math_pow( 2.718281, -(float(DataPointCounter) / 65.0))) * 103;
+
+    // Derive range, capacity and time from progress value
+    Range = (float(Progress) / 100.0) * 756;
+    Capacity = (float(Progress) / 100.0) * 162;
+    Time = (float(Progress) / 135.0) * 162;
+    CapacityHistory[DataPointCounter - 1] = Progress * 1.62;
+
+    // Notify observers for UI update
+    notifyobservers ^DataPointCounter;
+
+
+  }
+
+  // Battery charging simulation
+  note group Note3
+  {
+    attr Bounds = <-10,-120,830,170>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Progress
+  $member OnSetProgress
+  $member Range
+  $member OnSetRange
+  $member Capacity
+  $member OnSetCapacity
+  $member Time
+  $member OnSetTime
+  $member CapacityHistory
+  $member NewDataPoint
+  $member OnNewDataPoint
+  $member DataPointCounter
+  $member OnSetDataPointCounter
+  $member Note1
+  $member Note2
+  $member Note3
+}
+
+$rect <1330,500,1530,540>
+$output false
+autoobject ChargingStation::DeviceClass Device;
+
+// Main screen, widgets and diagram classes (Portrait mode)
+note group Note6
+{
+  attr Bounds = <10,10,850,399>;
+}
+
+// Device class
+note group Note3
+{
+  attr Bounds = <1310,410,1550,560>;
+}
+
+// This is a GUI component.
+$rect <30,339,230,379>
+$output false
+class HexagonMoving : Core::Group
+{
+  $rect <160,40,360,80>
+  inherited property Bounds = <0,0,110,66>;
+
+  $rect <160,80,360,120>
+  inherited method Init()
+  {
+    // Randomly selects a different starting position each time the hexagon shape is initialized
+    TickCount = (uint32)math_rand(0, 373);
+
+    // Trigger rendering of the hexagon shape
+    this.RenderHexagon();
+  }
+
+  $rect <870,40,1070,80>
+  object Graphics::Path BasePath;
+
+  $rect <870,80,1070,120>
+  object Graphics::Path VisiblePath;
+
+  $rect <870,120,1070,160>
+  slot OnTimer
+  {
+    // Variables
+    var int32 inx;
+
+    // Count the timer expirations
+    TickCount = TickCount + 3;
+
+    // Calculate a progress values (range 0.0 .. 1.0) to use as base for four animations.
+    // Each animation runs with a slightly different speed.
+    var float Progress1 = float( TickCount % 193 ) / 193.0;
+    var float Progress2 = float( TickCount % 251 ) / 251.0;
+    var float Progress3 = float( TickCount % 311 ) / 311.0;
+    var float Progress4 = float( TickCount % 373 ) / 373.0;
+
+    // From the animation progress calculate the desired phase of the animation (displacement,
+    // rotation, scaling)
+    var float DeltaX    = 5.0 * math_sin( Progress1 * 360.0 );
+    var float DeltaY    = 5.0 * math_sin( Progress2 * 360.0 );
+    var float Angle     = 5.0 * math_sin( Progress3 * 360.0 );
+    var float Scale     = 1.0 + 0.1 * math_sin( Progress4 * 360.0 );
+
+    // Setup transformations to apply on the path. The animation moves the path, rotate and
+    // scale it.
+    VisiblePath.InitMatrix();
+    VisiblePath.Translate( DeltaX, DeltaY );
+    VisiblePath.Scale( Scale, Scale );
+    VisiblePath.Rotate( Angle );
+
+    // Copy the base shape to the visible path. Doing this, the previously configured
+    // transformations are applied.
+    for ( inx = 0; inx < VisiblePath.GetMaxNoOfSubPaths(); inx++ )
+    {
+      VisiblePath.InitSubPath( inx, BasePath.GetNoOfEdges( inx ));
+      VisiblePath.AddCopy( inx, BasePath, inx, 0, BasePath.GetNoOfEdges( inx ));
+    }
+
+  }
+
+  $rect <870,200,1070,240>
+  object Core::Timer Timer
+  {
+    preset OnTrigger = OnTimer;
+    preset Period = 45;
+    preset Enabled = true;
+  }
+
+  $rect <870,160,1070,200>
+  var uint64 TickCount;
+
+  $rect <410,80,610,120>
+  property float Size = 1.0;
+
+  $rect <620,80,820,120>
+  onset Size
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Size == value )
+      return;
+
+    // Remember the property's new value.
+    pure Size = value;
+
+    // Trigger rendering of the hexagon shape
+    RenderHexagon();
+  }
+
+  // The method Init() is invoked automatically after the component has been created. \
+  // This method can be overridden and filled with logic containing additional initialization \
+  // statements.
+  $rect <870,240,1070,280>
+  method void RenderHexagon()
+  {
+    // Definition of the nominal widget size
+    var int32 NominalSize = 120;
+
+    // Resizing of the widget to required size to ensure moving effect has enough space
+    Bounds.w = int32(NominalSize * Size);
+    Bounds.h = int32(NominalSize * Size);
+
+    // Configure the StrokePath size
+    if(CurrentStrokePath.Bounds.w != int32(NominalSize * Size))
+    {
+      CurrentStrokePath.Bounds.w = int32(NominalSize * Size);
+    }
+    if(CurrentStrokePath.Bounds.h != int32(NominalSize * Size))
+    {
+      CurrentStrokePath.Bounds.h = int32(NominalSize * Size);
+    }
+
+    // Select desired variant of hexagon
+    var string svgString = "M73.298,32.659l-16.673,32.555l-37.5,-0l-18.75,-32.476l18.75,-32.476l37.5,0l16.673,32.397Z";
+
+    // Create a path object describing the base shape of a hexagon. Note, scaling and translation
+    // is applied at this time because the original SVG string contains very large numbers.
+    BasePath.CreateFromSVGString( svgString, Size * 1.0, Size * 0.985, Size * 20.0, Size * 20.0, 0.0 );
+
+    // The second path object is used to store the shape at the current animation phase.
+    // It is the actually visible path.
+    VisiblePath.SetMaxNoOfSubPaths( BasePath.GetMaxNoOfSubPaths());
+
+    // Set state for timer to enable or disable the moving animation
+    Timer.Enabled = true;
+
+    // Invoke slot function
+    postsignal OnTimer;
+
+  }
+
+  $rect <410,120,610,160>
+  property color Color = #FFFFFF00;
+
+  $rect <619,119,819,159>
+  onset Color
+  {
+    // Reset color effect and use previous color as start value
+    ChangeColorEffect.Enabled = false;
+    ChangeColorEffect.Value1 = Color;
+
+    // The value doesn't change - nothing to do.
+    if ( pure Color == value )
+      return;
+
+    // Remember the property's new value.
+    pure Color = value;
+
+    // Enable color effect and use new color as end value
+    ChangeColorEffect.Value2 = Color;
+    ChangeColorEffect.Enabled = true;
+
+    // Trigger rendering of the hexagon shape
+    RenderHexagon();
+  }
+
+  $rect <410,40,610,80>
+  property int16 OutlinedWidth = 1;
+
+  $rect <620,40,820,80>
+  onset OutlinedWidth
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure OutlinedWidth == value )
+      return;
+
+    // Remember the property's new value.
+    pure OutlinedWidth = value;
+
+    // Configure the line width.
+    CurrentStrokePath.Width = OutlinedWidth;
+  }
+
+  $rect <871,360,1071,400>
+  object Effects::ColorEffect ChangeColorEffect
+  {
+    preset OnAnimate = ChangeColor;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 250;
+  }
+
+  $rect <870,400,1070,440>
+  slot ChangeColor
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Access dynamically created StrokePath with its reference variable
+    CurrentStrokePath.Color = ChangeColorEffect.Value;
+
+  }
+
+  // Shape drawing
+  note group Note1
+  {
+    attr Bounds = <850,0,1090,300>;
+  }
+
+  // Shape colorizing
+  note group Note2
+  {
+    attr Bounds = <850,310,1090,470>;
+  }
+
+  // Properties
+  note group Note3
+  {
+    attr Bounds = <390,0,840,180>;
+  }
+
+  // In this sample application, each animated hexagon is created using a this component. \
+  // It utilizes a SVG string and a path object to render a hexagon during its initialization \
+  // phase and the starts to animate the same path object.
+  //
+  // The objects highlighted in the ‘Shape drawing’ section allow the original hexagon \
+  // object to be dynamically modified in size, position, and angle each time the \
+  // timer object is triggered, creating a movement effect for the hexagon.
+  //
+  // The component’s properties offer the flexibility to modify the hexagon’s size, \
+  // color, and type to fit various use cases. Additionally, the animation effect \
+  // and the appearance of the hexagon can be adjusted using the constant parameters \
+  // labeled ‘Configuration of background hexagons’ available in the ‘ChargingStation’ \
+  // unit.
+  //
+  // For more information on how to use the path data object, please consult the \
+  // appropriate documentation.
+  //
+  // https://doc.embedded-wizard.de/path-data
+  note legend Note4
+  {
+    attr Bounds = <140,190,840,470>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::StrokePath CurrentStrokePath
+  {
+    preset Bounds = <0,0,120,120>;
+    preset Path = VisiblePath;
+  }
+
+  // Inherited features
+  note group Note5
+  {
+    attr Bounds = <140,0,380,140>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Init
+  $member Bounds
+  $member BasePath
+  $member VisiblePath
+  $member OnTimer
+  $member Timer
+  $member TickCount
+  $member Size
+  $member OnSetSize
+  $member RenderHexagon
+  $member Color
+  $member OnSetColor
+  $member OutlinedWidth
+  $member OnSetOutlinedWidth
+  $member ChangeColorEffect
+  $member ChangeColor
+  $member CurrentStrokePath
+  $member Note1
+  $member Note2
+  $member Note3
+  $member Note4
+  $member Note5
+}
+
+// This is an enumeration definition for signing the different hexagon types.
+$rect <29,499,229,539>
+$output false
+enum HexagonType
+{
+  $rect <10,10,190,50>
+  item Filled;
+
+  $rect <10,50,190,90>
+  item OutlinedSolid;
+
+  $rect <10,90,190,130>
+  item OutlinedRegressive;
+
+  $rect <10,-30,190,10>
+  item Unset;
+}
+
+// This is a GUI component.
+$rect <30,290,230,330>
+$output false
+class ContentBackground : Core::Group
+{
+  $rect <490,40,690,80>
+  inherited property Bounds = <0,0,456,421>;
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonLargeFilled
+  {
+    preset Bounds = <0,19,456,421>;
+    preset Size = 6;
+    preset Variant = ChargingStation::HexagonType.Filled;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonLargeOutlined
+  {
+    preset Bounds = <0,19,456,421>;
+    preset Size = 6;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset OutlinedWidth = 4;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonButton
+  {
+    preset Bounds = <346,1,406,54>;
+    preset Size = 0.8;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <350,0>;
+    preset Point3 = <404,0>;
+    preset Point2 = <404,54>;
+    preset Point1 = <350,54>;
+    preset OnHold = OnHold;
+    preset OnRelease = OnClose;
+  }
+
+  $rect <690,40,890,80>
+  inherited method UpdateViewState()
+  {
+    // Invoke the inherited version of the method 'UpdateViewState'.
+    // Remove the line if the inherited code should not be executed.
+    super( aState );
+
+    // Uses the hexagon color transition effect to change the color
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      // To blue
+      HexagonButton.Color = ChargingStation::BlueColorTone1;
+      HexagonLargeFilled.Color = ChargingStation::BlueColorTone2;
+      HexagonLargeOutlined.Color = ChargingStation::BlueColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      // To green
+      HexagonButton.Color = ChargingStation::GreenColorTone1;
+      HexagonLargeFilled.Color = ChargingStation::GreenColorTone2;
+      HexagonLargeOutlined.Color = ChargingStation::GreenColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      // To red
+      HexagonButton.Color = ChargingStation::RedColorTone1;
+      HexagonLargeFilled.Color = ChargingStation::RedColorTone2;
+      HexagonLargeOutlined.Color = ChargingStation::RedColorTone1;
+    }
+
+    // Selects the correct icons for the close button
+    if(this.SimpleTouchHandler.Down == true)
+    {
+      // Generation of icon from svg string
+      var string svgString = "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z";
+      PathIconClose.CreateFromSVGString( svgString, 0.08, 0.08, 0, 0, 0.0 );
+    }
+    else
+    {
+      // Generation of icon from svg string
+      var string svgString = "M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z";
+      PathIconClose.CreateFromSVGString( svgString, 0.08, 0.08, 1, 0, 0.0 );
+    }
+  }
+
+  $rect <490,260,690,300>
+  property slot Close;
+
+  $rect <690,260,890,300>
+  slot OnClose
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Send signal to close slot property
+    signal Close;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <490,150,690,190>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <690,150,890,190>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <690,301,890,341>
+  slot OnHold
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <490,301,690,341>
+  object Graphics::Path PathIconClose;
+
+  $rect <20,20,160,60>
+  object Views::FillPath IconClose
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft];
+    preset Bounds = <363,7,393,50>;
+    preset Quality = true;
+    preset FillRule = Graphics::FillRule.EvenOdd;
+    preset Path = PathIconClose;
+  }
+
+  // Appearance configuration
+  note group Note2
+  {
+    attr Bounds = <470,110,910,210>;
+  }
+
+  // Icons drawn with path object
+  note group Note1
+  {
+    attr Bounds = <470,220,910,360>;
+  }
+
+  // Note: The icons are drawn with paths object and SVG strings.
+  //
+  // For additional details on utilizing the path data object, please refer to the \
+  // relevant documentation.
+  //
+  // https://doc.embedded-wizard.de/path-data
+  note legend Note3
+  {
+    attr Bounds = <470,370,910,490>;
+  }
+
+  // Inherited features
+  note group Note4
+  {
+    attr Bounds = <470,0,910,100>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Bounds
+  $member UpdateViewState
+  $member HexagonLargeFilled
+  $member HexagonLargeOutlined
+  $member HexagonButton
+  $member SimpleTouchHandler
+  $member Close
+  $member OnClose
+  $member ColorScheme
+  $member OnSetColorScheme
+  $member OnHold
+  $member PathIconClose
+  $member IconClose
+  $member Note1
+  $member Note2
+  $member Note3
+  $member Note4
+}
+
+// This is a GUI component.
+$rect <30,110,230,150>
+$output false
+class Decoration : Core::Group
+{
+  $rect <521,40,721,80>
+  inherited property Bounds = <0,0,480,800>;
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco6
+  {
+    preset Bounds = <2,35,112,145>;
+    preset Size = 1;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco1
+  {
+    preset Bounds = <-19,-53,91,57>;
+    preset Size = 1;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco2
+  {
+    preset Bounds = <65,8,109,52>;
+    preset Size = 0.4;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco3
+  {
+    preset Bounds = <92,-12,136,32>;
+    preset Size = 0.4;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco4
+  {
+    preset Bounds = <79,23,123,67>;
+    preset Size = 0.4;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco5
+  {
+    preset Bounds = <-7,30,37,74>;
+    preset Size = 0.4;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <721,40,921,80>
+  inherited method UpdateViewState()
+  {
+    // Invoke the inherited version of the method 'UpdateViewState'.
+    // Remove the line if the inherited code should not be executed.
+    super( aState );
+
+    // Variables
+    var color CurrentColor;
+
+    // Temporarily saves the required color information
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      CurrentColor = ChargingStation::BlueColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      CurrentColor = ChargingStation::GreenColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      CurrentColor = ChargingStation::RedColorTone1;
+    }
+
+    // Uses the hexagon color transition effect to change the colors of all components
+    Deco1.Color = CurrentColor;
+    Deco2.Color = CurrentColor;
+    Deco3.Color = CurrentColor;
+    Deco4.Color = CurrentColor;
+    Deco5.Color = CurrentColor;
+    Deco6.Color = CurrentColor;
+    Deco7.Color = CurrentColor;
+    Deco8.Color = CurrentColor;
+    Deco9.Color = CurrentColor;
+    Deco10.Color = CurrentColor;
+    Deco11.Color = CurrentColor;
+    Deco12.Color = CurrentColor;
+    Deco13.Color = CurrentColor;
+    Deco14.Color = CurrentColor;
+    Deco15.Color = CurrentColor;
+    Deco16.Color = CurrentColor;
+    Deco17.Color = CurrentColor;
+    Deco18.Color = CurrentColor;
+    Deco19.Color = CurrentColor;
+  }
+
+  $rect <519,150,719,190>
+  property ChargingStation::DecorationType DecorationVariant = ChargingStation::DecorationType.Init;
+
+  $rect <719,150,919,190>
+  onset DecorationVariant
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure DecorationVariant == value )
+      return;
+
+    // Remember the property's new value.
+    pure DecorationVariant = value;
+
+    // Blends in some deco elements for the init screen
+    if(DecorationVariant == ChargingStation::DecorationType.Init)
+    {
+      InitFader.Enabled = false;
+      InitFader.Value1 = 0;
+      InitFader.Value2 = 255;
+      InitFader.Enabled = true;
+    }
+
+    // Blends out some deco elements for the default screen
+    if(DecorationVariant == ChargingStation::DecorationType.Default)
+    {
+      InitFader.Enabled = false;
+      InitFader.Value1 = 255;
+      InitFader.Value2 = 0;
+      InitFader.Enabled = true;
+    }
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco7
+  {
+    preset Bounds = <-82,290,116,488>;
+    preset Size = 1.8;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco8
+  {
+    preset Bounds = <57,328,255,526>;
+    preset Size = 1.8;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco9
+  {
+    preset Bounds = <369,461,567,659>;
+    preset Size = 1.8;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco10
+  {
+    preset Bounds = <-96,512,96,704>;
+    preset Size = 1.6;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco11
+  {
+    preset Bounds = <413,186,581,354>;
+    preset Size = 1.4;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco12
+  {
+    preset Bounds = <265,628,385,748>;
+    preset Size = 1.0;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco14
+  {
+    preset Bounds = <339,419,416,496>;
+    preset Size = 0.7;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco15
+  {
+    preset Bounds = <297,450,374,527>;
+    preset Size = 0.7;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco13
+  {
+    preset Bounds = <325,474,402,551>;
+    preset Size = 0.7;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco16
+  {
+    preset Bounds = <66,183,110,227>;
+    preset Size = 0.4;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco17
+  {
+    preset Bounds = <41,205,85,249>;
+    preset Size = 0.4;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <520,191,720,231>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <720,191,920,231>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco18
+  {
+    preset Bounds = <155,2,275,122>;
+    preset Size = 1;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving Deco19
+  {
+    preset Bounds = <89,669,137,717>;
+    preset Size = 0.4;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <520,231,720,271>
+  object Effects::Int32Effect InitFader
+  {
+    preset OnAnimate = InitFaderSlot;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 500;
+    preset Enabled = false;
+  }
+
+  $rect <720,231,920,271>
+  slot InitFaderSlot
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Blends in or out some deco elements for the init screen
+    Deco8.Opacity = InitFader.Value;
+    Deco13.Opacity = InitFader.Value;
+    Deco15.Opacity = InitFader.Value;
+
+  }
+
+  // Appearance configuration
+  note group Note1
+  {
+    attr Bounds = <500,111,940,291>;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <501,0,941,100>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Bounds
+  $member UpdateViewState
+  $member Deco1
+  $member Deco2
+  $member Deco3
+  $member Deco4
+  $member Deco5
+  $member Deco6
+  $member Deco7
+  $member Deco8
+  $member Deco9
+  $member Deco10
+  $member Deco11
+  $member Deco12
+  $member Deco13
+  $member Deco14
+  $member Deco15
+  $member Deco16
+  $member Deco17
+  $member Deco18
+  $member Deco19
+  $member DecorationVariant
+  $member OnSetDecorationVariant
+  $member ColorScheme
+  $member OnSetColorScheme
+  $member InitFader
+  $member InitFaderSlot
+  $member Note1
+  $member Note2
+}
+
+// This is a GUI component.
+$rect <430,110,630,150>
+$output false
+class Clock : Core::Group
+{
+  $rect <140,40,340,80>
+  inherited property Bounds = <0,0,102,90>;
+
+  $rect <340,40,540,80>
+  inherited method UpdateViewState()
+  {
+    // Invoke the inherited version of the method 'UpdateViewState'.
+    // Remove the line if the inherited code should not be executed.
+    super( aState );
+
+    // Calculate the rotation angles of hour line
+    var float hou = ((float)( Hour ) * 30.0 ) + ((float)Minute * 0.5 ) + ((float)Second * ( 0.5 / 60.0 ));
+
+    // Initializes and rotates the path object
+    PathHour.InitSubPath( 0, 1 );
+    PathHour.InitMatrix();
+    PathHour.Rotate( float( hou - 90.0 ) );
+
+    // Outputs the path data
+    PathHour.Begin( 0,     0.0, 0.0 );
+    PathHour.AddLine( 0,  25,   0 );
+    PathHour.Close( 0 );
+
+    // Calculate the rotation angles of Minute line
+    var float min = ((float)Minute * 6.0 ) + ((float)Second * 0.1 );
+
+    // Initializes and rotates the path object
+    PathMinute.InitSubPath( 0, 1 );
+    PathMinute.InitMatrix();
+    PathMinute.Rotate( float( min - 90.0 ) );
+
+    // Outputs the path data
+    PathMinute.Begin( 0, 0.0, 0.0 );
+    PathMinute.AddLine( 0, 38, 0 );
+    PathMinute.Close( 0 );
+
+    // Start the soft movement of the seconds pointer
+    SnappingSecond.Enabled = false;
+    SnappingSecond.Enabled = true;
+
+    // Invoke slot function
+    postsignal UpdateSeconds;
+
+  }
+
+  $rect <139,190,339,230>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <339,190,539,230>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Reset the color transition for the pointers
+    ChangeColor.Enabled = false;
+    ChangeColor.Value1 = PathDrawSecond.Color;
+
+    // Configures and enables the color transition according to the color scheme
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      ChangeColor.Value2 = ChargingStation::BlueColorTone1;
+      ChangeColor.Enabled = true;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      ChangeColor.Value2 = ChargingStation::GreenColorTone1;
+      ChangeColor.Enabled = true;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      ChangeColor.Value2 = ChargingStation::RedColorTone1;
+      ChangeColor.Enabled = true;
+    }
+  }
+
+  $rect <140,150,340,190>
+  object Effects::ColorEffect ChangeColor
+  {
+    preset OnAnimate = OnChangeColor;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 250;
+    preset Enabled = true;
+    preset Value2 = ChargingStation::BlueColorTone1;
+  }
+
+  $rect <340,150,540,190>
+  slot OnChangeColor
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Aplies color transition to pointers
+    PathDrawHour.Color = ChangeColor.Value;
+    PathDrawMinute.Color = ChangeColor.Value;
+    PathDrawSecond.Color = ChangeColor.Value;
+
+    // Variables
+    var color CurrentColor;
+
+    // Temporarily saves the required color information
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      CurrentColor = ChargingStation::BlueColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      CurrentColor = ChargingStation::GreenColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      CurrentColor = ChargingStation::RedColorTone1;
+    }
+
+    // Uses the hexagon color transition effect to change the colors of all components
+    if(HexagonGeneric.Color != CurrentColor)
+      HexagonGeneric.Color = CurrentColor;
+  }
+
+  // This method implements the jitter animation of the seconds indicator.
+  $rect <338,300,538,340>
+  slot UpdateSeconds
+  {
+    // Converts the current second into angle value
+    var float sec = (float)Second * 6.0;
+    sec = sec + SnappingSecond.Value;
+
+    // Initializes and rotates the path object
+    PathSecond.InitSubPath( 0, 1 );
+    PathSecond.InitMatrix();
+    PathSecond.Rotate( float( sec - 90.0 ) );
+
+    // Outputs the path data
+    PathSecond.Begin( 0, 0.0, 0.0 );
+    PathSecond.AddLine( 0, 38, 0 );
+    PathSecond.Close( 0 );
+
+  }
+
+  $rect <538,300,738,340>
+  object Effects::FloatEffect SnappingSecond
+  {
+    preset OnAnimate = UpdateSeconds;
+    preset Timing = Effects::Timing.EaseIn_EaseOut;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 1000;
+    preset Value2 = 0.0;
+    preset Value1 = -6.0;
+  }
+
+  // Tis method is invoked periodically to update the current time.
+  $rect <339,340,539,380>
+  slot UpdateTime
+  {
+    // Get the current time
+    var Core::Time time = Time.CurrentTime;
+
+    // Save hour, minute and second as property to trigger updates
+    Hour = time.Hour;
+    Minute = time.Minute;
+    Second = time.Second;
+
+
+
+  }
+
+  $rect <539,340,739,380>
+  object Core::Time Time;
+
+  $rect <138,340,338,380>
+  object Core::Timer updateTimer
+  {
+    preset OnTrigger = UpdateTime;
+    preset Period = 100;
+    preset Enabled = true;
+  }
+
+  $rect <337,380,537,420>
+  onset Hour
+  {
+    // Validate the value
+    value = value % 24;
+
+    // Nothing to do
+    if ( pure Hour == value )
+      return;
+
+    // Remember the new value
+    pure Hour = value;
+
+    // Recalculate the position of the watch hands
+    InvalidateViewState();
+  }
+
+  $rect <337,420,537,460>
+  onset Minute
+  {
+    // Validate the value
+    value = value % 60;
+
+    // Nothing to do
+    if ( pure Minute == value )
+      return;
+
+    // Remember the new value
+    pure Minute = value;
+
+    // Recalculate the position of the watch hands
+    InvalidateViewState();
+  }
+
+  $rect <337,460,537,500>
+  onset Second
+  {
+    // Validate the value
+    value = value % 60;
+
+    // Nothing to do
+    if ( pure Second == value )
+      return;
+
+    // Remember the new value
+    pure Second = value;
+
+    // Recalculate the position of the watch hands
+    InvalidateViewState();
+  }
+
+  $rect <337,500,537,540>
+  onset AutoUpdate
+  {
+    // No changes? Nothing to do.
+    if ( pure AutoUpdate == value )
+      return;
+
+    // Remember the new value
+    pure AutoUpdate = value;
+
+    // Start/Stop the update Timer
+    updateTimer.Enabled = value;
+
+    // If the current time view has been activated - update the screen immediatelly.
+    if ( value )
+      postsignal UpdateTime;
+  }
+
+  // The property 'Hour' stores the time to show in the watch.
+  $rect <137,380,337,420>
+  property int32 Hour = 0;
+
+  // The property 'Minute' stores the time to show in the watch.
+  $rect <137,420,337,460>
+  property int32 Minute = 0;
+
+  // The property 'Second' stores the time to show in the watch.
+  $rect <137,460,337,500>
+  property int32 Second = 20;
+
+  // This property 'AutoUpdate' determines, whether the watch should update itself \
+  // with the current time. Otherwise, the displayed time is taken from the properties \
+  // @Hour, @Minute and @Second.
+  $rect <137,500,337,540>
+  property bool AutoUpdate = true;
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonGeneric
+  {
+    preset Bounds = <0,0,102,90>;
+    preset Size = 1.35;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset Color = ChargingStation::BlueColorTone1;
+    preset OutlinedWidth = 3;
+    preset InvisibleEdge = ChargingStation::Edges.Right;
+  }
+
+  $rect <20,20,160,60>
+  object Views::StrokePath PathDrawSecond
+  {
+    preset Bounds = <7,2,95,90>;
+    preset Offset = <44,44>;
+    preset Quality = true;
+    preset JoinPoints = Graphics::PathJoin.Round;
+    preset EndCap = Graphics::PathCap.Round;
+    preset StartCap = Graphics::PathCap.Round;
+    preset Width = 2;
+    preset Path = PathSecond;
+  }
+
+  $rect <740,380,940,420>
+  object Graphics::Path PathSecond;
+
+  $rect <20,20,160,60>
+  object Views::StrokePath PathDrawMinute
+  {
+    preset Bounds = <7,2,95,90>;
+    preset Offset = <44,44>;
+    preset Quality = true;
+    preset EndCap = Graphics::PathCap.Round;
+    preset StartCap = Graphics::PathCap.Round;
+    preset Width = 3;
+    preset Path = PathMinute;
+  }
+
+  $rect <740,340,940,380>
+  object Graphics::Path PathMinute;
+
+  $rect <20,20,160,60>
+  object Views::StrokePath PathDrawHour
+  {
+    preset Bounds = <7,2,95,90>;
+    preset Offset = <44,44>;
+    preset Quality = true;
+    preset JoinPoints = Graphics::PathJoin.Round;
+    preset EndCap = Graphics::PathCap.Round;
+    preset StartCap = Graphics::PathCap.Round;
+    preset Width = 4;
+    preset Path = PathHour;
+  }
+
+  $rect <740,300,940,340>
+  object Graphics::Path PathHour;
+
+  // Appearance configuration
+  note group Note1
+  {
+    attr Bounds = <120,110,560,250>;
+  }
+
+  // Clock update and output
+  note group Note2
+  {
+    attr Bounds = <120,260,960,560>;
+  }
+
+  // Note: The clock pointers are drawn with path objects and SVG strings. By applying \
+  // a rotation to the path object, each pointer is set in the correct position.
+  //
+  // For additional details on utilizing the path data object, please refer to the \
+  // relevant documentation.
+  //
+  // https://doc.embedded-wizard.de/path-data
+  note legend Note3
+  {
+    attr Bounds = <570,0,960,250>;
+  }
+
+  // Inherited features
+  note group Note4
+  {
+    attr Bounds = <120,0,560,100>;
+  }
+}
+
+// This is a GUI component.
+$rect <430,150,630,190>
+$output false
+class Date : Core::Group
+{
+  $rect <170,40,370,80>
+  inherited property Bounds = <0,0,136,58>;
+
+  $rect <570,40,770,80>
+  inherited method UpdateViewState()
+  {
+    // Invoke the inherited version of the method 'UpdateViewState'.
+    // Remove the line if the inherited code should not be executed.
+    super( aState );
+
+    // Uses the hexagon color transition effect to change the frame color
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      // To blue
+      Background.Color = ChargingStation::BlueColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      // To green
+      Background.Color = ChargingStation::GreenColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      // To red
+      Background.Color = ChargingStation::RedColorTone1;
+    }
+
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic Background
+  {
+    preset Bounds = <0,-62,136,58>;
+    preset Size = 1.8;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset OutlinedWidth = 4;
+    preset InvisibleEdge = ChargingStation::Edges.Top;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Date
+  {
+    preset Bounds = <35,15,107,30>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = "00.00.00";
+    preset Font = ChargingStation::FontXs;
+  }
+
+  $rect <170,260,370,300>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <370,260,570,300>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <370,40,570,80>
+  inherited method Init()
+  {
+    // Trigger first date update
+    postsignal updateTime;
+  }
+
+  // Tis method is invoked periodically to update the current time.
+  $rect <372,150,572,190>
+  slot updateTime
+  {
+    // Get the current date
+    var Core::Time time = Time.CurrentTime;
+
+    // Output current date
+    Date.String =  string( int32(time.Day), 2) + "." + string( int32(time.Month), 2) + "." + string( int32(time.Year - 2000), 2);
+
+  }
+
+  $rect <171,150,371,190>
+  object Core::Timer updateTimer
+  {
+    preset OnTrigger = updateTime;
+    preset Period = 100;
+    preset Enabled = true;
+  }
+
+  $rect <570,150,770,190>
+  object Core::Time Time;
+
+  // Appearance configuration
+  note group Note1
+  {
+    attr Bounds = <150,220,590,320>;
+  }
+
+  // Date update and output
+  note group Note2
+  {
+    attr Bounds = <150,110,790,210>;
+  }
+
+  // Inherited features
+  note group Note3
+  {
+    attr Bounds = <150,0,790,100>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Init
+  $member Bounds
+  $member UpdateViewState
+  $member Background
+  $member Date
+  $member ColorScheme
+  $member OnSetColorScheme
+  $member updateTime
+  $member updateTimer
+  $member Time
+  $member Note1
+  $member Note2
+  $member Note3
+}
+
+// Constant to define the first red tone.
+$rect <630,538,830,578>
+$output false
+const color RedColorTone1 = #90231EFF;
+
+// Constant to define the first green tone.
+$rect <430,538,630,578>
+$output false
+const color GreenColorTone1 = #94C441FF;
+
+// Constant to define the first blue tone.
+$rect <230,538,430,578>
+$output false
+const color BlueColorTone1 = #4369A7FF;
+
+// This is a bitmap resource.
+$rect <1079,460,1279,500>
+$output false
+resource Resources::Bitmap FlagGerman
+{
+  attr bitmapfile FileName = .\Res\FlagGerman.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// This is a bitmap resource.
+$rect <1079,500,1279,540>
+$output false
+resource Resources::Bitmap FlagUnitedKingdom
+{
+  attr bitmapfile FileName = .\Res\FlagUnitedKingdom.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// This is a GUI component.
+$rect <30,60,230,100>
+$output false
+class ChargingStation : Core::Group
+{
+  $rect <521,40,721,80>
+  inherited property Bounds = <0,0,480,800>;
+
+  // This is a filled rectangle view.
+  $rect <20,20,160,60>
+  object Views::Rectangle Background
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,480,800>;
+    preset Color = ChargingStation::BackColor;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::Decoration Decoration
+  {
+    preset Bounds = <0,0,480,800>;
+    preset DecorationVariant = ChargingStation::DecorationType.Init;
+  }
+
+  $rect <521,161,721,201>
+  property ChargingStation::ScreenType ScreenState = ChargingStation::ScreenType.Home;
+
+  $rect <721,161,921,201>
+  onset ScreenState
+  {
+    // The value doesn't change - nothing to do.
+    var ChargingStation::ScreenType PreviousState = ScreenState;
+
+    if ( pure ScreenState == value )
+      return;
+
+    // Remember the property's new value.
+    pure ScreenState = value;
+
+    // Variables
+    var ChargingStation::ColorScheme ColorScheme;
+
+    // Central logic to switch between screens and popups
+    switch(ScreenState)
+    {
+      case ChargingStation::ScreenType.Init:
+      {
+        // Sets color scheme
+        ColorScheme = ChargingStation::ColorScheme.Blue;
+
+        // Decoration configuration
+        Decoration.DecorationVariant = ChargingStation::DecorationType.Init;
+
+        // Button configuration
+        MenuButtonBar.Visible = false;
+        MenuButtonBar.AllDisabled = true;
+
+        // Update outlet dialogs
+        if(Widgets != null)
+        {
+            DismissDialog( Widgets, null, null, null, null, null, false );
+            Widgets = null;
+        }
+
+        if(Popup != null)
+        {
+            DismissDialog( Popup, null, null, null, null, null, false );
+            Popup = null;
+        }
+
+        // Fades in the starting popup
+        var ChargingStation::StartingPopup Outlet = new ChargingStation::StartingPopup;
+        Outlet.Skip = OnHome;
+        Popup = Outlet;
+        SwitchToDialog( Popup, ChargingStation::FadeInOutSlow, ChargingStation::FadeInOutSlow, null, null, null, null, null, null, null, false );
+      }
+
+      case ChargingStation::ScreenType.Home:
+      {
+        // Disables init animiation
+        InitTimer.Enabled = false;
+
+        // Sets color scheme
+        ColorScheme = ChargingStation::ColorScheme.Green;
+
+        // Decoration configuration
+        Decoration.DecorationVariant = ChargingStation::DecorationType.Default;
+
+        // Button configuration
+        MenuButtonBar.Visible = true;
+        MenuButtonBar.AllDisabled = true;
+
+        // Update outlet dialog
+        if(Popup != null)
+        {
+            if(PreviousState == ChargingStation::ScreenType.Init)
+            {
+              DismissDialog( Popup, ChargingStation::FadeInOutSlow, null, null, null, null, false );
+            }
+            else
+            {
+              DismissDialog( Popup, ChargingStation::SlideBottom , null, null, null, null, false );
+            }
+            Popup = null;
+        }
+
+        // Fades in the indicator widget
+        if(Widgets == null)
+        {
+          var ChargingStation::Widgets Outlet = new ChargingStation::Widgets;
+          Widgets = Outlet;
+          PresentDialog( Widgets, ChargingStation::FadeInOutSlow, ChargingStation::FadeInOutSlow, null, null, null, null, null, null, false );
+        }
+      }
+
+      case ChargingStation::ScreenType.Info:
+      {
+        // Disables init animiation
+        InitTimer.Enabled = false;
+
+        // Sets color scheme
+        ColorScheme = ChargingStation::ColorScheme.Blue;
+
+        // Decoration configuration
+        Decoration.DecorationVariant = ChargingStation::DecorationType.Default;
+
+        // Button configuration
+        MenuButtonBar.Visible = true;
+        MenuButtonBar.AllDisabled = false;
+
+        // Update outlet dialog
+        if(Popup != null)
+        {
+          if(PreviousState == ChargingStation::ScreenType.Chart)
+          {
+            DismissDialog( Popup, ChargingStation::SlideRight, null, null, null, null, false );
+          }
+          else if(PreviousState == ChargingStation::ScreenType.Payment)
+          {
+            DismissDialog( Popup, ChargingStation::SlideRight, null, null, null, null, false );
+          }
+          Popup = null;
+        }
+
+        // Fades in the info popup
+        var ChargingStation::ContentInfo Outlet = new ChargingStation::ContentInfo;
+        Outlet.PopupBackground.Close = OnHome;
+        Popup = Outlet;
+
+        if(PreviousState == ChargingStation::ScreenType.Home)
+        {
+          PresentDialog( Popup, ChargingStation::SlideTop, null, null, null, null, null, null, null, false );
+        }
+        else
+        {
+          if(PreviousState == ChargingStation::ScreenType.Chart)
+          {
+            PresentDialog( Popup, ChargingStation::SlideRight, null, null, null, null, null, null, null, false );
+          }
+          else if(PreviousState == ChargingStation::ScreenType.Payment)
+          {
+            PresentDialog( Popup, ChargingStation::SlideRight, null, null, null, null, null, null, null, false );
+          }
+        }
+      }
+
+      case ChargingStation::ScreenType.Chart:
+      {
+        // Disables init animiation
+        InitTimer.Enabled = false;
+
+        // Sets color scheme
+        ColorScheme = ChargingStation::ColorScheme.Green;
+
+        // Decoration configuration
+        Decoration.DecorationVariant = ChargingStation::DecorationType.Default;
+
+        // Button configuration
+        MenuButtonBar.Visible = true;
+        MenuButtonBar.AllDisabled = false;
+
+        // Update outlet dialog
+        if(Popup != null)
+        {
+          if(PreviousState == ChargingStation::ScreenType.Info)
+          {
+            DismissDialog( Popup, ChargingStation::SlideLeft, null, null, null, null, false );
+          }
+          else if(PreviousState == ChargingStation::ScreenType.Payment)
+          {
+            DismissDialog( Popup, ChargingStation::SlideRight, null, null, null, null, false );
+          }
+          Popup = null;
+        }
+
+        // Fades in the chart popup
+        var ChargingStation::ContentChart Outlet = new ChargingStation::ContentChart;
+        Outlet.PopupBackground.Close = OnHome;
+        Popup = Outlet;
+
+        if(PreviousState == ChargingStation::ScreenType.Home)
+        {
+          PresentDialog( Popup, ChargingStation::SlideTop, null, null, null, null, null, null, null, false );
+        }
+        else
+        {
+          if(PreviousState == ChargingStation::ScreenType.Info)
+          {
+            PresentDialog( Popup, ChargingStation::SlideLeft, null, null, null, null, null, null, null, false );
+          }
+          else if(PreviousState == ChargingStation::ScreenType.Payment)
+          {
+            PresentDialog( Popup, ChargingStation::SlideRight, null, null, null, null, null, null, null, false );
+          }
+        }
+      }
+
+      case ChargingStation::ScreenType.Payment:
+      {
+        // Disables init animiation
+        InitTimer.Enabled = false;
+
+        // Sets color scheme
+        ColorScheme = ChargingStation::ColorScheme.Blue;
+
+        // Decoration configuration
+        Decoration.DecorationVariant = ChargingStation::DecorationType.Default;
+
+        // Button configuration
+        MenuButtonBar.Visible = true;
+        MenuButtonBar.AllDisabled = false;
+
+        // Update outlet dialog
+        if(Popup != null)
+        {
+          if(PreviousState == ChargingStation::ScreenType.Info)
+          {
+            DismissDialog( Popup, ChargingStation::SlideLeft, null, null, null, null, false );
+          }
+          else if(PreviousState == ChargingStation::ScreenType.Chart)
+          {
+            DismissDialog( Popup, ChargingStation::SlideLeft, null, null, null, null, false );
+          }
+          Popup = null;
+        }
+
+        // Fades in the payment popup
+        var ChargingStation::ContentPayment Outlet = new ChargingStation::ContentPayment;
+        Outlet.PopupBackground.Close = OnHome;
+        Popup = Outlet;
+
+        if(PreviousState == ChargingStation::ScreenType.Home)
+        {
+          PresentDialog( Popup, ChargingStation::SlideTop, null, null, null, null, null, null, null, false );
+        }
+        else
+        {
+          if(PreviousState == ChargingStation::ScreenType.Info)
+          {
+            PresentDialog( Popup, ChargingStation::SlideLeft, null, null, null, null, null, null, null, false );
+          }
+          else if(PreviousState == ChargingStation::ScreenType.Chart)
+          {
+            PresentDialog( Popup, ChargingStation::SlideLeft, null, null, null, null, null, null, null, false );
+          }
+        }
+      }
+
+      case ChargingStation::ScreenType.Error:
+      {
+        // Disables init animiation
+        InitTimer.Enabled = false;
+
+        // Sets color scheme
+        ColorScheme = ChargingStation::ColorScheme.Red;
+
+        // Decoration configuration
+        Decoration.DecorationVariant = ChargingStation::DecorationType.Default;
+
+        // Button configuration
+        MenuButtonBar.Visible = true;
+        MenuButtonBar.AllDisabled = true;
+
+        // Update outlet dialog
+        if(Popup != null)
+        {
+            DismissDialog( Popup, ChargingStation::SlideRight, null, null, null, null, false );
+            Popup = null;
+        }
+
+        // Fades in the error popup
+        var ChargingStation::ContentError Outlet = new ChargingStation::ContentError;
+        Outlet.PopupBackground.Close = OnHome;
+        Popup = Outlet;
+
+        if(PreviousState == ChargingStation::ScreenType.Home)
+        {
+          PresentDialog( Popup, ChargingStation::SlideTop, null, null, null, null, null, null, null, false );
+        }
+        else
+        {
+          PresentDialog( Popup, ChargingStation::SlideTop, null, null, null, null, null, null, null, false );
+        }
+      }
+
+      default:
+        ;
+    }
+
+    // Colorize all components
+    Decoration.ColorScheme = ColorScheme;
+    Clock.ColorScheme = ColorScheme;
+    Date.ColorScheme = ColorScheme;
+    LanguageSelector.ColorScheme = ColorScheme;
+    MenuButtonBar.ColorScheme = ColorScheme;
+
+    // Triggers the switch between the indicators and background decoration
+    if(Widgets != null)
+    {
+      var ChargingStation::Widgets Home = (ChargingStation::Widgets)Widgets;
+      Home.ColorScheme = ColorScheme;
+
+      if(
+          ScreenState == ChargingStation::ScreenType.Info ||
+          ScreenState == ChargingStation::ScreenType.Chart ||
+          ScreenState == ChargingStation::ScreenType.Payment ||
+          ScreenState == ChargingStation::ScreenType.Error
+        )
+      {
+        Home.PopupShown = true;
+      }
+      else
+      {
+        Home.PopupShown = false;
+      }
+    }
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::Clock Clock
+  {
+    preset Bounds = <271,46,377,141>;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::Date Date
+  {
+    preset Bounds = <345,-5,484,64>;
+  }
+
+  $rect <520,360,720,400>
+  slot OnPayment
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Initiates opening of payment popup
+    ScreenState = ChargingStation::ScreenType.Payment;
+  }
+
+  $rect <520,280,720,320>
+  slot OnInfo
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Initiates opening of info popup
+    ScreenState = ChargingStation::ScreenType.Info;
+  }
+
+  $rect <520,320,720,360>
+  slot OnChart
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Initiates opening of chart popup
+    ScreenState = ChargingStation::ScreenType.Chart;
+  }
+
+  $rect <520,240,720,280>
+  slot OnHome
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Initiates navigation to home screen
+    InitTimer.Enabled = false;
+    ScreenState = ChargingStation::ScreenType.Home;
+
+
+  }
+
+  $rect <521,440,721,480>
+  var Core::Group Popup;
+
+  $rect <521,561,721,601>
+  object Core::Timer InitTimer
+  {
+    preset OnTrigger = OnInitTimer;
+    preset Period = 3000;
+    preset Enabled = true;
+  }
+
+  $rect <721,561,921,601>
+  slot OnInitTimer
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Ends the init animation and switches to home screen
+    InitTimer.Enabled = false;
+    ScreenState = ChargingStation::ScreenType.Home;
+  }
+
+  $rect <521,400,721,440>
+  slot OnError
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Initiates switch between home screen and error popup
+    if(ScreenState == ChargingStation::ScreenType.Error)
+      ScreenState = ChargingStation::ScreenType.Home;
+    else
+      ScreenState = ChargingStation::ScreenType.Error;
+  }
+
+  $rect <721,400,921,440>
+  object Core::KeyPressHandler KeyHandlerError
+  {
+    preset OnPress = OnError;
+    preset Filter = Core::KeyCode.KeyE;
+  }
+
+  $rect <521,200,721,240>
+  slot OnInit
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Initiates switch between home screen and init screen
+    if(ScreenState == ChargingStation::ScreenType.Init)
+    {
+      ScreenState = ChargingStation::ScreenType.Home;
+      InitTimer.Enabled = false;
+    }
+    else
+    {
+      ScreenState = ChargingStation::ScreenType.Init;
+      InitTimer.Enabled = true;
+    }
+  }
+
+  $rect <721,200,921,240>
+  object Core::KeyPressHandler KeyHandlerInit
+  {
+    preset OnPress = OnInit;
+    preset Filter = Core::KeyCode.KeyI;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::LanguageSelector LanguageSelector
+  {
+    preset Bounds = <427,92,500,157>;
+  }
+
+  $rect <721,441,921,481>
+  var Core::Group Widgets;
+
+  $rect <20,20,160,60>
+  object ChargingStation::MenuButtonBar MenuButtonBar
+  {
+    preset Bounds = <0,700,480,800>;
+    preset PropertyInfo = OnInfo;
+    preset PropertyChart = OnChart;
+    preset PropertyPayment = OnPayment;
+  }
+
+  $rect <720,40,920,80>
+  inherited method HandleEvent()
+  {
+    // Each timer the user has touched the screen, the auto demo will be reset
+    idlesignal ResetAutoDemo;
+
+    return super( aEvent );
+  }
+
+  // Timer object to drive the auto demo mode.
+  $rect <520,680,720,720>
+  object Core::Timer AutoDemoTimer
+  {
+    preset OnTrigger = AutoDemoSlot;
+    preset Period = 1000;
+    preset Begin = 30000;
+    preset Enabled = true;
+  }
+
+  // Slot method to trigger the next phase of the auto demo.
+  $rect <720,680,920,720>
+  slot AutoDemoSlot
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Variables
+    var int32 TimePerStep = 5;
+    var int32 Step = 0;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      postsignal OnHome;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      signal LanguageSelector.OnLanguagePressed;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      signal LanguageSelector.OnLanguagePressed;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      signal MenuButtonBar.OnInfo;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      postsignal OnHome;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      signal MenuButtonBar.OnChart;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      postsignal OnHome;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      signal MenuButtonBar.OnPayment;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      postsignal OnHome;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      postsignal OnError;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      postsignal OnHome;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      signal MenuButtonBar.OnInfo;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      signal MenuButtonBar.OnChart;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      signal MenuButtonBar.OnPayment;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      postsignal OnError;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      postsignal OnHome;
+    }
+    Step++;
+
+    // Demo step
+    if ( AutoDemoState == TimePerStep * Step )
+    {
+      postsignal OnInit;
+      AutoDemoState = -5;
+    }
+    Step++;
+
+    // Increment demo state counter
+    AutoDemoState = AutoDemoState + 1;
+  }
+
+  // This is a variable.
+  $rect <720,720,920,760>
+  var int32 AutoDemoState = 0;
+
+  // Slot method to reset the auto demo.
+  $rect <520,720,720,760>
+  slot ResetAutoDemo
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Clear the current auto demo state
+    AutoDemoState = 0;
+
+    // Restart the auto demo timer
+    AutoDemoTimer.Enabled = false;
+    AutoDemoTimer.Enabled = true;
+
+
+  }
+
+  // Auto demo timer and methods
+  note group Note1
+  {
+    attr Bounds = <500,630,940,780>;
+  }
+
+  // Startup animation
+  note group Note2
+  {
+    attr Bounds = <501,511,941,621>;
+  }
+
+  // Application navigation
+  note group Note3
+  {
+    attr Bounds = <501,111,941,501>;
+  }
+
+  // Inherited features
+  note group Note4
+  {
+    attr Bounds = <501,0,940,100>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member HandleEvent
+  $member Bounds
+  $member Background
+  $member Decoration
+  $member ScreenState
+  $member OnSetScreenState
+  $member Clock
+  $member Date
+  $member OnPayment
+  $member OnInfo
+  $member OnChart
+  $member OnHome
+  $member Popup
+  $member InitTimer
+  $member OnInitTimer
+  $member OnError
+  $member KeyHandlerError
+  $member OnInit
+  $member KeyHandlerInit
+  $member LanguageSelector
+  $member Widgets
+  $member MenuButtonBar
+  $member AutoDemoTimer
+  $member AutoDemoSlot
+  $member AutoDemoState
+  $member ResetAutoDemo
+  $member Note1
+  $member Note2
+  $member Note3
+  $member Note4
+}
+
+// This is an enumeration definition for signing the different decoration types.
+$rect <30,540,230,580>
+$output false
+enum DecorationType
+{
+  $rect <10,10,190,50>
+  item Init;
+
+  $rect <10,50,190,90>
+  item Default;
+}
+
+// This is an enumeration definition for signing the different screen types.
+$rect <30,580,230,620>
+$output false
+enum ScreenType
+{
+  $rect <10,10,190,50>
+  item Init;
+
+  $rect <10,90,190,130>
+  item Info;
+
+  $rect <10,130,190,170>
+  item Chart;
+
+  $rect <10,170,190,210>
+  item Payment;
+
+  $rect <10,210,190,250>
+  item Error;
+
+  $rect <10,50,190,90>
+  item Home;
+}
+
+// This is a GUI component.
+$rect <630,110,830,150>
+$output false
+class StartingPopup : Core::Group
+{
+  $rect <490,40,690,80>
+  inherited property Bounds = <0,0,456,402>;
+
+  $rect <490,160,690,200>
+  property slot Skip;
+
+  $rect <690,160,890,200>
+  slot OnSkip
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Invoke property slot
+    signal Skip;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <0,0>;
+    preset Point3 = <456,0>;
+    preset Point2 = <456,402>;
+    preset Point1 = <0,402>;
+    preset OnPress = OnSkip;
+  }
+
+  $rect <690,40,890,80>
+  inherited method Init()
+  {
+    //Colorizes the background hexagons
+    HexagonLargeFilled.Color = ChargingStation::BlueColorTone2;
+    HexagonLargeOutlined.Color = ChargingStation::BlueColorTone1;
+
+    // Generation of icon from svg string
+    var string svgString = "M312,24a24,24,0,0,0-48,0v88h48ZM120,24a24,24,0,0,0-48,0v88h48ZM368,144H16A16,16,0,0,0,0,160v16a16,16,0,0,0,16,16H32v64c0,80.14,59.11,145.92,136,157.58V512h48V413.58C292.89,401.92,352,336.14,352,256V192h16a16,16,0,0,0,16-16V160A16,16,0,0,0,368,144ZM304,256a112,112,0,0,1-224,0V192H304Z";
+    PathIconPlug.CreateFromSVGString( svgString, 0.588, 0.58, 0, 0, 0.0 );
+
+  }
+
+  $rect <20,20,160,60>
+  object Views::FillPath IconPlug
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft];
+    preset Bounds = <120,110,345,389>;
+    preset Quality = true;
+    preset FillRule = Graphics::FillRule.EvenOdd;
+    preset Path = PathIconPlug;
+  }
+
+  $rect <490,200,690,240>
+  object Graphics::Path PathIconPlug;
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonLargeFilled
+  {
+    preset Bounds = <0,0,456,402>;
+    preset Size = 6;
+    preset Variant = ChargingStation::HexagonType.Filled;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonLargeOutlined
+  {
+    preset Bounds = <0,0,456,402>;
+    preset Size = 6;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset OutlinedWidth = 4;
+  }
+
+  // Icon drawn with path object
+  note group Note1
+  {
+    attr Bounds = <470,110,910,260>;
+  }
+
+  // Note: The icon is drawn with a path object and SVG string.
+  //
+  // For additional details on utilizing the path data object, please refer to the \
+  // relevant documentation.
+  //
+  // https://doc.embedded-wizard.de/path-data
+  note legend Note2
+  {
+    attr Bounds = <470,270,910,390>;
+  }
+
+  // Inherited features
+  note group Note3
+  {
+    attr Bounds = <470,0,910,100>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Init
+  $member Bounds
+  $member Skip
+  $member OnSkip
+  $member HexagonLargeFilled
+  $member HexagonLargeOutlined
+  $member SimpleTouchHandler
+  $member IconPlug
+  $member PathIconPlug
+  $member Note1
+  $member Note2
+  $member Note3
+}
+
+// Fade effect that defines how the initialization screen is presented and removed.
+$rect <230,459,430,499>
+$output false
+autoobject Effects::FadeInOutTransition FadeInOutSlow
+{
+  preset Buffered = false;
+  preset Duration = 600;
+}
+
+// This is a font resource.
+$rect <879,540,1079,580>
+$output false
+resource Resources::Font FontM
+{
+  attr fontname FontName = OCR A Std;
+  attr fontheight Height = 22;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontheightmode HeightMode = Compatible;
+  attr fontrowdistance RowDistance;
+}
+
+// This is a font resource.
+$rect <879,580,1079,620>
+$output false
+resource Resources::Font FontL
+{
+  attr fontname FontName = OCR A Std;
+  attr fontheight Height = 24;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontheightmode HeightMode = Compatible;
+  attr fontrowdistance RowDistance;
+}
+
+// This is an enumeration definition for signing the different button types.
+$rect <30,620,230,660>
+$output false
+enum ButtonType
+{
+  $rect <10,90,190,130>
+  item Info;
+
+  $rect <10,130,190,170>
+  item Chart;
+
+  $rect <10,170,190,210>
+  item Payment;
+}
+
+// This is a GUI component.
+$rect <30,200,230,240>
+$output false
+class ContentInfo : Core::Group
+{
+  $rect <490,39,690,79>
+  inherited property Bounds = <0,0,456,421>;
+
+  $rect <20,20,160,60>
+  object ChargingStation::ContentBackground PopupBackground
+  {
+    preset ColorScheme = ChargingStation::ColorScheme.Blue;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Caption
+  {
+    preset Bounds = <165,63,305,87>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = ChargingStation::Info;
+    preset Font = ChargingStation::FontL;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image QrCode
+  {
+    preset Bounds = <171,259,299,388>;
+    preset Bitmap = ChargingStation::QRCode;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image
+  {
+    preset Bounds = <96,120,374,220>;
+    preset AutoSize = true;
+    preset Bitmap = ChargingStation::EmbeddedWizardLogo;
+  }
+
+  // Inherited features
+  note group Note1
+  {
+    attr Bounds = <471,-1,710,100>;
+  }
+}
+
+// This is a GUI component.
+$rect <230,200,430,240>
+$output false
+class ContentChart : Core::Group
+{
+  $rect <490,40,720,80>
+  inherited property Bounds = <0,0,456,421>;
+
+  $rect <20,20,160,60>
+  object ChargingStation::ContentBackground PopupBackground
+  {
+    preset ColorScheme = ChargingStation::ColorScheme.Green;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line LineY
+  {
+    preset Point2 = <118,340>;
+    preset Point1 = <119,129>;
+    preset Width = 3;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line LineX
+  {
+    preset Point2 = <118,340>;
+    preset Point1 = <360,340>;
+    preset Width = 3;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text1
+  {
+    preset Bounds = <75,111,119,129>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "kWh";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text2
+  {
+    preset Bounds = <118,343,140,361>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = "0h";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text3
+  {
+    preset Bounds = <338,343,360,361>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "1h";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text4
+  {
+    preset Bounds = <219,343,241,361>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = "0.5h";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text5
+  {
+    preset Bounds = <91,322,113,340>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "0";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text6
+  {
+    preset Bounds = <91,274,113,292>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "50";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text7
+  {
+    preset Bounds = <91,226,113,244>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "100";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text8
+  {
+    preset Bounds = <91,129,113,147>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "200";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text10
+  {
+    preset Bounds = <91,177,113,195>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "150";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <490,150,720,190>
+  object Graphics::Path Path;
+
+  $rect <20,20,160,60>
+  object Views::FillPath FillPath
+  {
+    preset Bounds = <119,128,360,339>;
+    preset Color = #FFFFFFC5;
+    preset FlipY = true;
+    preset Path = Path;
+  }
+
+  $rect <20,20,160,60>
+  object Views::StrokePath StrokePath
+  {
+    preset Bounds = <119,128,360,339>;
+    preset Color = ChargingStation::GreenColorTone1;
+    preset FlipY = true;
+    preset Width = 2;
+    preset Path = Path;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Caption
+  {
+    preset Bounds = <180,87,292,111>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = ChargingStation::Capacity;
+    preset Font = ChargingStation::FontL;
+  }
+
+  $rect <730,150,960,190>
+  object Core::PropertyObserver DataPointCounterObserver
+  {
+    preset OnEvent = OnDataPointCounterEvent;
+    preset Outlet = ^ChargingStation::Device.DataPointCounter;
+  }
+
+  // This slot method is executed when the associated property observer is notified.
+  $rect <730,190,960,230>
+  slot OnDataPointCounterEvent
+  {
+    // Variables
+    var int32 inx;
+    var int32 NoOfValues = 241;
+    var int32 GraphWidth = FillPath.Bounds.w;
+    var float DataPoint;
+
+    // Definition of step size
+    var float StepX = float( GraphWidth ) / float( NoOfValues - 1 );
+    Path.InitSubPath( 0, NoOfValues );
+
+    // Copies data from device class
+    for ( inx = 0; inx < Device.DataPointCounter - 1; inx = inx + 1 )
+    {
+      DataPoint = Device.CapacityHistory[ inx ];
+      Path.AddLine( 0, StepX * float( inx ), DataPoint );
+    }
+
+    // Adds a vertical line at the end
+    Path.AddLine( 0, StepX * float( inx ), 0 );
+  }
+
+  // Variable to reference the device class the entire lifetime of the application. \
+  // This avoids that the device class will be deleted by the Garbage Collector.
+  $rect <490,190,720,230>
+  var ChargingStation::DeviceClass Device = ChargingStation::Device;
+
+  // Device connection and chart output
+  note group Note1
+  {
+    attr Bounds = <470,110,980,250>;
+  }
+
+  // Note: The chart is drawn with paths object and SVG strings.
+  //
+  // For additional details on utilizing the path data object, please refer to the \
+  // relevant documentation.
+  //
+  // https://doc.embedded-wizard.de/path-data
+  note legend Note2
+  {
+    attr Bounds = <470,260,980,380>;
+  }
+
+  // Inherited features
+  note group Note3
+  {
+    attr Bounds = <470,0,740,100>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Bounds
+  $member PopupBackground
+  $member Text1
+  $member Text2
+  $member Text3
+  $member Text4
+  $member Text5
+  $member Text6
+  $member Text7
+  $member Text8
+  $member Text10
+  $member Path
+  $member FillPath
+  $member StrokePath
+  $member Caption
+  $member DataPointCounterObserver
+  $member OnDataPointCounterEvent
+  $member Device
+  $member LineY
+  $member LineX
+  $member Note1
+  $member Note2
+  $member Note3
+}
+
+// This is a GUI component.
+$rect <430,200,630,240>
+$output false
+class ContentPayment : Core::Group
+{
+  $rect <490,150,690,190>
+  inherited property Bounds = <0,0,456,421>;
+
+  $rect <20,20,160,60>
+  object ChargingStation::ContentBackground PopupBackground
+  {
+    preset ColorScheme = ChargingStation::ColorScheme.Blue;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Caption
+  {
+    preset Bounds = <107,67,359,205>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = ChargingStation::Payment;
+    preset Font = ChargingStation::FontXl;
+  }
+
+  $rect <690,150,890,190>
+  inherited method Init()
+  {
+    // Generation of icon from svg string
+    var string svgString = "M211.9 242.1L95.6 208.9c-15.8-4.5-28.6-17.2-31.1-33.5C60.6 150 80.3 128 105 128h73.8c15.9 0 31.5 5 44.4 14.1 6.4 4.5 15 3.8 20.5-1.7l22.9-22.9c6.8-6.8 6.1-18.2-1.5-24.1C240.4 74.3 210.4 64 178.8 64H176V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48h-2.5C60.3 64 14.9 95.8 3.1 143.6c-13.9 56.2 20.2 111.2 73 126.3l116.3 33.2c15.8 4.5 28.6 17.2 31.1 33.5C227.4 362 207.7 384 183 384h-73.8c-15.9 0-31.5-5-44.4-14.1-6.4-4.5-15-3.8-20.5 1.7l-22.9 22.9c-6.8 6.8-6.1 18.2 1.5 24.1 24.6 19.1 54.6 29.4 86.3 29.4h2.8v48c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-48h2.5c49.2 0 94.6-31.8 106.4-79.6 13.9-56.2-20.2-111.2-73-126.3z";
+    PathIconPayment.CreateFromSVGString( svgString, 0.275, 0.275, 0, 0, 0.0 );
+
+  }
+
+  $rect <20,20,160,60>
+  object Views::FillPath IconPayment
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft];
+    preset Bounds = <194,237,273,379>;
+    preset Quality = true;
+    preset FillRule = Graphics::FillRule.EvenOdd;
+    preset Path = PathIconPayment;
+  }
+
+  $rect <490,40,690,80>
+  object Graphics::Path PathIconPayment;
+
+  // Icon drawn with path object
+  note group Note1
+  {
+    attr Bounds = <470,0,710,100>;
+  }
+
+  // Note: The icon is drawn with a path object and SVG string.
+  //
+  // For additional details on utilizing the path data object, please refer to the \
+  // relevant documentation.
+  //
+  // https://doc.embedded-wizard.de/path-data
+  note legend Note2
+  {
+    attr Bounds = <470,220,910,340>;
+  }
+
+  // Inherited features
+  note group Note3
+  {
+    attr Bounds = <470,110,910,210>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Init
+  $member Bounds
+  $member PopupBackground
+  $member Caption
+  $member IconPayment
+  $member PathIconPayment
+  $member Note1
+  $member Note2
+  $member Note3
+
+  // Directives to adapt the order of members belonging to this class so they appear
+  // correctly arranged relative to the members inherited from the ancestor (super)
+  // classes. The numbers indicate the order-displacement to apply on the respective
+  // member once all members have been loaded and combined with members from the
+  // ancestor classes.
+  $reorder PopupBackground 2
+  $reorder Caption 2
+  $reorder IconPayment 2
+  $reorder PathIconPayment 2
+}
+
+// This is a GUI component.
+$rect <630,200,830,240>
+$output false
+class ContentError : Core::Group
+{
+  $rect <490,39,690,79>
+  inherited property Bounds = <0,0,456,421>;
+
+  $rect <20,20,160,60>
+  object ChargingStation::ContentBackground PopupBackground
+  {
+    preset ColorScheme = ChargingStation::ColorScheme.Red;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text1
+  {
+    preset Bounds = <78,174,386,266>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = ChargingStation::Error;
+    preset Font = ChargingStation::FontXl;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <471,-1,710,100>;
+  }
+}
+
+// This is an enumeration definition for signing the different color schemes.
+$rect <30,660,230,700>
+$output false
+enum ColorScheme
+{
+  $rect <10,10,190,50>
+  item Green;
+
+  $rect <10,50,190,90>
+  item Blue;
+
+  $rect <10,90,190,130>
+  item Red;
+}
+
+// This is a GUI component.
+$rect <230,150,430,190>
+$output false
+class LanguageSelector : Core::Group
+{
+  $rect <89,39,289,79>
+  inherited property Bounds = <0,0,58,67>;
+
+  $rect <293,39,489,79>
+  inherited method UpdateViewState()
+  {
+    // Invoke the inherited version of the method 'UpdateViewState'.
+    // Remove the line if the inherited code should not be executed.
+    super( aState );
+
+    // Uses the hexagon color transition effect to change the button color
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      // To blue
+      Background.Color = ChargingStation::BlueColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      // To green
+      Background.Color = ChargingStation::GreenColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      // To red
+      Background.Color = ChargingStation::RedColorTone1;
+    }
+  }
+
+  $rect <90,150,290,190>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <290,150,490,190>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <90,260,290,300>
+  slot OnLanguagePressed
+  {
+    // The method is called from the sender object
+    sender;
+
+    if(language == Default)
+    {
+      // Selects a new language and changes the icon accordingly
+      language = German;
+      LanguageIcon.Bitmap = ChargingStation::FlagGerman;
+    }
+    else if(language == German)
+    {
+      // Selects a new language and changes the icon accordingly
+      language = Default;
+      LanguageIcon.Bitmap = ChargingStation::FlagUnitedKingdom;
+    }
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic Background
+  {
+    preset Bounds = <0,0,57,67>;
+    preset Size = 1.0;
+    preset Variant = ChargingStation::HexagonType.Filled;
+    preset OutlinedWidth = 3;
+  }
+
+  $rect <20,20,160,60>
+  object Views::WarpImage LanguageIcon
+  {
+    preset Point4 = <14,48>;
+    preset Point3 = <50,48>;
+    preset Point2 = <50,19>;
+    preset Point1 = <14,19>;
+    preset Bitmap = ChargingStation::FlagUnitedKingdom;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <0,0>;
+    preset Point3 = <57,0>;
+    preset Point2 = <57,66>;
+    preset Point1 = <0,66>;
+    preset OnHold = OnLanguageHold;
+    preset OnPress = OnLanguagePressed;
+  }
+
+  $rect <290,260,490,300>
+  slot OnLanguageHold
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Uses the hexagon color transition effect to change the button color
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      // To blue
+      Background.Color = ChargingStation::BlueColorTone2;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      // To green
+      Background.Color = ChargingStation::GreenColorTone2;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      // To red
+      Background.Color = ChargingStation::RedColorTone2;
+    }
+
+    // Force update of view when button is hold
+    InvalidateViewState();
+  }
+
+  // Appearance configuration
+  note group Note2
+  {
+    attr Bounds = <70,110,510,210>;
+  }
+
+  // Language selection
+  note group Note1
+  {
+    attr Bounds = <70,220,510,320>;
+  }
+
+  // Inherited features
+  note group Note3
+  {
+    attr Bounds = <70,0,510,100>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Bounds
+  $member UpdateViewState
+  $member ColorScheme
+  $member OnSetColorScheme
+  $member OnLanguagePressed
+  $member Background
+  $member LanguageIcon
+  $member SimpleTouchHandler
+  $member OnLanguageHold
+  $member Note1
+  $member Note2
+  $member Note3
+}
+
+// This is a GUI component.
+$rect <430,340,630,380>
+$output false
+class HexagonProgress : Core::Group
+{
+  $rect <230,40,430,80>
+  inherited property Bounds = <0,0,192,170>;
+
+  $rect <230,80,430,120>
+  inherited method Init()
+  {
+    // Define the hexagon with an SVG string
+    var string svgString = "M73.298,32.659l-16.673,32.555l-37.5,-0l-18.75,-32.476l18.75,-32.476l37.5,0l16.673,32.397Z";
+
+    // Create a path object describing the base shape of a hexagon.
+    Path.CreateFromSVGString( svgString, 2.5, 2.47, 3, 3, 0.0 );
+
+    // Colorize the hexagon
+    FillPath.Visible = true;
+    FillPath.Color = #94C441FF;
+  }
+
+  $rect <230,190,430,230>
+  object Graphics::Path Path;
+
+  $rect <20,20,160,60>
+  object Views::FillPath FillPath
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft];
+    preset Bounds = <0,0,190,170>;
+    preset Quality = true;
+    preset FillRule = Graphics::FillRule.EvenOdd;
+    preset Path = Path;
+  }
+
+  // Shape drawing
+  note group Note1
+  {
+    attr Bounds = <210,150,450,250>;
+  }
+
+  // During the initialization of this component, a SVG string coupled with a path \
+  // object is employed to render a hexagon.
+  //
+  // Although the ChargingStation::HexagonStatic component can generate a static \
+  // hexagon, it is not suitable for use as a progress indicator.
+  //
+  // This is because ChargingStation::HexagonStatic automatically adjusts its boundaries, \
+  // making it impossible to achieve the hexagon’s filling effect.
+  //
+  // For additional details on utilizing the path data object, please refer to the \
+  // relevant documentation.
+  //
+  // https://doc.embedded-wizard.de/path-data
+  note legend Note2
+  {
+    attr Bounds = <460,0,940,250>;
+  }
+
+  // Inherited features
+  note group Note3
+  {
+    attr Bounds = <210,0,450,140>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Init
+  $member Bounds
+  $member Path
+  $member FillPath
+  $member Note1
+  $member Note2
+  $member Note3
+}
+
+// Constant to define the second red tone.
+$rect <630,578,830,618>
+$output false
+const color RedColorTone2 = #90231EC8;
+
+// Constant to define the second green tone.
+$rect <430,578,630,618>
+$output false
+const color GreenColorTone2 = #94C441D2;
+
+// Constant to define the second blue tone.
+$rect <230,578,430,618>
+$output false
+const color BlueColorTone2 = #4369A7D2;
+
+// This is a GUI component.
+$rect <230,290,430,330>
+$output false
+class MenuButtonBase : Core::Group
+{
+  $rect <190,40,390,80>
+  inherited property Bounds = <0,0,152,100>;
+
+  $rect <390,40,590,80>
+  inherited method UpdateViewState()
+  {
+    // Invoke the inherited version of the method 'UpdateViewState'.
+    // Remove the line if the inherited code should not be executed.
+    super( aState );
+
+    // Uses the hexagon color transition effect to change the button color
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      // To blue
+      Button.Color = ChargingStation::BlueColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      // To green
+      Button.Color = ChargingStation::GreenColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      // To red
+      Button.Color = ChargingStation::RedColorTone1;
+    }
+
+    // Selects the correct icons for the info button
+    if(IconType == ChargingStation::ButtonType.Info)
+    {
+      if(ButtonState == true)
+      {
+        // Generation of icon from svg string
+        var string svgString = "M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm0-338c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z";
+        PathIcon.CreateFromSVGString( svgString, 0.08, 0.08, 9, 0, 0.0 );
+      }
+      else
+      {
+        // Generation of icon from svg string
+        var string svgString = "M256 40c118.621 0 216 96.075 216 216 0 119.291-96.61 216-216 216-119.244 0-216-96.562-216-216 0-119.203 96.602-216 216-216m0-32C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm-36 344h12V232h-12c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h48c6.627 0 12 5.373 12 12v140h12c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12h-72c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12zm36-240c-17.673 0-32 14.327-32 32s14.327 32 32 32 32-14.327 32-32-14.327-32-32-32z";
+        PathIcon.CreateFromSVGString( svgString, 0.08, 0.08, 9, 0, 0.0 );
+      }
+    }
+    // Selects the correct icons for the chart button
+    else if(IconType == ChargingStation::ButtonType.Chart)
+    {
+      if(ButtonState == true)
+      {
+        // Generation of icon from svg string
+        var string svgString = "M500 400c6.6 0 12 5.4 12 12v24c0 6.6-5.4 12-12 12H12c-6.6 0-12-5.4-12-12V76c0-6.6 5.4-12 12-12h24c6.6 0 12 5.4 12 12v324h452zM372 128.7l-84 56-85.1-85.1c-5.5-5.5-14.8-4.4-18.8 2.3L96 256v96h384l-90.3-218.1c-3-6.9-11.5-9.4-17.7-5.2zM144 269.3l57.5-103.2 80.4 80.4c71.8-47.9 8.2-5.4 80.7-53.8L407.2 304H144v-34.7z";
+        PathIcon.CreateFromSVGString( svgString, 0.08, 0.08, 12, 0, 0.0 );
+      }
+      else
+      {
+        // Generation of icon from svg string
+        var string svgString = "M500 416c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H12c-6.6 0-12-5.4-12-12V76c0-6.6 5.4-12 12-12h8c6.6 0 12 5.4 12 12v340h468zM372 162l-84 54-86.5-84.5c-5.1-5.1-13.4-4.6-17.9 1L64 288v96h416l-90.3-216.7c-3-6.9-11.5-9.4-17.7-5.3zM96 299.2l98.7-131.3 89.3 89.3 85.8-57.2 61.7 152H96v-52.8z";
+        PathIcon.CreateFromSVGString( svgString, 0.08, 0.08, 12, 0, 0.0 );
+      }
+    }
+    // Selects the correct icons for the payment button
+    else if(IconType == ChargingStation::ButtonType.Payment)
+    {
+      if(ButtonState == true)
+      {
+        // Generation of icon from svg string
+        var string svgString = "M608 64H32C14.33 64 0 78.33 0 96v320c0 17.67 14.33 32 32 32h576c17.67 0 32-14.33 32-32V96c0-17.67-14.33-32-32-32zm-16 272c-35.35 0-64 28.65-64 64H112c0-35.35-28.65-64-64-64V176c35.35 0 64-28.65 64-64h416c0 35.35 28.65 64 64 64v160zM320 160c-44.18 0-80 42.98-80 96 0 53.01 35.81 96 80 96 44.17 0 80-42.97 80-96 0-53.02-35.82-96-80-96z";
+        PathIcon.CreateFromSVGString( svgString, 0.08, 0.08, 3, 0, 0.0 );
+      }
+      else
+      {
+        // Generation of icon from svg string
+        var string svgString = "M320 144c-53 0-96 50.1-96 112 0 61.8 43 112 96 112s96-50.1 96-112-43-112-96-112zm0 192c-35.3 0-64-35.9-64-80s28.7-80 64-80 64 35.9 64 80-28.7 80-64 80zM608 64H32C14.3 64 0 78.3 0 96v320c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32V96c0-17.7-14.3-32-32-32zM32 96h64c0 35.3-28.7 64-64 64V96zm0 320v-64c35.3 0 64 28.7 64 64H32zm576 0h-64c0-35.3 28.7-64 64-64v64zm0-96c-52.9 0-96 43.1-96 96H128c0-52.9-43.1-96-96-96V192c52.9 0 96-43.1 96-96h384c0 52.9 43.1 96 96 96v128zm0-160c-35.3 0-64-28.7-64-64h64v64z";
+        PathIcon.CreateFromSVGString( svgString, 0.08, 0.08, 3, 0, 0.0 );
+      }
+    }
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic Button
+  {
+    preset Bounds = <0,17,152,100>;
+    preset Size = 2.0;
+    preset Variant = ChargingStation::HexagonType.Filled;
+    preset OutlinedWidth = 4;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <39,20>;
+    preset Point3 = <115,20>;
+    preset Point2 = <150,100>;
+    preset Point1 = <1,100>;
+    preset OnPress = OnMenuPress;
+  }
+
+  $rect <640,40,840,80>
+  property slot MenuPress;
+
+  $rect <840,40,1040,80>
+  slot OnMenuPress
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Invoke slot property
+    signal MenuPress;
+  }
+
+  $rect <190,190,390,230>
+  property ChargingStation::ButtonType IconType = ChargingStation::ButtonType.Info;
+
+  $rect <390,190,590,230>
+  onset IconType
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure IconType == value )
+      return;
+
+    // Remember the property's new value.
+    pure IconType = value;
+
+    // Force update of view when icon changes
+    InvalidateViewState();
+  }
+
+  $rect <390,300,590,340>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <190,300,390,340>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <640,80,840,120>
+  property bool ButtonState = false;
+
+  $rect <840,80,1040,120>
+  onset ButtonState
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ButtonState == value )
+      return;
+
+    // Remember the property's new value.
+    pure ButtonState = value;
+
+    // Force update of view when button state changes
+    InvalidateViewState();
+  }
+
+  $rect <190,150,390,190>
+  object Graphics::Path PathIcon;
+
+  $rect <20,20,160,60>
+  object Views::FillPath Icon
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft];
+    preset Bounds = <49,33,103,76>;
+    preset Quality = true;
+    preset FillRule = Graphics::FillRule.EvenOdd;
+    preset Path = PathIcon;
+  }
+
+  // Appearance configuration
+  note group Note3
+  {
+    attr Bounds = <170,260,610,360>;
+  }
+
+  // Navigation handling
+  note group Note1
+  {
+    attr Bounds = <620,0,1060,140>;
+  }
+
+  // Icon drawn with path object
+  note group Note2
+  {
+    attr Bounds = <170,110,610,250>;
+  }
+
+  // Note: The icons are drawn with paths object and SVG strings.
+  //
+  // For additional details on utilizing the path data object, please refer to the \
+  // relevant documentation.
+  //
+  // https://doc.embedded-wizard.de/path-data
+  note legend Note4
+  {
+    attr Bounds = <620,150,1060,360>;
+  }
+
+  // Inherited features
+  note group Note5
+  {
+    attr Bounds = <170,0,610,100>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Bounds
+  $member UpdateViewState
+  $member Button
+  $member SimpleTouchHandler
+  $member MenuPress
+  $member OnMenuPress
+  $member IconType
+  $member OnSetIconType
+  $member ColorScheme
+  $member OnSetColorScheme
+  $member ButtonState
+  $member OnSetButtonState
+  $member PathIcon
+  $member Icon
+  $member Note1
+  $member Note2
+  $member Note3
+  $member Note4
+  $member Note5
+}
+
+// This is a GUI component.
+$rect <230,110,430,150>
+$output false
+class MenuButtonBar : Core::Group
+{
+  $rect <520,40,720,80>
+  inherited property Bounds = <0,0,480,100>;
+
+  $rect <20,20,160,60>
+  object ChargingStation::MenuButtonBase InfoButton
+  {
+    preset Bounds = <0,15,152,115>;
+    preset MenuPress = OnInfo;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::MenuButtonBase ChartButton
+  {
+    preset Bounds = <164,15,316,115>;
+    preset MenuPress = OnChart;
+    preset IconType = ChargingStation::ButtonType.Chart;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::MenuButtonBase PaymentButton
+  {
+    preset Bounds = <328,15,480,115>;
+    preset MenuPress = OnPayment;
+    preset IconType = ChargingStation::ButtonType.Payment;
+  }
+
+  $rect <720,380,920,420>
+  slot OnPayment
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Moves info button accordingly to selected menu button
+    if(InfoButton.ButtonState == true)
+    {
+      InfoButton.ButtonState = false;
+      MoveInfoButton.Enabled = false;
+      MoveInfoButton.Value1 = <0,0,152,100>;
+      MoveInfoButton.Value2 = <0,15,152,115>;
+      MoveInfoButton.Enabled = true;
+    }
+
+    // Moves chart button accordingly to selected menu button
+    if(ChartButton.ButtonState == true)
+    {
+      ChartButton.ButtonState = false;
+      MoveChartButton.Enabled = false;
+      MoveChartButton.Value1 = <164,0,316,100>;
+      MoveChartButton.Value2 = <164,15,316,115>;
+      MoveChartButton.Enabled = true;
+    }
+
+    // Moves payment button accordingly to selected menu button
+    if(PaymentButton.ButtonState == false)
+    {
+      PaymentButton.ButtonState = true;
+      MovePaymentButton.Enabled = false;
+      MovePaymentButton.Value1 = <328,15,480,115>;
+      MovePaymentButton.Value2 = <328,0,480,100>;
+      MovePaymentButton.Enabled = true;
+    }
+
+    // Forward press to slot property
+    signal PropertyPayment;
+  }
+
+  $rect <720,300,920,340>
+  slot OnInfo
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Moves info button accordingly to selected menu button
+    if(InfoButton.ButtonState == false)
+    {
+      InfoButton.ButtonState = true;
+      MoveInfoButton.Enabled = false;
+      MoveInfoButton.Value1 = <0,15,152,115>;
+      MoveInfoButton.Value2 = <0,0,152,100>;
+      MoveInfoButton.Enabled = true;
+    }
+
+    // Moves chart button accordingly to selected menu button
+    if(ChartButton.ButtonState == true)
+    {
+      ChartButton.ButtonState = false;
+      MoveChartButton.Enabled = false;
+      MoveChartButton.Value1 = <164,0,316,100>;
+      MoveChartButton.Value2 = <164,15,316,115>;
+      MoveChartButton.Enabled = true;
+    }
+
+    // Moves payment button accordingly to selected menu button
+    if(PaymentButton.ButtonState == true)
+    {
+      PaymentButton.ButtonState = false;
+      MovePaymentButton.Enabled = false;
+      MovePaymentButton.Value1 = <328,0,480,100>;
+      MovePaymentButton.Value2 = <328,15,480,115>;
+      MovePaymentButton.Enabled = true;
+    }
+
+    // Forward press to slot property
+    signal PropertyInfo;
+  }
+
+  $rect <720,340,920,380>
+  slot OnChart
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Moves info button accordingly to selected menu button
+    if(InfoButton.ButtonState == true)
+    {
+      InfoButton.ButtonState = false;
+      MoveInfoButton.Enabled = false;
+      MoveInfoButton.Value1 = <0,0,152,100>;
+      MoveInfoButton.Value2 = <0,15,152,115>;
+      MoveInfoButton.Enabled = true;
+    }
+
+    // Moves chart button accordingly to selected menu button
+    if(ChartButton.ButtonState == false)
+    {
+      ChartButton.ButtonState = true;
+      MoveChartButton.Enabled = false;
+      MoveChartButton.Value1 = <164,15,316,115>;
+      MoveChartButton.Value2 = <164,0,316,100>;
+      MoveChartButton.Enabled = true;
+    }
+
+    // Moves payment button accordingly to selected menu button
+    if(PaymentButton.ButtonState == true)
+    {
+      PaymentButton.ButtonState = false;
+      MovePaymentButton.Enabled = false;
+      MovePaymentButton.Value1 = <328,0,480,100>;
+      MovePaymentButton.Value2 = <328,15,480,115>;
+      MovePaymentButton.Enabled = true;
+    }
+
+    // Forward press to slot property
+    signal PropertyChart;
+  }
+
+  $rect <920,300,1120,340>
+  property slot PropertyInfo;
+
+  $rect <920,340,1120,380>
+  property slot PropertyChart;
+
+  $rect <920,380,1120,420>
+  property slot PropertyPayment;
+
+  $rect <520,150,720,190>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <720,150,920,190>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Forwards color scheme to components used in this widget
+    PaymentButton.ColorScheme = ColorScheme;
+    InfoButton.ColorScheme = ColorScheme;
+    ChartButton.ColorScheme = ColorScheme;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <920,260,1120,300>
+  property bool AllDisabled = true;
+
+  $rect <720,260,920,300>
+  onset AllDisabled
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure AllDisabled == value )
+      return;
+
+    // Remember the property's new value.
+    pure AllDisabled = value;
+
+    // Reset position of all buttons at once
+    if(AllDisabled == true)
+    {
+      // Moves info button accordingly to starting position
+      if(InfoButton.ButtonState == true)
+      {
+        InfoButton.ButtonState = false;
+        MoveInfoButton.Enabled = false;
+        MoveInfoButton.Value1 = <0,0,152,100>;
+        MoveInfoButton.Value2 = <0,15,152,115>;
+        MoveInfoButton.Enabled = true;
+      }
+
+      // Moves chart button accordingly to starting position
+      if(ChartButton.ButtonState == true)
+      {
+        ChartButton.ButtonState = false;
+        MoveChartButton.Enabled = false;
+        MoveChartButton.Value1 = <164,0,316,100>;
+        MoveChartButton.Value2 = <164,15,316,115>;
+        MoveChartButton.Enabled = true;
+      }
+
+      // Moves payment button accordingly to starting position
+      if(PaymentButton.ButtonState == true)
+      {
+        PaymentButton.ButtonState = false;
+        MovePaymentButton.Enabled = false;
+        MovePaymentButton.Value1 = <328,0,480,100>;
+        MovePaymentButton.Value2 = <328,15,480,115>;
+        MovePaymentButton.Enabled = true;
+      }
+    }
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <520,300,720,340>
+  object Effects::RectEffect MoveInfoButton
+  {
+    preset Timing = Effects::Timing.FastIn_EaseOut;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 300;
+    preset Value2 = <0,0,149,100>;
+    preset Value1 = <0,13,149,113>;
+    preset Outlet = ^InfoButton.Bounds;
+  }
+
+  $rect <520,340,720,380>
+  object Effects::RectEffect MoveChartButton
+  {
+    preset Timing = Effects::Timing.FastIn_EaseOut;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 300;
+    preset Value2 = <166,0,315,100>;
+    preset Value1 = <166,13,315,113>;
+    preset Outlet = ^ChartButton.Bounds;
+  }
+
+  $rect <520,380,720,420>
+  object Effects::RectEffect MovePaymentButton
+  {
+    preset Timing = Effects::Timing.FastIn_EaseOut;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 300;
+    preset Value2 = <331,0,480,100>;
+    preset Value1 = <331,13,480,113>;
+    preset Outlet = ^PaymentButton.Bounds;
+  }
+
+  // Appearance configuration
+  note group Note1
+  {
+    attr Bounds = <500,110,940,210>;
+  }
+
+  // Selection logic
+  note group Note2
+  {
+    attr Bounds = <500,220,1140,440>;
+  }
+
+  // Inherited features
+  note group Note3
+  {
+    attr Bounds = <500,0,740,100>;
+  }
+}
+
+// This is a bitmap resource.
+$rect <1079,540,1279,580>
+$output false
+resource Resources::Bitmap QRCode
+{
+  attr bitmapfile FileName = .\Res\EmbeddedWizardQrCode.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Alpha8;
+  attr bitmapmode Mode = Default;
+}
+
+// This is a GUI component.
+$rect <30,150,230,190>
+$output false
+class Widgets : Core::Group
+{
+  $rect <401,41,601,81>
+  inherited property Bounds = <0,0,360,538>;
+
+  $rect <400,80,600,120>
+  inherited method UpdateViewState()
+  {
+    // Invoke the inherited version of the method 'UpdateViewState'.
+    // Remove the line if the inherited code should not be executed.
+    super( aState );
+
+    // Forwards color scheme to components used in this widget
+    WidgetsBaseStatic.ColorScheme =  ColorScheme;
+    WidgetsBaseMoving.ColorScheme =  ColorScheme;
+  }
+
+  $rect <399,190,599,230>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <400,230,600,270>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <399,270,599,310>
+  property bool PopupShown;
+
+  $rect <400,310,600,350>
+  onset PopupShown
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure PopupShown == value )
+      return;
+
+    // Remember the property's new value.
+    pure PopupShown = value;
+
+    // When a popup is shown, blend in background deco
+    if(PopupShown == true)
+    {
+      // Resets and reconfigures fade effect
+      Fader1.Enabled = false;
+      Fader1.InitialDelay = 0;
+      Fader1.Value1 = 255;
+      Fader1.Value2 = 0;
+      Fader1.Enabled = true;
+
+      // Resets and reconfigures fade effect
+      Fader2.Enabled = false;
+      Fader2.InitialDelay = 500;
+      Fader2.Value1 = 0;
+      Fader2.Value2 = 255;
+      Fader2.Enabled = true;
+    }
+    // When a popup is not shown, blend in indicators
+    else
+    {
+      // Resets and reconfigures fade effect
+      Fader1.Enabled = false;
+      Fader1.InitialDelay = 500;
+      Fader1.Value1 = 0;
+      Fader1.Value2 = 255;
+      Fader1.Enabled = true;
+
+      // Resets and reconfigures fade effect
+      Fader2.Enabled = false;
+      Fader2.InitialDelay = 0;
+      Fader2.Value1 = 255;
+      Fader2.Value2 = 0;
+      Fader2.Enabled = true;
+    }
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::WidgetsIndicators WidgetsBaseStatic
+  {
+    preset Bounds = <28,36,332,503>;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::WidgetsDeco WidgetsBaseMoving
+  {
+    preset Opacity = 0;
+  }
+
+  $rect <400,350,600,390>
+  object Effects::Int32Effect Fader1
+  {
+    preset NoOfCycles = 1;
+    preset CycleDuration = 500;
+    preset Enabled = false;
+    preset Outlet = ^WidgetsBaseStatic.Opacity;
+  }
+
+  $rect <400,390,600,430>
+  object Effects::Int32Effect Fader2
+  {
+    preset NoOfCycles = 1;
+    preset CycleDuration = 500;
+    preset Enabled = false;
+    preset Outlet = ^WidgetsBaseMoving.Opacity;
+  }
+
+  // Appearance configuration
+  note group Note1
+  {
+    attr Bounds = <380,150,620,450>;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <380,1,620,140>;
+  }
+}
+
+// This is a bitmap resource.
+$rect <1079,580,1279,620>
+$output false
+resource Resources::Bitmap EmbeddedWizardLogo
+{
+  attr bitmapfile FileName = .\Res\EmbeddedWizardLogo.png;
+  attr bitmapdithering Dithering = Auto;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapmode Mode = Default;
+}
+
+// This is a GUI component.
+$rect <30,240,230,280>
+$output false
+class WidgetsIndicators : Core::Group
+{
+  $rect <340,40,540,80>
+  inherited property Bounds = <0,0,304,467>;
+
+  $rect <540,40,740,80>
+  inherited method UpdateViewState()
+  {
+    // Invoke the inherited version of the method 'UpdateViewState'.
+    // Remove the line if the inherited code should not be executed.
+    super( aState );
+
+    // Variables
+    var color CurrentColor;
+
+    // Temporarily saves the required color information
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      CurrentColor = ChargingStation::BlueColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      CurrentColor = ChargingStation::GreenColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      CurrentColor = ChargingStation::RedColorTone1;
+    }
+
+    // Uses the hexagon color transition effect to change the colors of all components
+    HexagonDecoCapacity.Color = CurrentColor;
+    HexagonDecoRange.Color = CurrentColor;
+    HexagonDecoTime.Color = CurrentColor;
+    HexagonProgressDeco1.Color = CurrentColor;
+    HexagonProgressDeco2.Color = CurrentColor;
+  }
+
+  $rect <340,150,540,190>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <540,150,740,190>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonDecoRange
+  {
+    preset Bounds = <76,282,190,382>;
+    preset Size = 1.5;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset OutlinedWidth = 3.0;
+    preset InvisibleEdge = ChargingStation::Edges.Right;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonDecoCapacity
+  {
+    preset Bounds = <160,330,274,430>;
+    preset Size = 1.5;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset OutlinedWidth = 3.0;
+    preset InvisibleEdge = ChargingStation::Edges.Right;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonDecoTime
+  {
+    preset Bounds = <48,378,124,445>;
+    preset Size = 1.0;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset OutlinedWidth = 3.0;
+    preset InvisibleEdge = ChargingStation::Edges.Right;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonProgressDeco1
+  {
+    preset Bounds = <31,0,259,201>;
+    preset Size = 3.0;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset OutlinedWidth = 2.0;
+    preset InvisibleEdge = ChargingStation::Edges.Right;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonStatic HexagonProgressDeco2
+  {
+    preset Bounds = <43,13,255,200>;
+    preset Size = 2.8;
+    preset Variant = ChargingStation::HexagonType.OutlinedSolid;
+    preset OutlinedWidth = 2.0;
+    preset InvisibleEdge = ChargingStation::Edges.Left;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text RangeCaption
+  {
+    preset Bounds = <107,261,217,279>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = ChargingStation::Range;
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text RangeValue
+  {
+    preset Bounds = <100,324,170,346>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = "560km";
+    preset Font = ChargingStation::FontM;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text TimeCaption
+  {
+    preset Bounds = <17,449,105,467>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = ChargingStation::Time;
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text TimeValue
+  {
+    preset Bounds = <64,395,106,419>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = "100";
+    preset Font = ChargingStation::FontL;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text TimeUnit
+  {
+    preset Bounds = <69,420,102,438>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = "min";
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CapacityValue
+  {
+    preset Bounds = <182,371,252,393>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = "120kW";
+    preset Font = ChargingStation::FontM;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonProgress HexagonProgress
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft];
+    preset Bounds = <55,35,247,202>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text ProgressValue
+  {
+    preset Bounds = <108,92,192,138>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset String = "74%%";
+    preset Font = ChargingStation::FontXl;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CapacityCaption
+  {
+    preset Bounds = <190,435,289,453>;
+    preset AutoSize = true;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
+    preset String = ChargingStation::Capacity;
+    preset Font = ChargingStation::FontS;
+  }
+
+  $rect <340,311,540,351>
+  object Core::PropertyObserver ProgressObserver
+  {
+    preset OnEvent = OnProgressEvent;
+    preset Outlet = ^ChargingStation::Device.Progress;
+  }
+
+  // This slot method is executed when the associated property observer is notified.
+  $rect <540,311,740,351>
+  slot OnProgressEvent
+  {
+    // Update text based indicator
+    ProgressValue.String = string(int32(Device.Progress)) + "%%";
+
+    // Update progress hexagon
+    HexagonProgress.Bounds.y1 = 34 + int32((1 - (float(Device.Progress) / 100.0)) * 163);
+    HexagonProgress.Bounds.y2 = 201;
+
+  }
+
+  // Variable to reference the device class the entire lifetime of the application. \
+  // This avoids that the device class will be deleted by the Garbage Collector.
+  $rect <340,270,540,310>
+  var ChargingStation::DeviceClass Device = ChargingStation::Device;
+
+  $rect <339,350,539,390>
+  object Core::PropertyObserver RangeObserver
+  {
+    preset OnEvent = OnRangeEvent;
+    preset Outlet = ^ChargingStation::Device.Range;
+  }
+
+  // This slot method is executed when the associated property observer is notified.
+  $rect <539,350,739,390>
+  slot OnRangeEvent
+  {
+    // Update text based indicator
+    RangeValue.String = string(int32(Device.Range)) + "km";
+  }
+
+  $rect <339,390,539,430>
+  object Core::PropertyObserver CapacityObserver
+  {
+    preset OnEvent = OnCapacityEvent;
+    preset Outlet = ^ChargingStation::Device.Capacity;
+  }
+
+  // This slot method is executed when the associated property observer is notified.
+  $rect <539,390,739,430>
+  slot OnCapacityEvent
+  {
+    // Update text based indicator
+    CapacityValue.String = string(int32(Device.Capacity)) + "kw";
+
+  }
+
+  $rect <339,430,539,470>
+  object Core::PropertyObserver TimeObserver
+  {
+    preset OnEvent = OnTimeEvent;
+    preset Outlet = ^ChargingStation::Device.Time;
+  }
+
+  // This slot method is executed when the associated property observer is notified.
+  $rect <539,430,739,470>
+  slot OnTimeEvent
+  {
+    // Update text based indicator
+    TimeValue.String = string(int32(Device.Time));
+  }
+
+  // Device connection and data output
+  note group Note1
+  {
+    attr Bounds = <320,220,760,490>;
+  }
+
+  // Appearance configuration
+  note group Note2
+  {
+    attr Bounds = <320,110,760,210>;
+  }
+
+  // Inherited features
+  note group Note3
+  {
+    attr Bounds = <320,0,760,100>;
+  }
+}
+
+// Constant to define a string in the available languages.
+$rect <230,618,430,658>
+$output false
+const string Range =
+(
+  Default = "RANGE";
+  German = "REICHWEITE";
+);
+
+// Constant to define a string in the available languages.
+$rect <630,618,830,658>
+$output false
+const string Time =
+(
+  Default = "TIME";
+  German = "RESTZEIT";
+);
+
+// Constant to define a string in the available languages.
+$rect <430,658,630,698>
+$output false
+const string Payment =
+(
+  Default = "PLEASE\nINSERT CARD";
+  German = "BITTE\nKARTE\nEINFÜHREN";
+);
+
+// Constant to define a string in the available languages.
+$rect <230,658,430,698>
+$output false
+const string Info =
+(
+  Default = "POWERED BY";
+  German = "ERSTELLT MIT";
+);
+
+// Constant to define a string in the available languages.
+$rect <630,658,830,698>
+$output false
+const string Error =
+(
+  Default = "TRANSACTION\nCANCELED";
+  German = "VORGANG\nABGEBROCHEN";
+);
+
+// Slide effect that defines how the info, chart, payment and error dialogues are \
+// presented and removed.
+$rect <430,499,630,539>
+$output false
+autoobject Effects::SlideTransition SlideRight
+{
+  preset Elasticity = 0.8;
+  preset Duration = 300;
+  preset Direction = Core::Direction.Right;
+}
+
+// Constant to define a string in the available languages.
+$rect <430,618,630,658>
+$output false
+const string Capacity =
+(
+  Default = "CAPACITY";
+  German = "KAPAZITÄT";
+);
+
+// This is a GUI component.
+$rect <230,241,430,281>
+$output false
+class WidgetsDeco : Core::Group
+{
+  $rect <400,40,600,80>
+  inherited property Bounds = <0,0,360,538>;
+
+  $rect <400,80,600,120>
+  inherited method UpdateViewState()
+  {
+    // Invoke the inherited version of the method 'UpdateViewState'.
+    // Remove the line if the inherited code should not be executed.
+    super( aState );
+
+    // Variables
+    var color CurrentColor;
+
+    // Temporarily saves the required color information
+    if(ColorScheme == ChargingStation::ColorScheme.Blue)
+    {
+      CurrentColor = ChargingStation::BlueColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Green)
+    {
+      CurrentColor = ChargingStation::GreenColorTone1;
+    }
+    else if(ColorScheme == ChargingStation::ColorScheme.Red)
+    {
+      CurrentColor = ChargingStation::RedColorTone1;
+    }
+
+    // Uses the hexagon color transition effect to change the colors of all components
+    HexagonDecoCapacity.Color = CurrentColor;
+    HexagonDecoRange.Color = CurrentColor;
+    HexagonDecoTime.Color = CurrentColor;
+    HexagonProgressDeco1.Color = CurrentColor;
+    HexagonProgressDeco2.Color = CurrentColor;
+  }
+
+  $rect <400,190,600,230>
+  property ChargingStation::ColorScheme ColorScheme = ChargingStation::ColorScheme.Blue;
+
+  $rect <400,229,600,269>
+  onset ColorScheme
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorScheme == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorScheme = value;
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving HexagonDecoRange
+  {
+    preset Bounds = <75,309,255,489>;
+    preset Size = 1.5;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving HexagonDecoCapacity
+  {
+    preset Bounds = <157,358,337,538>;
+    preset Size = 1.5;
+    preset OutlinedWidth = 2;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving HexagonDecoTime
+  {
+    preset Bounds = <54,415,174,535>;
+    preset Size = 1.0;
+    preset OutlinedWidth = 2;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving HexagonProgressDeco1
+  {
+    preset Bounds = <0,0,360,360>;
+    preset Size = 3.0;
+    preset OutlinedWidth = 2;
+  }
+
+  $rect <20,20,160,60>
+  object ChargingStation::HexagonMoving HexagonProgressDeco2
+  {
+    preset Bounds = <17,16,353,352>;
+    preset Size = 2.8;
+    preset OutlinedWidth = 2;
+  }
+
+  // Appearance configuration
+  note group Note1
+  {
+    attr Bounds = <380,150,620,290>;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <380,0,620,140>;
+  }
+}
+
+// This is a GUI component.
+$rect <230,340,430,380>
+$output false
+class HexagonStatic : Core::Group
+{
+  $rect <110,50,310,90>
+  inherited property Bounds = <0,0,110,66>;
+
+  $rect <110,90,310,130>
+  inherited method Init()
+  {
+    // Trigger rendering of the hexagon shape
+    RenderHexagon();
+  }
+
+  $rect <810,121,1010,161>
+  object Graphics::Path BasePath;
+
+  $rect <358,121,558,161>
+  property float Size = 1.0;
+
+  $rect <359,81,559,121>
+  property ChargingStation::HexagonType Variant = ChargingStation::HexagonType.Unset;
+
+  $rect <559,122,759,162>
+  onset Size
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Size == value )
+      return;
+
+    // Remember the property's new value.
+    pure Size = value;
+
+    // Trigger rendering of the hexagon shape
+    RenderHexagon();
+  }
+
+  $rect <560,81,760,121>
+  onset Variant
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Variant == value )
+      return;
+
+    // Remember the property's new value.
+    pure Variant = value;
+
+    // Trigger rendering of the hexagon shape
+    RenderHexagon();
+  }
+
+  $rect <810,160,1010,200>
+  method void RenderHexagon()
+  {
+    // Definition of the nominal widget size
+    var int32 NominalWidth = 76;
+    var int32 NominalHeight = 67;
+
+    // Resizing of the widget to required size to ensure moving effect has enough space
+    Bounds.w = int32(NominalWidth * Size);
+    Bounds.h = int32(NominalHeight * Size);
+
+    // Dynamically add the path object used for drawing the hexagon
+    if(Variant == ChargingStation::HexagonType.Filled || Variant == ChargingStation::HexagonType.OutlinedRegressive)
+    {
+      if(CurrentFillPath == null)
+      {
+        // Create a FillPath and store the reference as variable
+        CurrentFillPath = new Views::FillPath;
+
+        // Configure the FillPath
+        CurrentFillPath.Bounds.w = int32(NominalWidth * Size);
+        CurrentFillPath.Bounds.h = int32(NominalHeight * Size);
+        CurrentFillPath.Path = BasePath;
+        CurrentFillPath.FillRule = Graphics::FillRule.EvenOdd;
+        CurrentFillPath.Quality = true;
+
+        // Add the FillPatch to the view
+        Add( CurrentFillPath, 0 );
+      }
+    }
+    else if(Variant == ChargingStation::HexagonType.OutlinedSolid)
+    {
+      if(CurrentStrokePath == null)
+      {
+        // Create a StrokePath and store the reference as variable
+        CurrentStrokePath = new Views::StrokePath;
+
+        // Configure the StrokePath
+        CurrentStrokePath.Bounds.w = int32(NominalWidth * Size);
+        CurrentStrokePath.Bounds.h = int32(NominalHeight * Size);
+        CurrentStrokePath.Path = BasePath;
+        CurrentStrokePath.StartCap = Graphics::PathCap.Round;
+        CurrentStrokePath.EndCap = Graphics::PathCap.Round;
+        CurrentStrokePath.JoinPoints = Graphics::PathJoin.Round;
+
+        // Add the StrokePath to the view
+        Add( CurrentStrokePath, 0 );
+      }
+    }
+
+    // In case a stroke path is used, configure the line width. This is done at
+    // any redraw sind line width may be unavailable at the moment the Stroke Path is created
+    if(CurrentStrokePath != null)
+    {
+      CurrentStrokePath.Width = OutlinedWidth;
+    }
+
+    // Select desired variant of hexagon
+    var string svgString = "";
+    if(Variant == ChargingStation::HexagonType.Filled)
+    {
+      svgString = "M73.298,32.659l-16.673,32.555l-37.5,-0l-18.75,-32.476l18.75,-32.476l37.5,0l16.673,32.397Z";
+    }
+    else if(Variant == ChargingStation::HexagonType.OutlinedRegressive)
+    {
+      svgString = "M73.298,32.659l-16.673,32.555l-37.5,-0l-18.75,-32.476l18.75,-32.476l37.5,0l16.673,32.397Zm-0,0l-18.548,29.307l-33.75,0l-16.875,-29.228l16.875,-29.228l33.75,-0l18.548,29.149Z";
+    }
+    else if(Variant == ChargingStation::HexagonType.OutlinedSolid)
+    {
+      svgString = "M73.298,32.659l-16.673,32.555l-37.5,-0l-18.75,-32.476l18.75,-32.476l37.5,0l16.673,32.397Z";
+    }
+
+    // Create a path object describing the shape of the hexagon
+    BasePath.CreateFromSVGString( svgString, Size * 1.0, Size * 0.985, Size * 1.0, Size * 1.0, 0.0 );
+  }
+
+  $rect <360,200,560,240>
+  property color Color = #80808000;
+
+  $rect <559,201,759,241>
+  onset Color
+  {
+    // Reset color effect and use previous color as start value
+    ChangeColorEffect.Enabled = false;
+    ChangeColorEffect.Value1 = Color;
+
+    // The value doesn't change - nothing to do.
+    if ( pure Color == value )
+      return;
+
+    // Remember the property's new value.
+    pure Color = value;
+
+    // Enable color effect and use new color as end value
+    ChangeColorEffect.Value2 = Color;
+    ChangeColorEffect.Enabled = true;
+
+    // Trigger rendering of the hexagon shape
+    RenderHexagon();
+  }
+
+  $rect <359,161,559,201>
+  property float OutlinedWidth = 1.0;
+
+  $rect <560,162,760,202>
+  onset OutlinedWidth
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure OutlinedWidth == value )
+      return;
+
+    // Remember the property's new value.
+    pure OutlinedWidth = value;
+
+    // Trigger rendering of the hexagon shape
+    RenderHexagon();
+  }
+
+  $rect <109,201,309,241>
+  object Effects::ColorEffect ChangeColorEffect
+  {
+    preset OnAnimate = ChangeColor;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 200;
+  }
+
+  $rect <109,241,309,281>
+  slot ChangeColor
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Colorizing of either the filled or stroke path object depending on the component configuration
+    if(CurrentFillPath != null)
+    {
+      // Access dynamically created FillPath with its reference variable
+      CurrentFillPath.Color = ChangeColorEffect.Value;
+
+      // Overwrite in case the hexagon should have an invisible edge
+      if(InvisibleEdge == ChargingStation::Edges.Top)
+      {
+        CurrentFillPath.ColorTL = #00000000;
+        CurrentFillPath.ColorTR = #00000000;
+      }
+      else if(InvisibleEdge == ChargingStation::Edges.Bottom)
+      {
+        CurrentFillPath.ColorBL = #00000000;
+        CurrentFillPath.ColorBR = #00000000;
+      }
+      else if(InvisibleEdge == ChargingStation::Edges.Left)
+      {
+        CurrentFillPath.ColorTL = #00000000;
+        CurrentFillPath.ColorBL = #00000000;
+      }
+      else if(InvisibleEdge == ChargingStation::Edges.Right)
+      {
+        CurrentFillPath.ColorTR = #00000000;
+        CurrentFillPath.ColorBR = #00000000;
+      }
+    }
+    else if(CurrentStrokePath != null)
+    {
+      // Access dynamically created StrokePath with its reference variable
+      CurrentStrokePath.Color = ChangeColorEffect.Value;
+
+      // Overwrite in case the hexagon should have an invisible edge
+      if(InvisibleEdge == ChargingStation::Edges.Top)
+      {
+        CurrentStrokePath.ColorTL = #00000000;
+        CurrentStrokePath.ColorTR = #00000000;
+      }
+      else if(InvisibleEdge == ChargingStation::Edges.Bottom)
+      {
+        CurrentStrokePath.ColorBL = #00000000;
+        CurrentStrokePath.ColorBR = #00000000;
+      }
+      else if(InvisibleEdge == ChargingStation::Edges.Left)
+      {
+        CurrentStrokePath.ColorTL = #00000000;
+        CurrentStrokePath.ColorBL = #00000000;
+      }
+      else if(InvisibleEdge == ChargingStation::Edges.Right)
+      {
+        CurrentStrokePath.ColorTR = #00000000;
+        CurrentStrokePath.ColorBR = #00000000;
+      }
+    }
+  }
+
+  $rect <810,200,1010,240>
+  var Views::StrokePath CurrentStrokePath;
+
+  $rect <810,240,1010,280>
+  var Views::FillPath CurrentFillPath;
+
+  // Shape drawing
+  note group Note1
+  {
+    attr Bounds = <790,80,1030,300>;
+  }
+
+  // Shape colorizing
+  note group Note2
+  {
+    attr Bounds = <90,160,330,300>;
+  }
+
+  // Properties
+  note group Note3
+  {
+    attr Bounds = <340,40,780,300>;
+  }
+
+  // In this example application, each static hexagon is constructed using this component. \
+  // During its initialization, a SVG string coupled with a path object is employed \
+  // to render a hexagon.
+  //
+  // The properties of the component allow for the customization of the hexagon’s \
+  // size, color, and type to suit individual use cases.
+  //
+  // For additional details on utilizing the path data object, please refer to the \
+  // relevant documentation.
+  //
+  // https://doc.embedded-wizard.de/path-data
+  note legend Note4
+  {
+    attr Bounds = <90,310,1030,460>;
+  }
+
+  $rect <360,240,560,280>
+  property ChargingStation::Edges InvisibleEdge = ChargingStation::Edges.Unset;
+
+  $rect <561,240,761,280>
+  onset InvisibleEdge
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure InvisibleEdge == value )
+      return;
+
+    // Remember the property's new value.
+    pure InvisibleEdge = value;
+
+    // Trigger rendering of the hexagon shape
+    RenderHexagon();
+  }
+
+  // Inherited features
+  note group Note5
+  {
+    attr Bounds = <90,0,330,150>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members
+  // where arranged when the project content was stored. In this manner the storage
+  // and the expected order of the members don't depend. Merging of changes in the
+  // project files is simplified.
+  $member Init
+  $member Bounds
+  $member BasePath
+  $member Size
+  $member Variant
+  $member OnSetSize
+  $member OnSetVariant
+  $member RenderHexagon
+  $member Color
+  $member OnSetColor
+  $member OutlinedWidth
+  $member OnSetOutlinedWidth
+  $member ChangeColorEffect
+  $member ChangeColor
+  $member CurrentStrokePath
+  $member CurrentFillPath
+  $member InvisibleEdge
+  $member OnSetInvisibleEdge
+  $member Note1
+  $member Note2
+  $member Note3
+  $member Note4
+  $member Note5
+}
+
+// Slide effect that defines how the info, chart, payment and error dialogues are \
+// presented and removed.
+$rect <430,459,630,499>
+$output false
+autoobject Effects::SlideTransition SlideLeft
+{
+  preset Elasticity = 0.8;
+  preset Duration = 300;
+  preset Direction = Core::Direction.Left;
+}
+
+// Slide effect that defines how the info, chart, payment and error dialogues are \
+// presented and removed.
+$rect <630,499,830,539>
+$output false
+autoobject Effects::SlideTransition SlideBottom
+{
+  preset Elasticity = 0.8;
+  preset Timing = Effects::Timing.EaseIn_FastOut;
+  preset Duration = 400;
+  preset Direction = Core::Direction.Bottom;
+}
+
+// Slide effect that defines how the info, chart, payment and error dialogues are \
+// presented and removed.
+$rect <630,459,830,499>
+$output false
+autoobject Effects::SlideTransition SlideTop
+{
+  preset Elasticity = 0.8;
+  preset Duration = 400;
+  preset Direction = Core::Direction.Top;
+}
+
+// This is an enumeration definition for signing the different edges.
+$rect <30,459,230,499>
+$output false
+enum Edges
+{
+  $rect <10,90,190,130>
+  item Right;
+
+  $rect <10,50,190,90>
+  item Left;
+
+  $rect <10,10,190,50>
+  item Bottom;
+
+  $rect <10,-30,190,10>
+  item Top;
+
+  $rect <10,-70,190,-30>
+  item Unset;
+}
+
+// Main screen, widgets and diagram classes (Landscape mode)
+note group Note7
+{
+  attr Bounds = <860,10,1700,400>;
+}
+
+// Variant for the landscape version.
+$rect <880,60,1080,100>
+$variant $Landscape
+vclass ChargingStation_L : ChargingStation::ChargingStation
+{
+  $rect <840,40,1040,80>
+  inherited property Bounds = <0,0,800,480>;
+
+  $rect <20,20,160,60>
+  inherited object Background
+  {
+    preset Bounds = <0,0,800,480>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Decoration
+  {
+    preset Bounds = <0,0,800,480>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Clock
+  {
+    preset Bounds = <542,22,648,117>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Date
+  {
+    preset Bounds = <625,-5,764,64>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object LanguageSelector
+  {
+    preset Bounds = <744,102,817,167>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object MenuButtonBar
+  {
+    preset Bounds = <0,380,800,480>;
+  }
+
+  // Inherited features
+  note group Note
+  {
+    attr Bounds = <820,0,1059,100>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <880,110,1080,150>
+$variant $Landscape
+vclass Decoration_L : ChargingStation::Decoration
+{
+  $rect <840,40,1040,80>
+  inherited property Bounds = <0,0,800,480>;
+
+  $rect <20,20,160,60>
+  inherited object Deco3
+  {
+    preset Bounds = <243,412,291,460>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco4
+  {
+    preset Bounds = <352,-13,400,35>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco7
+  {
+    preset Bounds = <-115,209,101,425>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco9
+  {
+    preset Bounds = <675,233,891,449>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco10
+  {
+    preset Bounds = <-68,98,124,290>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco11
+  {
+    preset Bounds = <400,-101,568,67>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco12
+  {
+    preset Bounds = <516,425,636,545>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco13
+  {
+    preset Bounds = <636,161,720,245>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco14
+  {
+    preset Bounds = <675,191,759,275>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco15
+  {
+    preset Bounds = <692,149,776,233>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco16
+  {
+    preset Bounds = <293,-17,341,31>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco17
+  {
+    preset Bounds = <769,6,817,54>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco18
+  {
+    preset Bounds = <155,-39,275,81>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Deco19
+  {
+    preset Bounds = <222,432,270,480>;
+  }
+
+  // Inherited features
+  note group Note1
+  {
+    attr Bounds = <820,0,1060,100>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <1080,110,1280,150>
+$variant $Landscape
+vclass MenuButtonBar_L : ChargingStation::MenuButtonBar
+{
+  $rect <840,40,1040,80>
+  inherited property Bounds = <0,0,800,100>;
+
+  $rect <20,20,160,60>
+  inherited object InfoButton
+  {
+    preset Bounds = <0,25,152,125>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object ChartButton
+  {
+    preset Bounds = <324,25,476,125>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object PaymentButton
+  {
+    preset Bounds = <648,25,800,125>;
+  }
+
+  $rect <840,270,1040,310>
+  inherited slot OnPayment
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Moves info button accordingly to selected menu button
+    if(InfoButton.ButtonState == true)
+    {
+      InfoButton.ButtonState = false;
+      MoveInfoButton.Enabled = false;
+      MoveInfoButton.Value1 = <0,10,152,110>;
+      MoveInfoButton.Value2 = <0,25,152,125>;
+      MoveInfoButton.Enabled = true;
+    }
+
+    // Moves chart button accordingly to selected menu button
+    if(ChartButton.ButtonState == true)
+    {
+      ChartButton.ButtonState = false;
+      MoveChartButton.Enabled = false;
+      MoveChartButton.Value1 = <324,10,476,110>;
+      MoveChartButton.Value2 = <324,25,476,125>;
+      MoveChartButton.Enabled = true;
+    }
+
+    // Moves payment button accordingly to selected menu button
+    if(PaymentButton.ButtonState == false)
+    {
+      PaymentButton.ButtonState = true;
+      MovePaymentButton.Enabled = false;
+      MovePaymentButton.Value1 = <648,25,800,125>;
+      MovePaymentButton.Value2 = <648,10,800,110>;
+      MovePaymentButton.Enabled = true;
+    }
+
+    // Forward press to slot property
+    signal PropertyPayment;
+  }
+
+  $rect <840,190,1040,230>
+  inherited slot OnInfo
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Moves info button accordingly to selected menu button
+    if(InfoButton.ButtonState == false)
+    {
+      InfoButton.ButtonState = true;
+      MoveInfoButton.Enabled = false;
+      MoveInfoButton.Value1 = <0,25,152,125>;
+      MoveInfoButton.Value2 = <0,10,152,110>;
+      MoveInfoButton.Enabled = true;
+    }
+
+    // Moves chart button accordingly to selected menu button
+    if(ChartButton.ButtonState == true)
+    {
+      ChartButton.ButtonState = false;
+      MoveChartButton.Enabled = false;
+      MoveChartButton.Value1 = <324,10,476,110>;
+      MoveChartButton.Value2 = <324,25,476,125>;
+      MoveChartButton.Enabled = true;
+    }
+
+    // Moves payment button accordingly to selected menu button
+    if(PaymentButton.ButtonState == true)
+    {
+      PaymentButton.ButtonState = false;
+      MovePaymentButton.Enabled = false;
+      MovePaymentButton.Value1 = <648,10,800,110>;
+      MovePaymentButton.Value2 = <648,25,800,125>;
+      MovePaymentButton.Enabled = true;
+    }
+
+    // Forward press to slot property
+    signal PropertyInfo;
+  }
+
+  $rect <840,230,1040,270>
+  inherited slot OnChart
+  {
+    // The method is called from the sender object
+    sender;
+
+    // Moves info button accordingly to selected menu button
+    if(InfoButton.ButtonState == true)
+    {
+      InfoButton.ButtonState = false;
+      MoveInfoButton.Enabled = false;
+      MoveInfoButton.Value1 = <0,10,152,110>;
+      MoveInfoButton.Value2 = <0,25,152,125>;
+      MoveInfoButton.Enabled = true;
+    }
+
+    // Moves chart button accordingly to selected menu button
+    if(ChartButton.ButtonState == false)
+    {
+      ChartButton.ButtonState = true;
+      MoveChartButton.Enabled = false;
+      MoveChartButton.Value1 = <324,25,476,125>;
+      MoveChartButton.Value2 = <324,10,476,110>;
+      MoveChartButton.Enabled = true;
+    }
+
+    // Moves payment button accordingly to selected menu button
+    if(PaymentButton.ButtonState == true)
+    {
+      PaymentButton.ButtonState = false;
+      MovePaymentButton.Enabled = false;
+      MovePaymentButton.Value1 = <648,10,800,110>;
+      MovePaymentButton.Value2 = <648,25,800,125>;
+      MovePaymentButton.Enabled = true;
+    }
+
+    // Forward press to slot property
+    signal PropertyChart;
+  }
+
+  $rect <840,150,1040,190>
+  inherited onset AllDisabled
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure AllDisabled == value )
+      return;
+
+    // Remember the property's new value.
+    pure AllDisabled = value;
+
+    // Reset position of all buttons at once
+    if(AllDisabled == true)
+    {
+      // Moves info button accordingly to starting position
+      if(InfoButton.ButtonState == true)
+      {
+        InfoButton.ButtonState = false;
+        MoveInfoButton.Enabled = false;
+        MoveInfoButton.Value1 = <0,10,152,110>;
+        MoveInfoButton.Value2 = <0,25,152,125>;
+        MoveInfoButton.Enabled = true;
+      }
+
+      // Moves chart button accordingly to starting position
+      if(ChartButton.ButtonState == true)
+      {
+        ChartButton.ButtonState = false;
+        MoveChartButton.Enabled = false;
+        MoveChartButton.Value1 = <324,10,476,110>;
+        MoveChartButton.Value2 = <324,25,476,125>;
+        MoveChartButton.Enabled = true;
+      }
+
+      // Moves payment button accordingly to starting position
+      if(PaymentButton.ButtonState == true)
+      {
+        PaymentButton.ButtonState = false;
+        MovePaymentButton.Enabled = false;
+        MovePaymentButton.Value1 = <648,10,800,110>;
+        MovePaymentButton.Value2 = <648,25,800,125>;
+        MovePaymentButton.Enabled = true;
+      }
+    }
+
+    // Force update of view when color scheme changes
+    InvalidateViewState();
+  }
+
+  // Inherited features
+  note group Note1
+  {
+    attr Bounds = <820,0,1060,100>;
+  }
+
+  // Selection logic
+  note group Note2
+  {
+    attr Bounds = <820,110,1060,330>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <880,150,1080,190>
+$variant $Landscape
+vclass Widgets_L : ChargingStation::Widgets
+{
+  $rect <600,39,800,79>
+  inherited property Bounds = <0,0,568,390>;
+
+  $rect <20,20,160,60>
+  inherited object WidgetsBaseStatic
+  {
+    preset Bounds = <36,37,533,371>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object WidgetsBaseMoving
+  {
+    preset Bounds = <0,0,568,390>;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <580,0,820,100>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <880,240,1080,280>
+$variant $Landscape
+vclass WidgetsIndicators_L : ChargingStation::WidgetsIndicators
+{
+  $rect <530,40,730,80>
+  inherited property Bounds = <0,0,497,334>;
+
+  $rect <20,20,160,60>
+  inherited object HexagonDecoRange
+  {
+    preset Bounds = <279,72,393,172>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonDecoCapacity
+  {
+    preset Bounds = <363,120,477,220>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonDecoTime
+  {
+    preset Bounds = <251,168,327,235>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonProgressDeco1
+  {
+    preset Bounds = <4,52,232,253>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonProgressDeco2
+  {
+    preset Bounds = <16,65,228,252>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object RangeCaption
+  {
+    preset Bounds = <310,51,365,69>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object RangeValue
+  {
+    preset Bounds = <303,114,373,136>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object TimeCaption
+  {
+    preset Bounds = <264,239,308,257>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object TimeValue
+  {
+    preset Bounds = <267,185,309,209>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object TimeUnit
+  {
+    preset Bounds = <272,210,305,228>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object CapacityValue
+  {
+    preset Bounds = <385,161,455,183>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonProgress
+  {
+    preset Bounds = <28,85,220,252>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object ProgressValue
+  {
+    preset Bounds = <81,144,165,190>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object CapacityCaption
+  {
+    preset Bounds = <393,225,481,243>;
+  }
+
+  $rect <530,180,730,220>
+  inherited slot OnProgressEvent
+  {
+    // Update text based indicator
+    ProgressValue.String = string(int32(Device.Progress)) + "%%";
+
+    // Update progress hexagon
+    HexagonProgress.Bounds.y1 = 86 + int32((1 - (float(Device.Progress) / 100.0)) * 163);
+    HexagonProgress.Bounds.y2 = 253;
+
+  }
+
+  // Inherited features
+  note group Note3
+  {
+    attr Bounds = <510,0,750,100>;
+  }
+
+  // Device connection and data output
+  note group Note1
+  {
+    attr Bounds = <510,110,750,240>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <1080,241,1280,281>
+$variant $Landscape
+vclass WidgetsDeco_L : ChargingStation::WidgetsDeco
+{
+  $rect <600,40,800,80>
+  inherited property Bounds = <0,0,568,390>;
+
+  $rect <20,20,160,60>
+  inherited object HexagonDecoRange
+  {
+    preset Bounds = <294,83,474,263>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonDecoCapacity
+  {
+    preset Bounds = <376,132,556,312>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonDecoTime
+  {
+    preset Bounds = <273,189,393,309>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonProgressDeco1
+  {
+    preset Bounds = <0,20,360,380>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonProgressDeco2
+  {
+    preset Bounds = <17,36,353,372>;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <580,0,820,100>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <880,290,1080,330>
+$variant $Landscape
+vclass MenuButtonBase_L : ChargingStation::MenuButtonBase
+{
+  $rect <20,20,160,60>
+  inherited object Icon
+  {
+    preset Bounds = <49,27,103,70>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <1080,290,1280,330>
+$variant $Landscape
+vclass ContentBackground_L : ChargingStation::ContentBackground
+{
+  $rect <20,20,160,60>
+  inherited object HexagonLargeFilled
+  {
+    preset Bounds = <18,22,436,390>;
+    preset Size = 5.5;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonLargeOutlined
+  {
+    preset Bounds = <18,22,436,390>;
+    preset Size = 5.5;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonButton
+  {
+    preset Bounds = <335,1,395,54>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object SimpleTouchHandler
+  {
+    preset Point4 = <339,0>;
+    preset Point3 = <393,0>;
+    preset Point2 = <393,54>;
+    preset Point1 = <339,54>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object IconClose
+  {
+    preset Bounds = <352,7,382,50>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <1280,110,1480,150>
+$variant $Landscape
+vclass StartingPopup_L : ChargingStation::StartingPopup
+{
+  $rect <20,20,160,60>
+  inherited object HexagonLargeFilled
+  {
+    preset Bounds = <20,0,438,368>;
+    preset Size = 5.5;
+  }
+
+  $rect <20,20,160,60>
+  inherited object HexagonLargeOutlined
+  {
+    preset Bounds = <20,0,438,368>;
+    preset Size = 5.5;
+  }
+
+  $rect <20,20,160,60>
+  inherited object IconPlug
+  {
+    preset Bounds = <118,78,343,357>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <880,200,1080,240>
+$variant $Landscape
+vclass ContentInfo_L : ChargingStation::ContentInfo
+{
+  $rect <490,40,690,80>
+  inherited property Bounds = <0,0,456,451>;
+
+  $rect <20,20,160,60>
+  inherited object Caption
+  {
+    preset Bounds = <159,63,299,87>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object QrCode
+  {
+    preset Bounds = <171,235,299,364>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Image
+  {
+    preset Bounds = <88,110,366,210>;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <470,0,710,100>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <1080,200,1280,240>
+$variant $Landscape
+vclass ContentChart_L : ChargingStation::ContentChart
+{
+  $rect <490,40,690,80>
+  inherited property Bounds = <0,0,456,451>;
+
+  $rect <20,20,160,60>
+  inherited object Text1
+  {
+    preset Bounds = <88,96,121,114>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Text2
+  {
+    preset Bounds = <116,328,138,346>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Text3
+  {
+    preset Bounds = <332,328,354,346>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Text4
+  {
+    preset Bounds = <206,328,250,346>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Text5
+  {
+    preset Bounds = <102,307,113,325>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Text6
+  {
+    preset Bounds = <91,259,113,277>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Text7
+  {
+    preset Bounds = <80,211,113,229>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Text8
+  {
+    preset Bounds = <80,114,113,132>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Text10
+  {
+    preset Bounds = <80,162,113,180>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object FillPath
+  {
+    preset Bounds = <117,113,358,324>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object StrokePath
+  {
+    preset Bounds = <117,113,358,324>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Caption
+  {
+    preset Bounds = <180,69,292,93>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object LineY
+  {
+    preset Point2 = <116,325>;
+    preset Point1 = <117,114>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object LineX
+  {
+    preset Point2 = <116,325>;
+    preset Point1 = <358,325>;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <470,0,710,100>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <1280,200,1480,240>
+$variant $Landscape
+vclass ContentPayment_L : ChargingStation::ContentPayment
+{
+  $rect <490,40,690,80>
+  inherited property Bounds = <0,0,456,451>;
+
+  $rect <20,20,160,60>
+  inherited object Caption
+  {
+    preset Bounds = <76,85,384,177>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object IconPayment
+  {
+    preset Bounds = <192,218,271,360>;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <470,0,710,100>;
+  }
+}
+
+// Variant for the landscape version.
+$rect <1480,200,1680,240>
+$variant $Landscape
+vclass ContentError_L : ChargingStation::ContentError
+{
+  $rect <490,40,690,80>
+  inherited property Bounds = <0,0,456,451>;
+
+  $rect <20,20,160,60>
+  inherited object Text1
+  {
+    preset Bounds = <78,161,386,253>;
+  }
+
+  // Inherited features
+  note group Note2
+  {
+    attr Bounds = <470,0,710,100>;
+  }
+}
+
+// Directives to adapt the order of the above members according to how these members
+// where arranged when the project content was stored. In this manner the storage
+// and the expected order of the members don't depend. Merging of changes in the
+// project files is simplified.
+$member BackColor
+$member FontS
+$member FontXl
+$member FontXs
+$member DeviceClass
+$member Device
+$member HexagonType
+$member DecorationType
+$member ScreenType
+$member ButtonType
+$member ColorScheme
+$member Edges
+$member RedColorTone1
+$member RedColorTone2
+$member GreenColorTone1
+$member GreenColorTone2
+$member BlueColorTone1
+$member BlueColorTone2
+$member FlagGerman
+$member FlagUnitedKingdom
+$member QRCode
+$member EmbeddedWizardLogo
+$member FadeInOutSlow
+$member FontM
+$member FontL
+$member HexagonMoving
+$member ContentBackground
+$member Decoration
+$member Clock
+$member Date
+$member ChargingStation
+$member StartingPopup
+$member ContentInfo
+$member ContentChart
+$member ContentPayment
+$member ContentError
+$member LanguageSelector
+$member HexagonProgress
+$member MenuButtonBase
+$member MenuButtonBar
+$member Widgets
+$member WidgetsIndicators
+$member WidgetsDeco
+$member HexagonStatic
+$member SlideRight
+$member SlideLeft
+$member SlideBottom
+$member SlideTop
+$member Range
+$member Time
+$member Payment
+$member Info
+$member Error
+$member Capacity
+$member Note1
+$member Note2
+$member Note3
+$member Note4
+$member Note6
+$member Note7
+$member ChargingStation_L
+$member Decoration_L
+$member MenuButtonBar_L
+$member Widgets_L
+$member WidgetsIndicators_L
+$member WidgetsDeco_L
+$member MenuButtonBase_L
+$member ContentBackground_L
+$member StartingPopup_L
+$member ContentInfo_L
+$member ContentChart_L
+$member ContentPayment_L
+$member ContentError_L
