@@ -1,0 +1,31 @@
+configVersion: 1.0.0
+componentName: legato_gfx_pda_tm5000
+coreVersion: 5.8.2
+device: SAM9X60D1G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: legato_gfx_pda_tm5000
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: gfx
+  type: package
+  version: v3.16.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments: {}
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: legato_gfx_pda_tm5000
+          x: '383'
+          y: '212'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols: {}
+  userData: {}

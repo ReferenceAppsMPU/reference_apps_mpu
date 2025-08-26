@@ -1,0 +1,94 @@
+configVersion: 1.0.0
+componentName: drv_i2c
+coreVersion: 5.8.2
+device: SAM9X60D1G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: drv_i2c
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: core
+  type: package
+  version: v3.15.2
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments: {}
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: drv_i2c
+          x: '436'
+          y: '334'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    DRV_I2C_ASYNC_HEADER:
+      attributes:
+        id: DRV_I2C_ASYNC_HEADER
+      children:
+      - children:
+        - attributes:
+            id: enabled
+          children:
+          - type: Value
+            value: 'false'
+          type: Boolean
+        type: Attributes
+      type: File
+    DRV_I2C_ASYNC_SRC:
+      attributes:
+        id: DRV_I2C_ASYNC_SRC
+      children:
+      - children:
+        - attributes:
+            id: enabled
+          children:
+          - type: Value
+            value: 'false'
+          type: Boolean
+        type: Attributes
+      type: File
+    DRV_I2C_MODE:
+      attributes:
+        id: DRV_I2C_MODE
+      children:
+      - children:
+        - attributes:
+            id: drv_i2c
+            value: Synchronous
+          type: Dynamic
+        type: Values
+      type: Combo
+    DRV_I2C_SYNC_HEADER:
+      attributes:
+        id: DRV_I2C_SYNC_HEADER
+      children:
+      - children:
+        - attributes:
+            id: enabled
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      type: File
+    DRV_I2C_SYNC_SRC:
+      attributes:
+        id: DRV_I2C_SYNC_SRC
+      children:
+      - children:
+        - attributes:
+            id: enabled
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      type: File
+  userData: {}

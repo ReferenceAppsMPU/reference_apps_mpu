@@ -1,0 +1,144 @@
+configVersion: 1.0.0
+componentName: le_gfx_lcdc
+coreVersion: 5.8.2
+device: SAM9X60D1G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: le_gfx_lcdc
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: gfx
+  type: package
+  version: v3.16.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: Graphics Display
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: gfx_disp_pdatm5000_800x480
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: gfx_display
+            type: String
+          type: Attributes
+        type: DirectDependency
+      - attributes:
+          id: LCDC
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: lcdc
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: LCDC_LCDC
+            type: String
+          type: Attributes
+        type: DirectDependency
+      type: Attachments
+    type: le_gfx_lcdc
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: le_gfx_lcdc
+          x: '262'
+          y: '471'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    CanvasModeOnly:
+      attributes:
+        id: CanvasModeOnly
+      children:
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    DisplayHeight:
+      attributes:
+        id: DisplayHeight
+      children:
+      - children:
+        - attributes:
+            id: le_gfx_lcdc
+            value: '480'
+          type: Dynamic
+        type: Values
+      type: Integer
+    DisplayWidth:
+      attributes:
+        id: DisplayWidth
+      children:
+      - children:
+        - attributes:
+            id: le_gfx_lcdc
+            value: '800'
+          type: Dynamic
+        type: Values
+      type: Integer
+    OutputColorMode:
+      attributes:
+        id: OutputColorMode
+      children:
+      - children:
+        - attributes:
+            value: '2'
+          type: User
+        type: Values
+      type: KeyValueSet
+    Overlay1LayerEnable:
+      attributes:
+        id: Overlay1LayerEnable
+      children:
+      - children:
+        - attributes:
+            value: 'false'
+          type: User
+        type: Values
+      type: Boolean
+    Overlay2LayerEnable:
+      attributes:
+        id: Overlay2LayerEnable
+      children:
+      - children:
+        - attributes:
+            value: 'false'
+          type: User
+        type: Values
+      type: Boolean
+    TotalNumLayers:
+      attributes:
+        id: TotalNumLayers
+      children:
+      - children:
+        - attributes:
+            id: le_gfx_lcdc
+            value: '1'
+          type: Dynamic
+        type: Values
+      type: Integer
+  userData: {}
