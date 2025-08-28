@@ -99,7 +99,7 @@ static void lAPP_Tasks(  void *pvParameters  )
     {
         APP_Tasks();
         //Custom code - Do not delete
-         vTaskDelay(5 / portTICK_PERIOD_MS);
+        // vTaskDelay(5 / portTICK_PERIOD_MS);
     }
 }
 
