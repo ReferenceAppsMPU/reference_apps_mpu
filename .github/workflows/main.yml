@@ -2,26 +2,35 @@ name: GitHub Traffic Stats Tracker
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs once daily at midnight UTC
+    - cron: '0 0 * * *'  # Runs every day at midnight UTC
   workflow_dispatch:
 
 jobs:
-  update-traffic:
+  fetch-traffic:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Fetch Traffic Data
-        uses: schneegans/dynamic-badges-action@v1.6.0
-        with:
-          auth: ${{ secrets.GITHUB_TOKEN }}
-          path: traffic-data.json
+      - name: Fetch GitHub Traffic Data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Fetching traffic data for $REPO"
+          curl -H "Accept: application/vnd.github+json" \
+               -H "Authorization: Bearer $GITHUB_TOKEN" \
+               https://api.github.com/repos/$REPO/traffic/views \
+               -o traffic-data.json
 
-      - name: Commit and Push Results
+      - name: Commit and Push Traffic Data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add traffic-data.json
-          git commit -m "Updated daily traffic data"
+          git commit -m "Update traffic data"
           git push
