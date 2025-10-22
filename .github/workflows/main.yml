@@ -26,6 +26,8 @@ jobs:
                -H "Authorization: Bearer $GITHUB_TOKEN" \
                https://api.github.com/repos/$REPO/traffic/views \
                -o traffic-data.json
+      - name: Generate Quarterly Report
+        run: python github_traffic_report.py
 
       - name: Commit and Push Traffic Data
         run: |
