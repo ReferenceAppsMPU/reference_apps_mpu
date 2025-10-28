@@ -13,7 +13,12 @@ with open(file_path, "r") as f:
     new_data = json.load(f)
 
 # GitHub API returns in the "views" key
-new_views = new_data.get("views", new_data)
+if isinstance(new_data.get("views", None), list):
+    new_views = new_data["views"]
+elif isinstance(new_data, list):
+    new_views = new_data
+else:
+    raise ValueError("Traffic data must be a list of records.")
 
 # Load existing history if available
 if os.path.exists(history_path):
