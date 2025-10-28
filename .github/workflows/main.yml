@@ -9,7 +9,8 @@ jobs:
   fetch-traffic:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      # This permission is essential for both fetching the data and pushing the results
+      contents: write 
       actions: read
 
     steps:
@@ -17,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch GitHub Traffic Data
+        # The GITHUB_TOKEN is automatically granted permissions based on the 'permissions' key
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -26,13 +28,21 @@ jobs:
                -H "Authorization: Bearer $GITHUB_TOKEN" \
                https://api.github.com/repos/$REPO/traffic/views \
                -o traffic-data.json
+      
+      # Assuming your script requires Python to run
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x' 
+
       - name: Generate Quarterly Report
         run: python .github/workflows/github_traffic_report.py
+        # If your script requires dependencies, add a step here:
+        # run: pip install -r requirements.txt
 
-      - name: Commit and Push Traffic Data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add traffic-data.json
-          git commit -m "Update traffic data"
-          git push
+      - name: Commit and Push Traffic Data and Report
+        # This action handles the git setup, commit, and push reliably.
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          # This commits all changes: traffic-data.json and any output from the Python script
+          commit_message: "📊 Chore: Update GitHub traffic stats and report"
