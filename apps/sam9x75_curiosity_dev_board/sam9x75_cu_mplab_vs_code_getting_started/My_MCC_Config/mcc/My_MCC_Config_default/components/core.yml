@@ -1,0 +1,427 @@
+configVersion: 1.0.0
+componentName: core
+coreVersion: 5.8.3
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: core
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.24.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments: {}
+  elementPosition: {}
+  symbols:
+    PIOC_OER_VALUE:
+      attributes:
+        id: PIOC_OER_VALUE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '3162112'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIOC_SODR_VALUE:
+      attributes:
+        id: PIOC_SODR_VALUE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIOC_PUER_VALUE:
+      attributes:
+        id: PIOC_PUER_VALUE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '512'
+          type: Dynamic
+        type: Values
+      type: Hex
+    SYSC_INTERRUPT_ENABLE:
+      attributes:
+        id: SYSC_INTERRUPT_ENABLE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    COMPONENT_PACKAGE:
+      attributes:
+        id: COMPONENT_PACKAGE
+      children:
+      - children:
+        - attributes:
+            value: BGA243
+          type: User
+        type: Values
+      type: Combo
+    PIN_48_LAT:
+      attributes:
+        id: PIN_48_LAT
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
+    PIOC_PDR_VALUE:
+      attributes:
+        id: PIOC_PDR_VALUE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIOC_ABCDSR1_VALUE:
+      attributes:
+        id: PIOC_ABCDSR1_VALUE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIOC_ABCDSR2_VALUE:
+      attributes:
+        id: PIOC_ABCDSR2_VALUE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIN_48_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_48_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: LED_AH
+          type: User
+        type: Values
+      type: String
+    PIN_50_LAT:
+      attributes:
+        id: PIN_50_LAT
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
+    PIN_50_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_50_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: LED_AH
+          type: User
+        type: Values
+      type: String
+    PIN_79_LAT:
+      attributes:
+        id: PIN_79_LAT
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
+    PIN_79_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_79_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: LED_AH
+          type: User
+        type: Values
+      type: String
+    PIN_106_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_106_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: SWITCH_AL
+          type: User
+        type: Values
+      type: String
+    PIN_8_FUNCTION_TYPE:
+      attributes:
+        id: PIN_8_FUNCTION_TYPE
+      children:
+      - children:
+        - attributes:
+            value: QSPI_QSCK
+          type: User
+        type: Values
+      type: String
+    PIOB_PDR_VALUE:
+      attributes:
+        id: PIOB_PDR_VALUE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '33030144'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIOB_ABCDSR1_VALUE:
+      attributes:
+        id: PIOB_ABCDSR1_VALUE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIOB_ABCDSR2_VALUE:
+      attributes:
+        id: PIOB_ABCDSR2_VALUE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIN_8_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_8_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: A
+          type: User
+        type: Values
+      type: String
+    PIN_25_FUNCTION_TYPE:
+      attributes:
+        id: PIN_25_FUNCTION_TYPE
+      children:
+      - children:
+        - attributes:
+            value: QSPI_QCS
+          type: User
+        type: Values
+      type: String
+    PIN_25_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_25_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: A
+          type: User
+        type: Values
+      type: String
+    PIN_23_FUNCTION_TYPE:
+      attributes:
+        id: PIN_23_FUNCTION_TYPE
+      children:
+      - children:
+        - attributes:
+            value: QSPI_QIO0
+          type: User
+        type: Values
+      type: String
+    PIN_23_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_23_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: A
+          type: User
+        type: Values
+      type: String
+    PIN_57_FUNCTION_TYPE:
+      attributes:
+        id: PIN_57_FUNCTION_TYPE
+      children:
+      - children:
+        - attributes:
+            value: QSPI_QIO1
+          type: User
+        type: Values
+      type: String
+    PIN_57_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_57_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: A
+          type: User
+        type: Values
+      type: String
+    PIN_38_FUNCTION_TYPE:
+      attributes:
+        id: PIN_38_FUNCTION_TYPE
+      children:
+      - children:
+        - attributes:
+            value: QSPI_QIO2
+          type: User
+        type: Values
+      type: String
+    PIN_38_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_38_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: A
+          type: User
+        type: Values
+      type: String
+    PIN_24_FUNCTION_TYPE:
+      attributes:
+        id: PIN_24_FUNCTION_TYPE
+      children:
+      - children:
+        - attributes:
+            value: QSPI_QIO3
+          type: User
+        type: Values
+      type: String
+    PIN_24_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_24_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: A
+          type: User
+        type: Values
+      type: String
+    QSPI_CLOCK_FREQUENCY:
+      attributes:
+        id: QSPI_CLOCK_FREQUENCY
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '133333333'
+          type: Dynamic
+        type: Values
+      type: Integer
+    QSPI_GCLK_FREQUENCY:
+      attributes:
+        id: QSPI_GCLK_FREQUENCY
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '133333333'
+          type: Dynamic
+        type: Values
+      type: Integer
+    CLK_QSPI_GCLKEN:
+      attributes:
+        id: CLK_QSPI_GCLKEN
+      children:
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    CLK_QSPI_GCLKCSS:
+      attributes:
+        id: CLK_QSPI_GCLKCSS
+      children:
+      - children:
+        - attributes:
+            value: '3'
+          type: User
+        type: Values
+      type: KeyValueSet
+    CLK_QSPI_GCLKDIV:
+      attributes:
+        id: CLK_QSPI_GCLKDIV
+      children:
+      - children:
+        - attributes:
+            value: '1'
+          type: User
+        type: Values
+      type: Integer
+    QSPI_CLOCK_ENABLE:
+      attributes:
+        id: QSPI_CLOCK_ENABLE
+      children:
+      - children:
+        - attributes:
+            id: qspi
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    PIT_INTERRUPT_ENABLE:
+      attributes:
+        id: PIT_INTERRUPT_ENABLE
+      children:
+      - children:
+        - attributes:
+            id: pit
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    PIT_INTERRUPT_HANDLER:
+      attributes:
+        id: PIT_INTERRUPT_HANDLER
+      children:
+      - children:
+        - attributes:
+            id: pit
+            value: PIT_InterruptHandler
+          type: Dynamic
+        type: Values
+      type: String
+  userData:
+    children:
+    - attributes:
+        canvasHeight: '0'
+        canvasWidth: '0'
+      type: GraphSettings
+    - children:
+      - attributes:
+          id: profile0
+          name: Main
+        type: Profile
+      type: PowerProfiles
+    type: UserData
