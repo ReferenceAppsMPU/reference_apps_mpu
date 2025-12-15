@@ -5,7 +5,7 @@ fileVersion: 1.0.0
 device: SAM9X75D2G
 associatedIDEProjects:
   MPLAB:
-    - name: sam9x75_test_qspi2
+    - name: sam9x75_test_qspi
       path: ../../.vscode
       config: default
       device: SAM9X75D2G

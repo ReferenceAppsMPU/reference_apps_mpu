@@ -54,33 +54,33 @@ endif()
 
 
 # Main target for this project
-add_executable(sam9x75_test_qspi_default_image_QSIdgsz5 ${sam9x75_test_qspi_default_library_list})
+add_executable(sam9x75_test_qspi_default_image_PTVdlW8w ${sam9x75_test_qspi_default_library_list})
 
 if(NOT CMAKE_HOST_WIN32)
-    set_target_properties(sam9x75_test_qspi_default_image_QSIdgsz5 PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${sam9x75_test_qspi_default_output_dir})
+    set_target_properties(sam9x75_test_qspi_default_image_PTVdlW8w PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${sam9x75_test_qspi_default_output_dir})
 endif()
-set_target_properties(sam9x75_test_qspi_default_image_QSIdgsz5 PROPERTIES OUTPUT_NAME "default")
-set_target_properties(sam9x75_test_qspi_default_image_QSIdgsz5 PROPERTIES SUFFIX ".elf")
+set_target_properties(sam9x75_test_qspi_default_image_PTVdlW8w PROPERTIES OUTPUT_NAME "default")
+set_target_properties(sam9x75_test_qspi_default_image_PTVdlW8w PROPERTIES SUFFIX ".elf")
 
-target_link_libraries(sam9x75_test_qspi_default_image_QSIdgsz5 PRIVATE ${sam9x75_test_qspi_default_default_XC32_FILE_TYPE_link})
+target_link_libraries(sam9x75_test_qspi_default_image_PTVdlW8w PRIVATE ${sam9x75_test_qspi_default_default_XC32_FILE_TYPE_link})
 
 
 # Add the link options from the rule file.
-sam9x75_test_qspi_default_link_rule(sam9x75_test_qspi_default_image_QSIdgsz5)
+sam9x75_test_qspi_default_link_rule(sam9x75_test_qspi_default_image_PTVdlW8w)
 
 # Call bin2hex function from the rule file
-sam9x75_test_qspi_default_bin2hex_rule(sam9x75_test_qspi_default_image_QSIdgsz5)
+sam9x75_test_qspi_default_bin2hex_rule(sam9x75_test_qspi_default_image_PTVdlW8w)
 
 if(CMAKE_HOST_WIN32)
     add_custom_command(
-        TARGET sam9x75_test_qspi_default_image_QSIdgsz5
+        TARGET sam9x75_test_qspi_default_image_PTVdlW8w
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory ${sam9x75_test_qspi_default_output_dir}
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sam9x75_test_qspi_default_image_QSIdgsz5> ${sam9x75_test_qspi_default_output_dir}/${sam9x75_test_qspi_default_original_image_name}
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sam9x75_test_qspi_default_image_PTVdlW8w> ${sam9x75_test_qspi_default_output_dir}/${sam9x75_test_qspi_default_original_image_name}
         BYPRODUCTS ${sam9x75_test_qspi_default_output_dir}/${sam9x75_test_qspi_default_original_image_name}
         COMMENT "Copying elf to out location")
     set_property(
-        TARGET sam9x75_test_qspi_default_image_QSIdgsz5
+        TARGET sam9x75_test_qspi_default_image_PTVdlW8w
         APPEND PROPERTY ADDITIONAL_CLEAN_FILES
         ${sam9x75_test_qspi_default_output_dir}/${sam9x75_test_qspi_default_original_image_name})
 endif()
