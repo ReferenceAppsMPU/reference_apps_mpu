@@ -1,0 +1,10 @@
+{
+    "memory-inspector.debugTypes": [
+        "arm-debugger",
+        "embedded-debug",
+        "gdb",
+        "mplab-core-da"
+    ],
+    "mplab.clangd.compileCommandsDir": "${workspaceFolder}\\_build\\test_sam9x75_hybrid_curiosity\\default",
+    "mplab.clangd.path": "c:\\Program Files\\Microchip\\xc32\\v4.60\\bin\\xc32-clangd.exe"
+}
