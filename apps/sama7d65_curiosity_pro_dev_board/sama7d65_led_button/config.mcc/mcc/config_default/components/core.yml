@@ -1,0 +1,249 @@
+configVersion: 1.0.0
+componentName: core
+coreVersion: 5.9.1
+device: SAMA7D65
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: core
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.26.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments: {}
+  elementPosition: {}
+  symbols:
+    PIN_204_FUNCTION_TYPE:
+      attributes:
+        id: PIN_204_FUNCTION_TYPE
+        label: Type
+      type: String
+    PIN_204_FUNCTION_NAME:
+      attributes:
+        id: PIN_204_FUNCTION_NAME
+        label: Name
+      type: String
+    PORT_B_CFGR_Value17:
+      attributes:
+        id: PORT_B_CFGR_Value17
+        label: PORT_B_CFGR_Value17
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0x100'
+          type: Dynamic
+        type: Values
+      type: String
+    PIN_204_DIR:
+      attributes:
+        id: PIN_204_DIR
+        label: Direction
+      type: String
+    PORT_B_LATCH:
+      attributes:
+        id: PORT_B_LATCH
+        label: PORT_B_LATCH
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0x0'
+          type: Dynamic
+        type: Values
+      type: String
+    PIN_204_LAT:
+      attributes:
+        id: PIN_204_LAT
+        label: Initial Latch Value
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
+    PIN_205_FUNCTION_TYPE:
+      attributes:
+        id: PIN_205_FUNCTION_TYPE
+        label: Type
+      type: String
+    PIN_205_FUNCTION_NAME:
+      attributes:
+        id: PIN_205_FUNCTION_NAME
+        label: Name
+      type: String
+    PORT_B_CFGR_Value15:
+      attributes:
+        id: PORT_B_CFGR_Value15
+        label: PORT_B_CFGR_Value15
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0x100'
+          type: Dynamic
+        type: Values
+      type: String
+    PIN_205_DIR:
+      attributes:
+        id: PIN_205_DIR
+        label: Direction
+      type: String
+    PIN_205_LAT:
+      attributes:
+        id: PIN_205_LAT
+        label: Initial Latch Value
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
+    PIN_327_FUNCTION_TYPE:
+      attributes:
+        id: PIN_327_FUNCTION_TYPE
+        label: Type
+      type: String
+    PIN_327_FUNCTION_NAME:
+      attributes:
+        id: PIN_327_FUNCTION_NAME
+        label: Name
+      type: String
+    PORT_A_CFGR_Value21:
+      attributes:
+        id: PORT_A_CFGR_Value21
+        label: PORT_A_CFGR_Value21
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0x100'
+          type: Dynamic
+        type: Values
+      type: String
+    PIN_327_DIR:
+      attributes:
+        id: PIN_327_DIR
+        label: Direction
+      type: String
+    PORT_A_LATCH:
+      attributes:
+        id: PORT_A_LATCH
+        label: PORT_A_LATCH
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0x0'
+          type: Dynamic
+        type: Values
+      type: String
+    PIN_327_LAT:
+      attributes:
+        id: PIN_327_LAT
+        label: Initial Latch Value
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
+    PIN_146_FUNCTION_TYPE:
+      attributes:
+        id: PIN_146_FUNCTION_TYPE
+        label: Type
+      type: String
+    PIN_146_FUNCTION_NAME:
+      attributes:
+        id: PIN_146_FUNCTION_NAME
+        label: Name
+      type: String
+    PORT_C_CFGR_Value10:
+      attributes:
+        id: PORT_C_CFGR_Value10
+        label: PORT_C_CFGR_Value10
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0x2000200'
+          type: Dynamic
+        type: Values
+      type: String
+    PIN_146_PU:
+      attributes:
+        id: PIN_146_PU
+        label: Pull Up
+      type: String
+    PIN_146_DIR:
+      attributes:
+        id: PIN_146_DIR
+        label: Direction
+      type: String
+    PORT_C_INTERRUPT_USED:
+      attributes:
+        id: PORT_C_INTERRUPT_USED
+        label: PORT_C_INTERRUPT_USED
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    PIOC_INTERRUPT_ENABLE:
+      attributes:
+        id: PIOC_INTERRUPT_ENABLE
+        label: Enable PIOC interrupt
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    PIOC_INTERRUPT_HANDLER:
+      attributes:
+        id: PIOC_INTERRUPT_HANDLER
+        label: PIOC Handler
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: PIOC_InterruptHandler
+          type: Dynamic
+        type: Values
+      type: String
+    PIN_146_PIO_INTERRUPT:
+      attributes:
+        id: PIN_146_PIO_INTERRUPT
+        label: PIO Interrupt
+      children:
+      - children:
+        - attributes:
+            value: Both Edge
+          type: User
+        type: Values
+      type: String
+  userData:
+    children:
+    - attributes:
+        canvasHeight: '0'
+        canvasWidth: '0'
+      type: GraphSettings
+    - children:
+      - attributes:
+          id: profile0
+          name: Main
+        type: Profile
+      type: PowerProfiles
+    type: UserData

@@ -1,0 +1,86 @@
+{
+    "version": "1.9",
+    "configurations": [
+        {
+            "name": "default",
+            "id": "",
+            "device": "SAMA7D65",
+            "imagePath": "./out/sama7d65_led_button/default.elf",
+            "packs": [
+                {
+                    "name": "SAMA7D65_DFP",
+                    "vendor": "Microchip",
+                    "version": "1.12.120"
+                },
+                {
+                    "name": "CMSIS",
+                    "vendor": "ARM",
+                    "version": "6.3.0"
+                }
+            ],
+            "fileSet": "default",
+            "toolchain": "default-XC32",
+            "postBuildSteps": [
+                "${MP_CC_DIR}/xc32-objcopy -O binary %{TargetDirRelative}/%{ConfigurationName}.elf %{TargetDirRelative}/harmony.bin"
+            ]
+        }
+    ],
+    "propertyGroups": [
+        {
+            "name": "default-XC32",
+            "type": "toolchain",
+            "provider": "microchip.toolchains:xc32@5.10",
+            "properties": {
+                "linker.heap-size": "512",
+                "compiler.extra-include-directories": [
+                    "config.mcc/src",
+                    "config.mcc/src/config/default",
+                    "config.mcc/src/packs/CMSIS",
+                    "config.mcc/src/packs/CMSIS/CMSIS/Core_A/Include",
+                    "config.mcc/src/packs/SAMA7D65_DFP"
+                ],
+                "compiler++.extra-include-directories": [
+                    "config.mcc/src",
+                    "config.mcc/src/config/default",
+                    "config.mcc/src/packs/CMSIS",
+                    "config.mcc/src/packs/CMSIS/CMSIS/Core_A/Include",
+                    "config.mcc/src/packs/SAMA7D65_DFP"
+                ],
+                "linker.no-device-startup-code": "true",
+                "compiler.additional-options": [
+                    "-marm"
+                ],
+                "compiler.isolate-each-function": "true",
+                "compiler.optimization-level": "-O1",
+                "compiler.place-data-into-section": "true",
+                "linker.remove-unused-sections": "true",
+                "compiler++.isolate-each-function": "true",
+                "compiler++.optimization-level": "-O1"
+            }
+        }
+    ],
+    "fileSets": [
+        {
+            "name": "default",
+            "files": [
+                {
+                    "include": "**/*",
+                    "exclude": "**/@(build|_build|out|cmake|.vscode)/**/*"
+                },
+                "config.mcc/src/config/default/bsp/bsp.c",
+                "config.mcc/src/main.c",
+                "config.mcc/src/config/default/initialization.c",
+                "config.mcc/src/config/default/interrupts.c",
+                "config.mcc/src/config/default/stdio/xc32_monitor.c",
+                "config.mcc/src/config/default/peripheral/dwdt/plib_dwdt.c",
+                "config.mcc/src/config/default/peripheral/mmu/plib_mmu.c",
+                "config.mcc/src/config/default/peripheral/clk/plib_clk.c",
+                "config.mcc/src/config/default/peripheral/gic/plib_gic.c",
+                "config.mcc/src/config/default/peripheral/pio/plib_pio.c",
+                "config.mcc/src/config/default/cstartup.S",
+                "config.mcc/src/config/default/ddr.ld",
+                "config.mcc/src/config/default/fault_handlers.c"
+            ]
+        }
+    ]
+}

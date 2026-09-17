@@ -1,0 +1,10 @@
+configVersion: 1.0.0
+coreVersion: 5.9.1
+device: SAMA7D65
+deviceLibrary: {}
+groupModules: []
+modules:
+- cmsis
+- core
+- dfp
+generatedFileHashHistoryMap: []
