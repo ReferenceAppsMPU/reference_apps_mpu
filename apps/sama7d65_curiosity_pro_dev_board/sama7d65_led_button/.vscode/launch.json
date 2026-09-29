@@ -1,50 +1,47 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
-            "cwd": "${workspaceRoot}",
-            "gdbPath": "C:\\Program Files (x86)\\Arm GNU Toolchain arm-none-eabi\\14.3 rel1\\bin\\arm-none-eabi-gdb.exe",
-            "executable": "${workspaceFolder}/out/${workspaceFolderBasename}/default.elf",
             "name": "Debug with OpenOCD",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceFolder}/out/${workspaceFolderBasename}/default.elf",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "gdbTarget": "localhost:50000",
-            "serverpath": "C:\\OpenOCD-20250710-0.12.0\\bin\\openocd.exe",
-            "serverArgs": [],
-            "openOCDLaunchCommands":[],
-            "configFiles": ["${workspaceFolder}/sama7d65.cfg"],
+            "gdbPath": "C:\\Program Files (x86)\\Arm GNU Toolchain arm-none-eabi\\14.3 rel1\\bin\\arm-none-eabi-gdb.exe",
+            "serverpath": "openocd.exe",
+            "configFiles": [
+                "interface/microchip/dv22s07a.cfg",
+                "/board/microchip/sama7d65-curiosity.cfg"
+            ],
             "searchDir": [],
-            "showDevDebugOutput": "none",
+            "showDevDebugOutput": "raw",
             "breakAfterReset": true,
-            "postResetCommands": [
-                 "monitor reset init",
-                "load  ./binaries/at91bootstrap.elf",
-                "monitor reg pc 0x100000",
-                "monitor sama7d65.cpu arm core_state arm",
-                "monitor resume",
-                "monitor sleep 500",
-                "monitor halt",
-                "load"
-            ],
-            "preLaunchCommands": [
-                "monitor sama7d65.cpu curstate"
-            ],
+            "runToMain": false,
+            
+            // 1. Initial Launch Sequence
             "overrideLaunchCommands": [
-                "monitor reset init",
-                "load  ./binaries/at91bootstrap.elf",
+                "monitor halt",
+                "load ./binaries/at91bootstrap.elf",
                 "monitor reg pc 0x100000",
-                "monitor sama7d65.cpu arm core_state arm",
+                "monitor sama7d6.cpu.0 arm core_state arm",
                 "monitor resume",
                 "monitor sleep 500",
                 "monitor halt",
                 "load"
             ],
-            "runToMain": false
+            
+            // 2. Restart Button Sequence (Soft Reset)
+            "overrideRestartCommands": [
+                "monitor halt",
+                "load ./binaries/at91bootstrap.elf",
+                "monitor reg pc 0x100000",
+                "monitor sama7d6.cpu.0 arm core_state arm",
+                "monitor resume",
+                "monitor sleep 500",
+                "monitor halt",
+                "load"
+            ]
         }
     ]
 }
