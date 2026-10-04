@@ -1,0 +1,284 @@
+configVersion: 1.0.0
+componentName: core
+coreVersion: 5.9.1
+device: SAM9X75D2G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: core
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.26.1
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments: {}
+  elementPosition: {}
+  symbols:
+    PIN_79_FUNCTION_TYPE:
+      attributes:
+        id: PIN_79_FUNCTION_TYPE
+        label: Type
+      type: String
+    PIN_79_FUNCTION_NAME:
+      attributes:
+        id: PIN_79_FUNCTION_NAME
+        label: Name
+      type: String
+    PIOC_OER_VALUE:
+      attributes:
+        id: PIOC_OER_VALUE
+        label: PIOC_OER
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '3162112'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIN_79_DIR:
+      attributes:
+        id: PIN_79_DIR
+        label: Direction
+      type: String
+    PIOC_SODR_VALUE:
+      attributes:
+        id: PIOC_SODR_VALUE
+        label: PIOC_SODR
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIN_79_LAT:
+      attributes:
+        id: PIN_79_LAT
+        label: Initial Latch Value
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
+    PIN_50_FUNCTION_TYPE:
+      attributes:
+        id: PIN_50_FUNCTION_TYPE
+        label: Type
+      type: String
+    PIN_50_FUNCTION_NAME:
+      attributes:
+        id: PIN_50_FUNCTION_NAME
+        label: Name
+      type: String
+    PIN_50_DIR:
+      attributes:
+        id: PIN_50_DIR
+        label: Direction
+      type: String
+    PIN_50_LAT:
+      attributes:
+        id: PIN_50_LAT
+        label: Initial Latch Value
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
+    PIN_48_FUNCTION_TYPE:
+      attributes:
+        id: PIN_48_FUNCTION_TYPE
+        label: Type
+      type: String
+    PIN_48_FUNCTION_NAME:
+      attributes:
+        id: PIN_48_FUNCTION_NAME
+        label: Name
+      type: String
+    PIN_48_DIR:
+      attributes:
+        id: PIN_48_DIR
+        label: Direction
+      type: String
+    PIN_48_LAT:
+      attributes:
+        id: PIN_48_LAT
+        label: Initial Latch Value
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
+    PIN_106_FUNCTION_TYPE:
+      attributes:
+        id: PIN_106_FUNCTION_TYPE
+        label: Type
+      type: String
+    PIN_106_FUNCTION_NAME:
+      attributes:
+        id: PIN_106_FUNCTION_NAME
+        label: Name
+      type: String
+    PIOC_PUER_VALUE:
+      attributes:
+        id: PIOC_PUER_VALUE
+        label: PIOC_PUER
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '512'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIN_106_PU:
+      attributes:
+        id: PIN_106_PU
+        label: Pull Up
+      type: String
+    PIN_106_DIR:
+      attributes:
+        id: PIN_106_DIR
+        label: Direction
+      type: String
+    COMPONENT_PACKAGE:
+      attributes:
+        id: COMPONENT_PACKAGE
+        label: Pin Package
+      children:
+      - children:
+        - attributes:
+            value: BGA243
+          type: User
+        type: Values
+      type: Combo
+    PIOC_INTERRUPT_ENABLE:
+      attributes:
+        id: PIOC_INTERRUPT_ENABLE
+        label: Enable 4 -- Parallel I/O Controller C
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    PIOC_INTERRUPT_HANDLER:
+      attributes:
+        id: PIOC_INTERRUPT_HANDLER
+        label: Handler
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: PIOC_InterruptHandler
+          type: Dynamic
+        type: Values
+      type: String
+    PIOC_INTERRUPT_HANDLER_LOCK:
+      attributes:
+        id: PIOC_INTERRUPT_HANDLER_LOCK
+        label: PIOC_INTERRUPT_HANDLER_LOCK
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    INTERRUPT_ACTIVE:
+      attributes:
+        id: INTERRUPT_ACTIVE
+        label: INTERRUPT_ACTIVE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    PIO_C_INTERRUPT_USED:
+      attributes:
+        id: PIO_C_INTERRUPT_USED
+        label: Use Interrupt for PIO C
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    PIOC_LSR_VALUE:
+      attributes:
+        id: PIOC_LSR_VALUE
+        label: PIOC_LSR
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIOC_REHLSR_VALUE:
+      attributes:
+        id: PIOC_REHLSR_VALUE
+        label: PIOC_REHLSR
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIOC_AIMER_VALUE:
+      attributes:
+        id: PIOC_AIMER_VALUE
+        label: PIOC_AIMER
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Hex
+    PIN_106_PIO_INTERRUPT:
+      attributes:
+        id: PIN_106_PIO_INTERRUPT
+        label: PIO Interrupt
+      children:
+      - children:
+        - attributes:
+            value: Both Edge
+          type: User
+        type: Values
+      type: String
+  userData:
+    children:
+    - attributes:
+        canvasHeight: '0'
+        canvasWidth: '0'
+      type: GraphSettings
+    - children:
+      - attributes:
+          id: profile0
+          name: Main
+        type: Profile
+      type: PowerProfiles
+    type: UserData

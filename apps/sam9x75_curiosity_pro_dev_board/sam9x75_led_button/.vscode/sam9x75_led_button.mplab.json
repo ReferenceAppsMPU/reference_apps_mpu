@@ -1,0 +1,78 @@
+{
+    "version": "1.9",
+    "configurations": [
+        {
+            "name": "default",
+            "id": "",
+            "device": "SAM9X75D2G",
+            "imagePath": "./out/sam9x75_led_button/default.elf",
+            "packs": [
+                {
+                    "name": "SAM9X7_DFP",
+                    "vendor": "Microchip",
+                    "version": "1.14.258"
+                }
+            ],
+            "fileSet": "default",
+            "toolchain": "default-XC32",
+            "postBuildSteps": [
+                "${MP_CC_DIR}/xc32-objcopy -O binary %{TargetDirRelative}/%{ConfigurationName}.elf %{TargetDirRelative}/harmony.bin"
+            ]
+        }
+    ],
+    "propertyGroups": [
+        {
+            "name": "default-XC32",
+            "type": "toolchain",
+            "provider": "microchip.toolchains:xc32@5.10",
+            "properties": {
+                "linker.heap-size": "512",
+                "compiler.extra-include-directories": [
+                    "config.mcc/mcc",
+                    "config.mcc/src",
+                    "config.mcc/src/config/default",
+                    "config.mcc/src/packs/SAM9X75D2G_DFP"
+                ],
+                "compiler++.extra-include-directories": [
+                    "config.mcc/mcc",
+                    "config.mcc/src",
+                    "config.mcc/src/config/default",
+                    "config.mcc/src/packs/SAM9X75D2G_DFP"
+                ],
+                "linker.no-device-startup-code": "true",
+                "compiler.additional-options": [
+                    "-marm"
+                ],
+                "compiler.isolate-each-function": "true",
+                "compiler.optimization-level": "-O1",
+                "compiler.place-data-into-section": "true",
+                "linker.remove-unused-sections": "true",
+                "compiler++.isolate-each-function": "true",
+                "compiler++.optimization-level": "-O1"
+            }
+        }
+    ],
+    "fileSets": [
+        {
+            "name": "default",
+            "files": [
+                {
+                    "include": "**/*",
+                    "exclude": "**/@(build|_build|out|cmake|.vscode)/**/*"
+                },
+                "config.mcc/src/main.c",
+                "config.mcc/src/config/default/initialization.c",
+                "config.mcc/src/config/default/interrupts.c",
+                "config.mcc/src/config/default/stdio/xc32_monitor.c",
+                "config.mcc/src/config/default/peripheral/mmu/plib_mmu.c",
+                "config.mcc/src/config/default/peripheral/clk/plib_clk.c",
+                "config.mcc/src/config/default/peripheral/pio/plib_pio.c",
+                "config.mcc/src/config/default/peripheral/aic/plib_aic.c",
+                "config.mcc/src/config/default/cstartup.S",
+                "config.mcc/src/config/default/ddram.ld",
+                "config.mcc/src/config/default/fault_handlers.c",
+                "config.mcc/src/config/default/bsp/bsp.c"
+            ]
+        }
+    ]
+}

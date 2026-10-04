@@ -1,0 +1,50 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "cwd": "${workspaceRoot}",
+            "gdbPath": "C:\\Program Files (x86)\\Arm GNU Toolchain arm-none-eabi\\14.3 rel1\\bin\\arm-none-eabi-gdb.exe",
+            "executable": "${workspaceFolder}/out/${workspaceFolderBasename}/default.elf",
+            "name": "Debug with OpenOCD",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "gdbTarget": "localhost:50000",
+            "serverpath": "openocd.exe",
+            "serverArgs": [],
+            "openOCDLaunchCommands":[],
+            "configFiles": ["${workspaceFolder}/sam9x75.cfg"],
+            "searchDir": [],
+            "showDevDebugOutput": "none",
+            "breakAfterReset": true,
+            "postResetCommands": [
+                 "monitor reset init",
+                "load  ./binaries/at91bootstrap.elf",
+                "monitor reg pc 0x300000",
+                "monitor arm9.0 arm core_state arm",
+                "monitor resume",
+                "monitor sleep 500",
+                "monitor halt",
+                "load"
+            ],
+            "preLaunchCommands": [
+                "monitor arm9.0 curstate"
+            ],
+            "overrideLaunchCommands": [
+                "monitor reset init",
+                "load  ./binaries/at91bootstrap.elf",
+                "monitor reg pc 0x300000",
+                "monitor arm9.0 arm core_state arm",
+                "monitor resume",
+                "monitor sleep 500",
+                "monitor halt",
+                "load"
+            ],
+            "runToMain": false
+        }
+    ]
+}
