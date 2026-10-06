@@ -1,0 +1,52 @@
+configVersion: 1.0.0
+componentName: adc
+coreVersion: 5.9.0
+device: SAMA7D65
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: adc
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.25.1
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments: {}
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: adc
+          x: '93'
+          y: '219'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    ADC_CLK:
+      attributes:
+        id: ADC_CLK
+      children:
+      - children:
+        - attributes:
+            id: adc
+            value: '16000'
+          type: Dynamic
+        type: Values
+      type: Integer
+    ADC_0_CHER:
+      attributes:
+        id: ADC_0_CHER
+      children:
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+  userData: {}
