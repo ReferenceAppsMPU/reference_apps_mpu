@@ -1,0 +1,47 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug with OpenOCD",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceFolder}/out/${workspaceFolderBasename}/default.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "gdbPath": "C:\\Program Files (x86)\\Arm GNU Toolchain arm-none-eabi\\14.3 rel1\\bin\\arm-none-eabi-gdb.exe",
+            "serverpath": "openocd.exe",
+            "configFiles": [
+                "interface/microchip/dv22s07a.cfg",
+                "/board/microchip/sama7g54-ek.cfg"
+            ],
+            "searchDir": [],
+            "showDevDebugOutput": "raw",
+            "breakAfterReset": true,
+            "runToMain": false,
+            
+            // 1. Initial Launch Sequence
+            "overrideLaunchCommands": [
+                "monitor halt",
+                "load ./binaries/at91bootstrap.elf",
+                "monitor reg pc 0x100000",
+                "monitor sama7g5.cpu.0 arm core_state arm",
+                "monitor resume",
+                "monitor sleep 500",
+                "monitor halt",
+                "load"
+            ],
+            
+            // 2. Restart Button Sequence (Soft Reset)
+            "overrideRestartCommands": [
+                "monitor halt",
+                "load ./binaries/at91bootstrap.elf",
+                "monitor reg pc 0x100000",
+                "monitor sama7g5.cpu.0 arm core_state arm",
+                "monitor resume",
+                "monitor sleep 500",
+                "monitor halt",
+                "load"
+            ]
+        }
+    ]
+}
